@@ -29,6 +29,8 @@ INSTALLED_APPS = [
 
 EXTERNAL_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
@@ -105,3 +107,37 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,     # this enable the refresh token rotation
+    "BLACKLIST_AFTER_ROTATION": True,  # this enable the blacklist after rotation
+    "UPDATE_LAST_LOGIN": True,         # this update the last login time
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),   # <-- This is what you need
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+}
+
+
+
+REFRESH_TOKEN_COOKIE_NAME = 'refresh_token'
+REFRESH_TOKEN_COOKIE_SAMESITE = 'Lax'
+REFRESH_TOKEN_COOKIE_SECURE = True   # HTTPS only — set False in local dev
+REFRESH_TOKEN_COOKIE_HTTPONLY = True  # JS cannot read this cookie

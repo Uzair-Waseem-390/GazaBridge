@@ -31,9 +31,16 @@ EXTERNAL_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "users",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
+
+
+
+AUTH_USER_MODEL = "users.User"
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -112,9 +119,20 @@ STATIC_URL = 'static/'
 
 
 REST_FRAMEWORK = {
+    # Default to 403 for unauthenticated requests on protected endpoints.
+    # RegisterView overrides this with AllowAny explicitly.
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    # "DEFAULT_RENDERER_CLASSES": [
+    #     "rest_framework.renderers.JSONRenderer",
+    # ],
+    # "DEFAULT_PARSER_CLASSES": [
+    #     "rest_framework.parsers.JSONParser",
+    # ],
 }
 
 
@@ -147,8 +165,8 @@ REFRESH_TOKEN_COOKIE_HTTPONLY = True  # JS cannot read this cookie
 
 
 
-# DB 0 — Default / general use
-# DB 1 — Celery broker & results
+# DB 0 — Celery broker & results
+# DB 1 — Default / general use for django caches 
 # DB 2 — Rate limiting  ← only this one is used by GlobalRateLimitMiddleware
  
 RATE_LIMIT_REDIS = {
@@ -204,4 +222,8 @@ CACHES = {
         "LOCATION": "redis://127.0.0.1:6379/1",
     }
 }
- 
+
+
+
+
+

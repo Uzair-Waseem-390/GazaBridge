@@ -38,6 +38,7 @@ INSTALLED_APPS += EXTERNAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'backend.middleware.GlobalRateLimitMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,3 +142,66 @@ REFRESH_TOKEN_COOKIE_NAME = 'refresh_token'
 REFRESH_TOKEN_COOKIE_SAMESITE = 'Lax'
 REFRESH_TOKEN_COOKIE_SECURE = True   # HTTPS only — set False in local dev
 REFRESH_TOKEN_COOKIE_HTTPONLY = True  # JS cannot read this cookie
+
+
+
+
+
+# DB 0 — Default / general use
+# DB 1 — Celery broker & results
+# DB 2 — Rate limiting  ← only this one is used by GlobalRateLimitMiddleware
+ 
+RATE_LIMIT_REDIS = {
+    "HOST": "localhost",
+    "PORT": 6379,
+    "DB": 2,
+    # How long (seconds) to wait when connecting to Redis.
+    # Keep this low so a Redis outage doesn't stall your requests.
+    "SOCKET_CONNECT_TIMEOUT": 1,
+    "SOCKET_TIMEOUT": 1,
+}
+ 
+# =============================================================================
+# RATE LIMIT TIERS
+# =============================================================================
+# LIMIT  — max requests allowed inside the sliding window
+# WINDOW — window size in seconds
+ 
+RATE_LIMIT = {
+    "AUTHENTICATED": {
+        "LIMIT": 100,
+        "WINDOW": 60,   # 100 requests per minute per user ID
+    },
+    "ANONYMOUS": {
+        "LIMIT": 20,
+        "WINDOW": 60,   # 20 requests per minute per IP
+    },
+}
+ 
+# =============================================================================
+# TRUSTED PROXIES
+# =============================================================================
+# IPs listed here are treated as reverse proxies.
+# When the direct connection comes from one of these IPs, the middleware will
+# read the real client IP from the X-Forwarded-For header instead of
+# REMOTE_ADDR, preventing IP spoofing by untrusted clients.
+#
+# Add your load balancer / Nginx / Gunicorn proxy IPs here.
+# Leave as an empty set if you are running without a proxy (e.g. local dev).
+ 
+RATE_LIMIT_TRUSTED_PROXIES = {
+    "127.0.0.1",   # example: internal load balancer    
+}
+
+
+# =============================================================================
+# CACHES — DB 1 for Django cache (separate from rate limiting)
+# =============================================================================
+ 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+    }
+}
+ 

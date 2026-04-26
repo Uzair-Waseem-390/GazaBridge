@@ -12,6 +12,9 @@ def root(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("users/",  include("users.urls", namespace="users")),
     path('', root, name="Uzair"),
+
+    # Apps urls
+    path("users/",  include("users.urls", namespace="users")),
+    path("auth/",   include("auth_app.urls", namespace="auth_app")),
 ]

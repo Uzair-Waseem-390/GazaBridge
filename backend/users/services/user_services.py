@@ -2,77 +2,100 @@
 Services
 ========
 Write layer and business-logic enforcement.
-Views never touch the ORM directly — they delegate to services.
-This keeps views thin and makes business rules easy to unit-test
-without spinning up HTTP machinery.
+No HTTP awareness — views call services, never the ORM directly.
 """
 
 import logging
 
 from django.core.cache import cache
 from django.db import transaction
+from django.utils import timezone
 
-from ..models import User
-from ..selectors.user_selectors import email_exists, get_registerable_roles, get_roles_by_names
+from users.models import EmailVerificationToken, User
+from users.tasks import build_cache_key
+from users.tasks import send_verification_email
+from users.selectors.user_selectors import email_exists, get_registerable_roles, get_user_by_email
+from users.selectors.user_selectors import get_token_by_value
+from users.selectors.user_selectors import get_role_by_name
 
 logger = logging.getLogger(__name__)
 
-# How long (seconds) the cached user payload lives in Redis DB-1.
-USER_CACHE_TTL = 60  # 1 minute — intentionally short for now
+# Redis DB-1 cache TTL for the registration payload (seconds).
+# Must be long enough for Celery to pick up the task.
+_REGISTRATION_CACHE_TTL = 300  # 5 minutes
 
 
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-def _cache_user(user: User, roles: list[str]) -> None:
-    """
-    Write a lightweight user snapshot to Redis.
-    Key: user:<id>   TTL: USER_CACHE_TTL seconds.
-    This is fire-and-forget; a failure must never abort registration.
-    """
-    payload = {
-        "id":         user.pk,
-        "email":      user.email,
-        "first_name": user.first_name,
-        "last_name":  user.last_name,
-        "country":    user.country,
-        "languages":  user.language_list,
-        "roles":      roles,
-    }
-    try:
-        cache.set(f"user:{user.pk}", payload, timeout=USER_CACHE_TTL)
-    except Exception:
-        # Redis being down must never fail a registration.
-        logger.exception("Failed to cache user %s after registration.", user.pk)
-
-
 def _validate_role_selection(requested_roles: list[str]) -> list[str]:
     """
-    Enforce registration role rules:
-    - Only 'volunteer' and/or 'seeker' are self-assignable.
-    - At least one role must be chosen.
-    - Duplicate names are silently de-duplicated.
-    Raises ValueError with a human-readable message on any violation.
+    Enforce self-registration role rules:
+    - Only 'volunteer' and/or 'seeker' allowed.
+    - At least one must be chosen.
+    - Duplicates are silently removed.
+    Raises ValueError with a human-readable message on violation.
     """
-    allowed_names = {"volunteer", "seeker"}
-    cleaned = list(dict.fromkeys(r.strip().lower() for r in requested_roles))  # dedup + normalise
+    allowed = {"volunteer", "seeker"}
+    cleaned = list(dict.fromkeys(r.strip().lower() for r in requested_roles))
 
     if not cleaned:
         raise ValueError("At least one role (volunteer or seeker) must be selected.")
 
-    invalid = set(cleaned) - allowed_names
+    invalid = set(cleaned) - allowed
     if invalid:
         raise ValueError(
             f"Invalid role(s): {', '.join(sorted(invalid))}. "
-            f"Allowed values at registration: volunteer, seeker."
+            "Allowed values at registration: volunteer, seeker."
         )
-
     return cleaned
 
 
+def _cache_registration_payload(user: User, token: EmailVerificationToken) -> None:
+    """
+    Write the minimal payload the email task needs into Redis DB-1.
+    Key: email_verify:<user_id>    TTL: _REGISTRATION_CACHE_TTL seconds.
+
+    Fire-and-forget — a Redis failure must never abort registration.
+    The Celery task handles a cache miss gracefully by falling back to DB.
+    """
+
+    payload = {
+        "email":      user.email,
+        "first_name": user.first_name,
+        "token":      str(token.token),
+    }
+    try:
+        cache.set(build_cache_key(user.pk), payload, timeout=_REGISTRATION_CACHE_TTL)
+    except Exception:
+        logger.exception(
+            "Failed to cache registration payload for user %s. "
+            "Celery task will fall back to DB.",
+            user.pk,
+        )
+
+
 # ---------------------------------------------------------------------------
-# Public service
+# Token management
+# ---------------------------------------------------------------------------
+
+def create_verification_token(user: User) -> EmailVerificationToken:
+    """
+    Create a fresh verification token for the given user.
+    Any existing unused tokens for this user are deleted first to keep
+    the tokens table clean and prevent confusion from stale links.
+    """
+    EmailVerificationToken.objects.filter(user=user, is_used=False).delete()
+
+    return EmailVerificationToken.objects.create(
+        user       = user,
+        expires_at = timezone.now() + EmailVerificationToken.lifetime(),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Registration
 # ---------------------------------------------------------------------------
 
 def register_user(
@@ -82,36 +105,36 @@ def register_user(
     first_name: str,
     last_name: str,
     country: str,
+    gender: str,
+    linkedin: str,
     roles: list[str],
     languages: list[str] | None = None,
+    whatsapp_number: str = "",
 ) -> User:
     """
-    Create and persist a new user.
+    Create a new inactive user and queue the verification email.
 
-    Rules enforced here (not in the model or serializer):
-    1. Email uniqueness — returns a clear 400-friendly error.
-    2. Role selection — only volunteer / seeker allowed at self-registration.
-    3. Roles must exist in the DB (seeded via management command).
-    4. User snapshot is written to Redis after a successful commit.
+    Steps:
+    1. Validate email uniqueness.
+    2. Validate role selection.
+    3. Confirm roles exist in DB.
+    4. Create User (is_active=False) + assign roles — atomic.
+    5. Create a verification token — atomic with user creation.
+    6. Cache payload for the Celery task.
+    7. Enqueue send_verification_email task.
 
-    All DB writes are wrapped in a single atomic transaction so a Redis
-    failure or role-assignment failure never leaves a partial user row.
-
-    Args are keyword-only to prevent accidental positional mismatches.
+    Returns the newly created (inactive) User.
     """
     if email_exists(email):
         raise ValueError(f"An account with the email '{email}' already exists.")
 
     validated_roles = _validate_role_selection(roles)
-    role_qs = get_registerable_roles().filter(name__in=validated_roles)
+    role_qs         = get_registerable_roles().filter(name__in=validated_roles)
 
-    # Guard: roles must exist in DB (populated by seed management command).
     found_names = set(role_qs.values_list("name", flat=True))
-    missing = set(validated_roles) - found_names
+    missing     = set(validated_roles) - found_names
     if missing:
-        logger.error(
-            "Role seed missing from DB: %s. Run `manage.py seed_roles`.", missing
-        )
+        logger.error("Role seed missing from DB: %s. Run `manage.py seed_roles`.", missing)
         raise ValueError(
             "Server configuration error: required roles are not seeded. "
             "Please contact support."
@@ -121,21 +144,95 @@ def register_user(
 
     with transaction.atomic():
         user = User.objects.create_user(
-            email=email,
-            password=password,
-            first_name=first_name,
-            last_name=last_name,
-            country=country,
-            languages=languages_str,
+            email           = email,
+            password        = password,
+            first_name      = first_name,
+            last_name       = last_name,
+            country         = country,
+            gender          = gender,
+            linkedin        = linkedin,
+            whatsapp_number = whatsapp_number,
+            languages       = languages_str,
+            # is_active defaults to False via UserManager.create_user
         )
         user.roles.set(role_qs)
+        token = create_verification_token(user)
 
-    _cache_user(user, validated_roles)
+    # Cache first, then enqueue — task reads from cache on pickup.
+    _cache_registration_payload(user, token)
+
+
+    send_verification_email.delay(user.pk)
+
     return user
 
 
 # ---------------------------------------------------------------------------
-# Admin-only service: promote a user to manager
+# Email verification
+# ---------------------------------------------------------------------------
+
+def verify_email(*, token_value: str) -> User:
+    """
+    Verify a user's email using the provided token string.
+
+    Raises:
+        ValueError("invalid")  — token does not exist or is malformed.
+        ValueError("expired")  — token exists but has expired.
+        ValueError("used")     — token has already been consumed.
+
+    On success: marks the token as used, activates the user, returns User.
+    The three distinct error keys let the view give targeted responses.
+    """
+
+    token_obj = get_token_by_value(token_value)
+
+    if token_obj is None:
+        raise ValueError("invalid")
+
+    if token_obj.is_used:
+        raise ValueError("used")
+
+    if timezone.now() >= token_obj.expires_at:
+        raise ValueError("expired")
+
+    with transaction.atomic():
+        token_obj.is_used = True
+        token_obj.save(update_fields=["is_used"])
+
+        token_obj.user.is_active = True
+        token_obj.user.save(update_fields=["is_active"])
+
+    return token_obj.user
+
+
+# ---------------------------------------------------------------------------
+# Resend verification
+# ---------------------------------------------------------------------------
+
+def resend_verification_email(*, email: str) -> None:
+    """
+    Issue a new verification token and re-queue the email task.
+
+    Rules:
+    - Silently succeeds if email is unknown (prevents user enumeration).
+    - Silently succeeds if the user is already active (no harm done).
+    - Old unused tokens are cleaned up inside create_verification_token().
+    """
+    user = get_user_by_email(email)
+
+    if user is None or user.is_active:
+        # Return without error — do not reveal whether the email exists.
+        return
+
+    token = create_verification_token(user)
+    _cache_registration_payload(user, token)
+
+
+    send_verification_email.delay(user.pk)
+
+
+# ---------------------------------------------------------------------------
+# Admin-only: promote to manager
 # ---------------------------------------------------------------------------
 
 def assign_manager_role(*, target_user: User, requesting_user: User) -> User:
@@ -146,9 +243,6 @@ def assign_manager_role(*, target_user: User, requesting_user: User) -> User:
     - Only admin (is_staff=True) or superuser may call this.
     - Target must already be a volunteer or seeker.
     - Idempotent: calling it twice is safe.
-
-    This service is intentionally left thin for now — it will be wired
-    to an endpoint once the auth app is in place.
     """
     if not (requesting_user.is_staff or requesting_user.is_superuser):
         raise PermissionError("Only admins can assign the manager role.")
@@ -158,7 +252,7 @@ def assign_manager_role(*, target_user: User, requesting_user: User) -> User:
             "Cannot promote to manager: user must first be a volunteer or seeker."
         )
 
-    from .selectors import get_role_by_name  # local import to avoid circular at module load
+
     manager_role = get_role_by_name("manager")
     target_user.roles.add(manager_role)
     return target_user

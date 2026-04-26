@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset your password</title>
+    <style>
+        body,
+        table,
+        td,
+        a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        table,
+        td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                Helvetica, Arial, sans-serif;
+        }
+
+        .wrapper {
+            width: 100%;
+            background-color: #f4f6f9;
+            padding: 40px 0;
+        }
+
+        .container {
+            max-width: 560px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            background-color: #dc2626;
+            padding: 36px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+        }
+
+        .body {
+            padding: 40px 40px 32px;
+            color: #374151;
+        }
+
+        .body p {
+            margin: 0 0 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .body .greeting {
+            font-size: 17px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+
+        .btn-wrap {
+            text-align: center;
+            margin: 32px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #dc2626;
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 14px 36px;
+            border-radius: 6px;
+            letter-spacing: 0.2px;
+        }
+
+        .warning-box {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 0 0 20px;
+        }
+
+        .warning-box p {
+            margin: 0;
+            font-size: 13px;
+            color: #92400e;
+        }
+
+        .fallback {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin: 24px 0 0;
+        }
+
+        .fallback p {
+            margin: 0 0 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .fallback a {
+            font-size: 12px;
+            color: #dc2626;
+            word-break: break-all;
+        }
+
+        .notice {
+            font-size: 13px !important;
+            color: #9ca3af !important;
+            margin-top: 0 !important;
+        }
+
+        .footer {
+            background-color: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            padding: 24px 40px;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 12px;
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer a {
+            color: #6b7280;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="container">
+
+            <div class="header">
+                <h1>Reset your password</h1>
+            </div>
+
+            <div class="body">
+                <p class="greeting">Hi {{ first_name }},</p>
+
+                <p>
+                    We received a request to reset the password for your account.
+                    Click the button below to choose a new password.
+                </p>
+
+                <div class="warning-box">
+                    <p>
+                        ⚠️ This link expires in <strong>{{ expiry_minutes }} minutes</strong>.
+                        If you did not request a password reset, you can safely ignore this email
+                        — your password will not be changed.
+                    </p>
+                </div>
+
+                <div class="btn-wrap">
+                    <a href="{{ reset_url }}" class="btn">Reset my password</a>
+                </div>
+
+                <p class="notice">
+                    For your security, this link can only be used once.
+                </p>
+
+                <div class="fallback">
+                    <p>Button not working? Copy and paste this link into your browser:</p>
+                    <a href="{{ reset_url }}">{{ reset_url }}</a>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>
+                    Need help? Contact us at
+                    <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+                </p>
+                <p style="margin-top: 8px;">
+                    If you didn't request this, no action is required.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

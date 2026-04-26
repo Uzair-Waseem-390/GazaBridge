@@ -33,6 +33,7 @@ EXTERNAL_APPS = [
     # "rest_framework_simplejwt.token_blacklist",
     "users",
     "auth_app",
+    "forget_password",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
@@ -281,4 +282,4 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # Override per environment via .env — no trailing slash needed.
 # =============================================================================
  
-BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://localhost:8000/api")
+BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://localhost:8000")

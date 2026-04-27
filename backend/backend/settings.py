@@ -232,16 +232,27 @@ RATE_LIMIT_TRUSTED_PROXIES = {
 # CACHES — DB 1 for Django cache (separate from rate limiting)
 # =============================================================================
  
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/1",
+#     }
+# }
+
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://localhost:6379/1',
+        'TIMEOUT': 300,
+        'OPTIONS': {
+            'db': 1,
+            'socket_connect_timeout': 1,
+            'socket_timeout': 1,
+            'retry_on_timeout': True,
+        },
+        'KEY_PREFIX': 'django_cache',
     }
 }
-
-
-
-
 
 # celery
 # celery -A backend worker -l info

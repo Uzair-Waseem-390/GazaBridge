@@ -6,37 +6,31 @@ No HTTP awareness — views call services, never the ORM directly.
 """
 
 import logging
+from typing import List, Optional, Dict, Any
 
 from django.core.cache import cache
 from django.db import transaction
 from django.utils import timezone
 
-from users.models import EmailVerificationToken, User
-from users.tasks import build_cache_key
-from users.tasks import send_verification_email
-from users.selectors.user_selectors import email_exists, get_registerable_roles, get_user_by_email
-from users.selectors.user_selectors import get_token_by_value
-from users.selectors.user_selectors import get_role_by_name
+from users.models import EmailVerificationToken, User, Role
+from users.selectors.user_selectors import (
+    email_exists, get_registerable_roles, get_user_by_email,
+    get_user_by_id, get_token_by_value, get_role_by_name,
+    invalidate_user_cache, invalidate_users_list_cache
+)
+from users.tasks import send_verification_email, build_cache_key
 
 logger = logging.getLogger(__name__)
 
-# Redis DB-1 cache TTL for the registration payload (seconds).
-# Must be long enough for Celery to pick up the task.
-_REGISTRATION_CACHE_TTL = 300  # 5 minutes
+_REGISTRATION_CACHE_TTL = 300
 
 
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-def _validate_role_selection(requested_roles: list[str]) -> list[str]:
-    """
-    Enforce self-registration role rules:
-    - Only 'volunteer' and/or 'seeker' allowed.
-    - At least one must be chosen.
-    - Duplicates are silently removed.
-    Raises ValueError with a human-readable message on violation.
-    """
+def _validate_role_selection(requested_roles: List[str]) -> List[str]:
+    """Enforce self-registration role rules."""
     allowed = {"volunteer", "seeker"}
     cleaned = list(dict.fromkeys(r.strip().lower() for r in requested_roles))
 
@@ -53,27 +47,16 @@ def _validate_role_selection(requested_roles: list[str]) -> list[str]:
 
 
 def _cache_registration_payload(user: User, token: EmailVerificationToken) -> None:
-    """
-    Write the minimal payload the email task needs into Redis DB-1.
-    Key: email_verify:<user_id>    TTL: _REGISTRATION_CACHE_TTL seconds.
-
-    Fire-and-forget — a Redis failure must never abort registration.
-    The Celery task handles a cache miss gracefully by falling back to DB.
-    """
-
+    """Write the minimal payload the email task needs into Redis DB-1."""
     payload = {
-        "email":      user.email,
+        "email": user.email,
         "first_name": user.first_name,
-        "token":      str(token.token),
+        "token": str(token.token),
     }
     try:
         cache.set(build_cache_key(user.pk), payload, timeout=_REGISTRATION_CACHE_TTL)
     except Exception:
-        logger.exception(
-            "Failed to cache registration payload for user %s. "
-            "Celery task will fall back to DB.",
-            user.pk,
-        )
+        logger.exception("Failed to cache registration payload for user %s.", user.pk)
 
 
 # ---------------------------------------------------------------------------
@@ -81,16 +64,12 @@ def _cache_registration_payload(user: User, token: EmailVerificationToken) -> No
 # ---------------------------------------------------------------------------
 
 def create_verification_token(user: User) -> EmailVerificationToken:
-    """
-    Create a fresh verification token for the given user.
-    Any existing unused tokens for this user are deleted first to keep
-    the tokens table clean and prevent confusion from stale links.
-    """
+    """Create a fresh verification token for the given user."""
     EmailVerificationToken.objects.filter(user=user, is_used=False).delete()
-
+    
     return EmailVerificationToken.objects.create(
-        user       = user,
-        expires_at = timezone.now() + EmailVerificationToken.lifetime(),
+        user=user,
+        expires_at=timezone.now() + EmailVerificationToken.lifetime(),
     )
 
 
@@ -107,62 +86,47 @@ def register_user(
     country: str,
     gender: str,
     linkedin: str,
-    roles: list[str],
-    languages: list[str] | None = None,
+    roles: List[str],
+    languages: Optional[List[str]] = None,
     whatsapp_number: str = "",
 ) -> User:
-    """
-    Create a new inactive user and queue the verification email.
-
-    Steps:
-    1. Validate email uniqueness.
-    2. Validate role selection.
-    3. Confirm roles exist in DB.
-    4. Create User (is_active=False) + assign roles — atomic.
-    5. Create a verification token — atomic with user creation.
-    6. Cache payload for the Celery task.
-    7. Enqueue send_verification_email task.
-
-    Returns the newly created (inactive) User.
-    """
+    """Create a new inactive user and queue the verification email."""
     if email_exists(email):
         raise ValueError(f"An account with the email '{email}' already exists.")
 
     validated_roles = _validate_role_selection(roles)
-    role_qs         = get_registerable_roles().filter(name__in=validated_roles)
+    role_qs = get_registerable_roles().filter(name__in=validated_roles)
 
     found_names = set(role_qs.values_list("name", flat=True))
-    missing     = set(validated_roles) - found_names
+    missing = set(validated_roles) - found_names
     if missing:
-        logger.error("Role seed missing from DB: %s. Run `manage.py seed_roles`.", missing)
+        logger.error("Role seed missing from DB: %s.", missing)
         raise ValueError(
-            "Server configuration error: required roles are not seeded. "
-            "Please contact support."
+            "Server configuration error: required roles are not seeded."
         )
 
     languages_str = ",".join(languages) if languages else ""
 
     with transaction.atomic():
         user = User.objects.create_user(
-            email           = email,
-            password        = password,
-            first_name      = first_name,
-            last_name       = last_name,
-            country         = country,
-            gender          = gender,
-            linkedin        = linkedin,
-            whatsapp_number = whatsapp_number,
-            languages       = languages_str,
-            # is_active defaults to False via UserManager.create_user
+            email=email.lower(),
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            country=country,
+            gender=gender,
+            linkedin=linkedin,
+            whatsapp_number=whatsapp_number,
+            languages=languages_str,
         )
         user.roles.set(role_qs)
         token = create_verification_token(user)
 
-    # Cache first, then enqueue — task reads from cache on pickup.
     _cache_registration_payload(user, token)
-
-
     send_verification_email.delay(user.pk)
+    
+    # Invalidate any cached list that might include this user
+    invalidate_users_list_cache()
 
     return user
 
@@ -172,18 +136,7 @@ def register_user(
 # ---------------------------------------------------------------------------
 
 def verify_email(*, token_value: str) -> User:
-    """
-    Verify a user's email using the provided token string.
-
-    Raises:
-        ValueError("invalid")  — token does not exist or is malformed.
-        ValueError("expired")  — token exists but has expired.
-        ValueError("used")     — token has already been consumed.
-
-    On success: marks the token as used, activates the user, returns User.
-    The three distinct error keys let the view give targeted responses.
-    """
-
+    """Verify a user's email using the provided token string."""
     token_obj = get_token_by_value(token_value)
 
     if token_obj is None:
@@ -201,6 +154,10 @@ def verify_email(*, token_value: str) -> User:
 
         token_obj.user.is_active = True
         token_obj.user.save(update_fields=["is_active"])
+        
+        # Invalidate cache for this user
+        invalidate_user_cache(token_obj.user.pk)
+        invalidate_users_list_cache()
 
     return token_obj.user
 
@@ -210,49 +167,164 @@ def verify_email(*, token_value: str) -> User:
 # ---------------------------------------------------------------------------
 
 def resend_verification_email(*, email: str) -> None:
-    """
-    Issue a new verification token and re-queue the email task.
-
-    Rules:
-    - Silently succeeds if email is unknown (prevents user enumeration).
-    - Silently succeeds if the user is already active (no harm done).
-    - Old unused tokens are cleaned up inside create_verification_token().
-    """
+    """Issue a new verification token and re-queue the email task."""
     user = get_user_by_email(email)
 
     if user is None or user.is_active:
-        # Return without error — do not reveal whether the email exists.
         return
 
     token = create_verification_token(user)
     _cache_registration_payload(user, token)
-
-
     send_verification_email.delay(user.pk)
 
 
 # ---------------------------------------------------------------------------
-# Admin-only: promote to manager
+# User management (CRUD)
 # ---------------------------------------------------------------------------
 
-def assign_manager_role(*, target_user: User, requesting_user: User) -> User:
+def update_user_profile(
+    *,
+    user_id: int,
+    requesting_user: User,
+    update_data: Dict[str, Any]
+) -> User:
     """
-    Promote target_user to 'manager'.
+    Update a user's profile with permission checks.
+    Email and roles cannot be updated here (separate endpoints).
+    """
+    target_user = get_user_by_id(user_id)
+    
+    if not target_user:
+        raise ValueError("User not found.")
+    
+    if not requesting_user.can_update_user(target_user):
+        raise PermissionError("You don't have permission to update this user.")
+    
+    # Fields that cannot be updated via profile update
+    forbidden_fields = {'email', 'roles'}
+    
+    with transaction.atomic():
+        for field, value in update_data.items():
+            if field in forbidden_fields:
+                continue
+            
+            # Special handling for languages
+            if field == 'languages' and isinstance(value, list):
+                target_user.set_languages(value)
+            elif hasattr(target_user, field):
+                setattr(target_user, field, value)
+        
+        target_user.save()
+        
+        # Invalidate caches
+        invalidate_user_cache(user_id)
+        invalidate_users_list_cache()
+    
+    return target_user
 
-    Rules:
-    - Only admin (is_staff=True) or superuser may call this.
-    - Target must already be a volunteer or seeker.
-    - Idempotent: calling it twice is safe.
+
+def delete_user(
+    *,
+    user_id: int,
+    requesting_user: User,
+    hard_delete: bool = False
+) -> None:
     """
+    Delete a user.
+    - Soft delete (is_active=False) for Manager level
+    - Hard delete (permanent) for Admin/Superuser
+    """
+    target_user = get_user_by_id(user_id)
+    
+    if not target_user:
+        raise ValueError("User not found.")
+    
+    if not requesting_user.can_delete_user(target_user):
+        raise PermissionError("You don't have permission to delete this user.")
+    
+    with transaction.atomic():
+        if hard_delete or requesting_user.is_superuser or requesting_user.is_staff:
+            # Hard delete (Admin/Superuser)
+            target_user.delete()
+        else:
+            # Soft delete (Manager)
+            target_user.is_active = False
+            target_user.save(update_fields=["is_active"])
+        
+        # Invalidate caches
+        invalidate_user_cache(user_id)
+        invalidate_users_list_cache()
+
+
+# ---------------------------------------------------------------------------
+# Role management (Admin only)
+# ---------------------------------------------------------------------------
+
+def promote_to_manager(*, target_user_id: int, requesting_user: User) -> User:
+    """Promote target_user to 'manager' (Admin only)."""
     if not (requesting_user.is_staff or requesting_user.is_superuser):
         raise PermissionError("Only admins can assign the manager role.")
-
+    
+    target_user = get_user_by_id(target_user_id)
+    if not target_user:
+        raise ValueError("User not found.")
+    
     if not (target_user.is_volunteer or target_user.is_seeker):
         raise ValueError(
             "Cannot promote to manager: user must first be a volunteer or seeker."
         )
+    
+    with transaction.atomic():
+        manager_role = get_role_by_name("manager")
+        target_user.roles.add(manager_role)
+        
+        # Invalidate caches
+        invalidate_user_cache(target_user_id)
+        invalidate_users_list_cache()
+    
+    return target_user
 
 
-    manager_role = get_role_by_name("manager")
-    target_user.roles.add(manager_role)
+def demote_from_manager(*, target_user_id: int, requesting_user: User) -> User:
+    """Demote target_user from 'manager' (Admin only)."""
+    if not (requesting_user.is_staff or requesting_user.is_superuser):
+        raise PermissionError("Only admins can remove the manager role.")
+    
+    target_user = get_user_by_id(target_user_id)
+    if not target_user:
+        raise ValueError("User not found.")
+    
+    with transaction.atomic():
+        manager_role = get_role_by_name("manager")
+        target_user.roles.remove(manager_role)
+        
+        # Invalidate caches
+        invalidate_user_cache(target_user_id)
+        invalidate_users_list_cache()
+    
+    return target_user
+
+
+def change_user_password(
+    *,
+    user_id: int,
+    requesting_user: User,
+    new_password: str
+) -> User:
+    """Change user's password (user can only change their own)."""
+    target_user = get_user_by_id(user_id)
+    
+    if not target_user:
+        raise ValueError("User not found.")
+    
+    if requesting_user.pk != target_user.pk:
+        raise PermissionError("You can only change your own password.")
+    
+    with transaction.atomic():
+        target_user.set_password(new_password)
+        target_user.save()
+        
+        # Invalidate cache for this user
+        invalidate_user_cache(user_id)
+    
     return target_user

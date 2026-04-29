@@ -34,6 +34,7 @@ EXTERNAL_APPS = [
     "users",
     "auth_app",
     "forget_password",
+    "posts"
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS

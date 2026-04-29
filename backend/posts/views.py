@@ -23,7 +23,9 @@ from posts.services import (
 )
 from posts.selectors import (
     get_offer_by_id, get_offers_queryset,
-    get_request_by_id, get_requests_queryset
+    get_request_by_id, get_requests_queryset,
+    get_cached_offer_list, set_cached_offer_list,
+    get_cached_request_list, set_cached_request_list
 )
 from posts.permissions import CanManageOffer, CanManageRequest, CanCreatePost
 from backend.pagination import StandardResultsSetPagination
@@ -149,10 +151,7 @@ class OfferDetailView(generics.RetrieveUpdateDestroyAPIView):
         except PermissionError as exc:
             raise PermissionDenied(str(exc))
         
-        return Response(
-            # {"detail": "Offer deleted successfully."},
-            status=status.HTTP_204_NO_CONTENT
-        )
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class OfferListView(generics.ListAPIView):
@@ -168,6 +167,8 @@ class OfferListView(generics.ListAPIView):
     - ordering: field name (default: -created_at)
     - page: page number (default: 1)
     - page_size: items per page (default: 20, max: 100)
+    
+    Caching: First 10 pages cached for 5 minutes. 100% consistency via aggressive invalidation.
     """
     
     permission_classes = [IsAuthenticated]
@@ -179,7 +180,28 @@ class OfferListView(generics.ListAPIView):
         query_serializer.is_valid(raise_exception=True)
         params = query_serializer.validated_data
         
-        return get_offers_queryset(
+        # Extract pagination params
+        page = int(self.request.query_params.get('page', 1))
+        page_size = int(self.request.query_params.get('page_size', 20))
+        
+        # Try Redis cache first
+        cached = get_cached_offer_list(
+            category=params.get('category'),
+            availability=params.get('availability'),
+            status=params.get('status'),
+            user_id=params.get('user_id'),
+            search=params.get('search'),
+            ordering=params.get('ordering', '-created_at'),
+            page=page,
+            page_size=page_size
+        )
+        
+        if cached is not None:
+            # Return cached queryset-like result
+            return cached
+        
+        # Cache miss — fetch from DB
+        queryset = get_offers_queryset(
             category=params.get('category'),
             availability=params.get('availability'),
             status=params.get('status'),
@@ -187,6 +209,22 @@ class OfferListView(generics.ListAPIView):
             search=params.get('search'),
             ordering=params.get('ordering', '-created_at')
         )
+        
+        # Convert to list and cache it (queryset evaluation happens here)
+        result_list = list(queryset)
+        set_cached_offer_list(
+            result_list,
+            category=params.get('category'),
+            availability=params.get('availability'),
+            status=params.get('status'),
+            user_id=params.get('user_id'),
+            search=params.get('search'),
+            ordering=params.get('ordering', '-created_at'),
+            page=page,
+            page_size=page_size
+        )
+        
+        return result_list
 
 
 # ---------------------------------------------------------------------------
@@ -306,10 +344,7 @@ class RequestDetailView(generics.RetrieveUpdateDestroyAPIView):
         except PermissionError as exc:
             raise PermissionDenied(str(exc))
         
-        return Response(
-            # {"detail": "Request deleted successfully."},
-            status=status.HTTP_204_NO_CONTENT
-        )
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RequestListView(generics.ListAPIView):
@@ -324,6 +359,8 @@ class RequestListView(generics.ListAPIView):
     - ordering: field name (default: -created_at)
     - page: page number (default: 1)
     - page_size: items per page (default: 20, max: 100)
+    
+    Caching: First 10 pages cached for 5 minutes. 100% consistency via aggressive invalidation.
     """
     
     permission_classes = [IsAuthenticated]
@@ -335,10 +372,45 @@ class RequestListView(generics.ListAPIView):
         query_serializer.is_valid(raise_exception=True)
         params = query_serializer.validated_data
         
-        return get_requests_queryset(
+        # Extract pagination params
+        page = int(self.request.query_params.get('page', 1))
+        page_size = int(self.request.query_params.get('page_size', 20))
+        
+        # Try Redis cache first
+        cached = get_cached_request_list(
+            category=params.get('category'),
+            status=params.get('status'),
+            user_id=params.get('user_id'),
+            search=params.get('search'),
+            ordering=params.get('ordering', '-created_at'),
+            page=page,
+            page_size=page_size
+        )
+        
+        if cached is not None:
+            # Return cached queryset-like result
+            return cached
+        
+        # Cache miss — fetch from DB
+        queryset = get_requests_queryset(
             category=params.get('category'),
             status=params.get('status'),
             user_id=params.get('user_id'),
             search=params.get('search'),
             ordering=params.get('ordering', '-created_at')
         )
+        
+        # Convert to list and cache it (queryset evaluation happens here)
+        result_list = list(queryset)
+        set_cached_request_list(
+            result_list,
+            category=params.get('category'),
+            status=params.get('status'),
+            user_id=params.get('user_id'),
+            search=params.get('search'),
+            ordering=params.get('ordering', '-created_at'),
+            page=page,
+            page_size=page_size
+        )
+        
+        return result_list

@@ -132,6 +132,65 @@ def register_user(
 
 
 # ---------------------------------------------------------------------------
+# OAuth Registration
+# ---------------------------------------------------------------------------
+
+def register_oauth_user(
+    *,
+    email: str,
+    first_name: str,
+    last_name: str,
+    country: str,
+    gender: str,
+    linkedin: str,
+    roles: List[str],
+    languages: Optional[List[str]] = None,
+    whatsapp_number: str = "",
+) -> User:
+    """
+    Create a new user verified via OAuth.
+    The email is assumed to be verified, so is_active=True and no email is sent.
+    An unusable password is set since authentication goes through OAuth.
+    """
+    if email_exists(email):
+        raise ValueError(f"An account with the email '{email}' already exists.")
+
+    validated_roles = _validate_role_selection(roles)
+    role_qs = get_registerable_roles().filter(name__in=validated_roles)
+
+    found_names = set(role_qs.values_list("name", flat=True))
+    missing = set(validated_roles) - found_names
+    if missing:
+        logger.error("Role seed missing from DB: %s.", missing)
+        raise ValueError(
+            "Server configuration error: required roles are not seeded."
+        )
+
+    languages_str = ",".join(languages) if languages else ""
+
+    with transaction.atomic():
+        user = User(
+            email=email.lower(),
+            first_name=first_name,
+            last_name=last_name,
+            country=country,
+            gender=gender,
+            linkedin=linkedin,
+            whatsapp_number=whatsapp_number,
+            languages=languages_str,
+            is_active=True,
+        )
+        user.set_unusable_password()
+        user.save()
+        
+        user.roles.set(role_qs)
+
+    invalidate_users_list_cache()
+
+    return user
+
+
+# ---------------------------------------------------------------------------
 # Email verification
 # ---------------------------------------------------------------------------
 

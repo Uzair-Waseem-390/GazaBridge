@@ -16,7 +16,6 @@ DEBUG = os.getenv('DEBUG')
 ALLOWED_HOSTS = []
 
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,6 +27,7 @@ INSTALLED_APPS = [
 
 
 EXTERNAL_APPS = [
+    "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
     # "rest_framework_simplejwt.token_blacklist",
@@ -47,6 +47,7 @@ AUTH_USER_MODEL = "users.User"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',          # ← must be before CommonMiddleware
     'backend.middleware.GlobalRateLimitMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -294,3 +295,41 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # =============================================================================
  
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://localhost:8000")
+
+# =============================================================================
+# FRONTEND BASE URL
+# Used to build links in emails (verify email, password reset) that the user
+# clicks in their browser — these must point to the React app, not the API.
+# =============================================================================
+
+FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:5173")
+
+
+# =============================================================================
+# CORS — allow the Vite dev server to call the Django API
+# =============================================================================
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",   # Vite default port
+    "http://127.0.0.1:5173",
+]
+
+# Allow the Authorization header so JWT tokens can be sent
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "authorization",
+    "content-type",
+    "x-csrftoken",
+]
+
+
+# =============================================================================
+# GOOGLE CLIENT
+# =============================================================================
+
+GOOGLE_CLIENT_ID     = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+# No hardcoded default — the frontend always sends its own redirect_uri in the
+# request body, so this setting is no longer used by the backend directly.
+# It is kept here only as documentation / fallback reference.
+GOOGLE_REDIRECT_URI  = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:5173/auth/google/callback")

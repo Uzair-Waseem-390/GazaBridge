@@ -6,6 +6,7 @@ Input validation and output shaping only.
 
 from rest_framework import serializers
 
+from users.models import GenderChoices, LanguageChoices
 from .models import UserActivity
 
 
@@ -19,6 +20,54 @@ class LoginInputSerializer(serializers.Serializer):
 
     def validate_email(self, value: str) -> str:
         return value.lower().strip()
+
+
+# ---------------------------------------------------------------------------
+# Google Auth
+# ---------------------------------------------------------------------------
+
+class GoogleAuthInputSerializer(serializers.Serializer):
+    code = serializers.CharField(help_text="The authorization code from Google.")
+    redirect_uri = serializers.URLField(
+        help_text=(
+            "The exact redirect URI the frontend used when opening the Google "
+            "consent screen. Must match what is registered in Google Cloud Console."
+        )
+    )
+
+
+class GoogleRegisterInputSerializer(serializers.Serializer):
+    ROLE_CHOICES = [("volunteer", "Volunteer"), ("seeker", "Seeker")]
+
+    registration_token = serializers.CharField(
+        help_text="The temporary token returned when a new Google user tries to log in."
+    )
+    country = serializers.CharField(max_length=100)
+    gender = serializers.ChoiceField(choices=GenderChoices.choices)
+    linkedin = serializers.URLField(max_length=255)
+    roles = serializers.MultipleChoiceField(choices=ROLE_CHOICES)
+    
+    languages = serializers.MultipleChoiceField(
+        choices=LanguageChoices.choices,
+        required=False,
+        allow_empty=True,
+    )
+    whatsapp_number = serializers.CharField(
+        max_length=20,
+        required=False,
+        allow_blank=True,
+        default="",
+    )
+
+    def validate_roles(self, value: set) -> list:
+        if not value:
+            raise serializers.ValidationError(
+                "At least one role must be selected: volunteer or seeker."
+            )
+        return list(value)
+    
+    def validate_languages(self, value: set) -> list:
+        return list(value)
 
 
 # ---------------------------------------------------------------------------

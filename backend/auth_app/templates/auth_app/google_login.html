@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google OAuth Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        button { padding: 10px 15px; background: #4285F4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #357ae8; }
+        input, select { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Google OAuth 2.0 Test</h1>
+
+    <div class="card" id="step1">
+        <h3>Step 1: Get Authorization Code</h3>
+        <p>Clicking the button below will take you to Google. After signing in, you will be redirected to your redirect URI (e.g., http://127.0.0.1:8000/) with a <code>?code=...</code> parameter in the URL. Copy that code.</p>
+        <button onclick="redirectToGoogle()">Continue with Google</button>
+    </div>
+
+    <div class="card" id="step2">
+        <h3>Step 2: Exchange Code</h3>
+        <input type="text" id="authCode" placeholder="Paste the ?code=... here">
+        <button onclick="exchangeCode()">Login</button>
+        <pre id="step2Result"></pre>
+    </div>
+
+    <div class="card hidden" id="registerForm">
+        <h3>Step 3: Complete Profile (New User)</h3>
+        <p>Google verified your email, but we need more details to create your account.</p>
+        <input type="hidden" id="registrationToken">
+        
+        <label>Country:</label>
+        <input type="text" id="country" value="USA">
+        
+        <label>Gender:</label>
+        <select id="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        
+        <label>LinkedIn:</label>
+        <input type="url" id="linkedin" value="https://linkedin.com/in/johndoe">
+        
+        <label>Role:</label>
+        <select id="role">
+            <option value="volunteer">Volunteer</option>
+            <option value="seeker">Seeker</option>
+        </select>
+
+        <button onclick="completeRegistration()" style="margin-top: 10px; background: #0f9d58;">Complete Registration</button>
+        <pre id="step3Result"></pre>
+    </div>
+
+    <script>
+        const CLIENT_ID = "820782869630-jkoaco6p49cookmf5aut9l73p3bojada.apps.googleusercontent.com";
+        const REDIRECT_URI = "http://127.0.0.1:8000"; // Must match exact setting in .env and Google Console
+
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            if (code) {
+                document.getElementById('authCode').value = code;
+                document.getElementById('step1').classList.add('hidden');
+                exchangeCode();
+            }
+        };
+
+        function redirectToGoogle() {
+            const scope = encodeURIComponent("email profile");
+            const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=${scope}&access_type=offline`;
+            window.open(url, "_blank");
+        }
+
+        async function exchangeCode() {
+            const code = document.getElementById("authCode").value.trim();
+            if (!code) return alert("Please enter the code");
+
+            const resultEl = document.getElementById("step2Result");
+            resultEl.textContent = "Loading...";
+
+            try {
+                const res = await fetch("http://127.0.0.1:8000/auth/google/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ code })
+                });
+                
+                const data = await res.json();
+                resultEl.textContent = JSON.stringify(data, null, 2);
+
+                if (data.is_new_user) {
+                    document.getElementById("step2").classList.add("hidden");
+                    document.getElementById("registerForm").classList.remove("hidden");
+                    document.getElementById("registrationToken").value = data.registration_token;
+                }
+            } catch (err) {
+                resultEl.textContent = "Error: " + err;
+            }
+        }
+
+        async function completeRegistration() {
+            const token = document.getElementById("registrationToken").value;
+            const country = document.getElementById("country").value;
+            const gender = document.getElementById("gender").value;
+            const linkedin = document.getElementById("linkedin").value;
+            const role = document.getElementById("role").value;
+
+            const resultEl = document.getElementById("step3Result");
+            resultEl.textContent = "Loading...";
+
+            try {
+                const res = await fetch("http://127.0.0.1:8000/auth/google/register/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        registration_token: token,
+                        country: country,
+                        gender: gender,
+                        linkedin: linkedin,
+                        roles: [role]
+                    })
+                });
+                
+                const data = await res.json();
+                resultEl.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultEl.textContent = "Error: " + err;
+            }
+        }
+    </script>
+</body>
+</html>

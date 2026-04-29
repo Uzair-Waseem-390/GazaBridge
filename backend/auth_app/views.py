@@ -21,6 +21,8 @@ from auth_app.serializers import (
     LoginInputSerializer,
     LogoutInputSerializer,
     RefreshInputSerializer,
+    GoogleAuthInputSerializer,
+    GoogleRegisterInputSerializer,
 )
 from auth_app.services.auth_services import (
     login_user,
@@ -28,6 +30,7 @@ from auth_app.services.auth_services import (
     refresh_token,
     update_activity_visibility,
 )
+from auth_app.services.google_oauth import google_login, complete_google_registration
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +92,75 @@ class LoginView(generics.GenericAPIView):
 
 
 # ---------------------------------------------------------------------------
+# Google Auth
+# ---------------------------------------------------------------------------
+
+class GoogleAuthView(generics.GenericAPIView):
+    """
+    POST /auth/google/
+
+    Exchanges the Google authorization code for tokens.
+
+    The frontend must send:
+        code         — the authorization code received from Google
+        redirect_uri — the exact URI the frontend used when opening the consent
+                       screen (must match a registered Authorized Redirect URI in
+                       Google Cloud Console)
+
+    Returns:
+        Existing user → 200 {access, refresh, user, is_new_user: false}
+        New user      → 200 {is_new_user: true, registration_token, user: {email, ...}}
+    """
+    permission_classes = [AllowAny]
+    serializer_class = GoogleAuthInputSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            result = google_login(
+                code=serializer.validated_data["code"],
+                redirect_uri=serializer.validated_data["redirect_uri"],
+            )
+            return Response(result, status=status.HTTP_200_OK)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            logger.exception("Unexpected error during Google login.")
+            return Response(
+                {"detail": "Login failed due to a server error. Please try again."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+class GoogleRegisterView(generics.GenericAPIView):
+    """
+    POST /auth/google/register/
+    Completes the registration for a new Google user using the temporary
+    registration token and the required profile fields.
+    """
+    permission_classes = [AllowAny]
+    serializer_class = GoogleRegisterInputSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            result = complete_google_registration(**serializer.validated_data)
+            return Response(result, status=status.HTTP_201_CREATED)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            logger.exception("Unexpected error during Google registration.")
+            return Response(
+                {"detail": "Registration failed due to a server error. Please try again."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+# ---------------------------------------------------------------------------
 # Refresh
 # ---------------------------------------------------------------------------
 
@@ -136,6 +208,7 @@ class RefreshView(generics.GenericAPIView):
 # ---------------------------------------------------------------------------
 # Logout
 # ---------------------------------------------------------------------------
+
 
 class LogoutView(generics.GenericAPIView):
     """

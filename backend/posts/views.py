@@ -15,7 +15,8 @@ from rest_framework.exceptions import PermissionDenied
 from posts.serializers import (
     OfferInputSerializer, OfferUpdateSerializer, OfferOutputSerializer,
     RequestInputSerializer, RequestUpdateSerializer, RequestOutputSerializer,
-    OfferListQuerySerializer, RequestListQuerySerializer
+    OfferListQuerySerializer, RequestListQuerySerializer,
+    LinkedCourseSerializer, LinkedLiveSectionSerializer
 )
 from posts.services import (
     create_offer, update_offer, delete_offer,
@@ -25,7 +26,8 @@ from posts.selectors import (
     get_offer_by_id, get_offers_queryset,
     get_request_by_id, get_requests_queryset,
     get_cached_offer_list, set_cached_offer_list,
-    get_cached_request_list, set_cached_request_list
+    get_cached_request_list, set_cached_request_list,
+    get_linked_courses_for_offer, get_linked_live_sections_for_offer
 )
 from posts.permissions import CanManageOffer, CanManageRequest, CanCreatePost
 from backend.pagination import StandardResultsSetPagination
@@ -414,3 +416,50 @@ class RequestListView(generics.ListAPIView):
         )
         
         return result_list
+
+
+
+# ---------------------------------------------------------------------------
+# Linked Courses & LiveSections Views
+# ---------------------------------------------------------------------------
+
+class OfferLinkedCoursesView(generics.GenericAPIView):
+    """
+    GET /posts/offers/<pk>/linked-courses/
+    Returns all courses linked to a specific offer.
+    """
+    
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, pk, *args, **kwargs):
+        offer = get_offer_by_id(pk)
+        if not offer:
+            return Response(
+                {"detail": "Offer not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        linked_courses = get_linked_courses_for_offer(pk)
+        serializer = LinkedCourseSerializer(linked_courses, many=True)
+        return Response(serializer.data)
+
+
+class OfferLinkedLiveSectionsView(generics.GenericAPIView):
+    """
+    GET /posts/offers/<pk>/linked-live-sections/
+    Returns all live sections linked to a specific offer.
+    """
+    
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, pk, *args, **kwargs):
+        offer = get_offer_by_id(pk)
+        if not offer:
+            return Response(
+                {"detail": "Offer not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        linked_ls = get_linked_live_sections_for_offer(pk)
+        serializer = LinkedLiveSectionSerializer(linked_ls, many=True)
+        return Response(serializer.data)

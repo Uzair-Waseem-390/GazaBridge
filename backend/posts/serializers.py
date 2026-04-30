@@ -167,3 +167,24 @@ class RequestListQuerySerializer(serializers.Serializer):
         required=False,
         default="-created_at"
     )
+
+# ---------------------------------------------------------------------------
+# Linked Courses & LiveSections Serializers (for Offer detail)
+# ---------------------------------------------------------------------------
+
+class LinkedCourseSerializer(serializers.Serializer):
+    """Lightweight serializer for courses linked to an offer."""
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    status = serializers.CharField()
+    user_email = serializers.EmailField()
+
+
+class LinkedLiveSectionSerializer(serializers.Serializer):
+    """Lightweight serializer for live sections linked to an offer."""
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    status = serializers.CharField()
+    effective_status = serializers.CharField()
+    ending_date = serializers.DateTimeField()
+    user_email = serializers.EmailField()

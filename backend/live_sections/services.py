@@ -221,6 +221,12 @@ def link_ls_to_offer(
         )
     
     invalidate_live_section_cache(ls_id)
+    invalidate_offers_list_cache()
+
+    # Invalidate linked live sections cache
+    from django.core.cache import cache
+    cache.delete(f"posts:linked_ls:{offer_id}")
+    
     return link
 
 
@@ -249,7 +255,11 @@ def unlink_ls_from_offer(
     
     link.delete()
     invalidate_live_section_cache(ls_id)
+    invalidate_offers_list_cache()
 
+    # Invalidate linked live sections cache
+    from django.core.cache import cache
+    cache.delete(f"posts:linked_ls:{offer_id}")
 
 # ---------------------------------------------------------------------------
 # Permission Helpers

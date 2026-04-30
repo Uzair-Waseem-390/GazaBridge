@@ -110,6 +110,8 @@ def delete_course(
     course.delete()  # CASCADE handles contents and links
     
     # Invalidate both courses and posts caches
+    # invalidate_course_cache(course_id)
+    # invalidate_offers_list_cache()
     invalidate_course_cache(course_id)
     invalidate_offers_list_cache()
 
@@ -236,6 +238,11 @@ def link_course_to_offer(
         )
     
     invalidate_course_cache(course_id)
+    invalidate_offers_list_cache()
+
+    # Invalidate linked courses cache
+    from django.core.cache import cache
+    cache.delete(f"posts:linked_courses:{offer_id}")
     
     return link
 
@@ -265,8 +272,12 @@ def unlink_course_from_offer(
     
     link.delete()
     invalidate_course_cache(course_id)
+    invalidate_offers_list_cache()
 
 
+    # Invalidate linked courses cache
+    from django.core.cache import cache
+    cache.delete(f"posts:linked_courses:{offer_id}")
 # ---------------------------------------------------------------------------
 # Permission Helpers
 # ---------------------------------------------------------------------------

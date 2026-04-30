@@ -291,6 +291,84 @@ def set_cached_request_list(
     cache.set(cache_key, requests, timeout=CACHE_TTL_LIST)
 
 
+
+# ---------------------------------------------------------------------------
+# Linked Courses & LiveSections for an Offer (with Redis caching)
+# ---------------------------------------------------------------------------
+
+def get_linked_courses_for_offer(offer_id: int):
+    """
+    Get all courses linked to a specific offer.
+    Cached for 5 minutes. Invalidated when offer or course is updated/deleted.
+    Returns list of dicts for lightweight serialization.
+    """
+    # cache_key = get_cache_key("linked_courses", str(offer_id))
+    cache_key = get_cache_key("linked_courses", offer_id)
+    cached = cache.get(cache_key)
+    
+    if cached is not None:
+        return cached
+    
+    from courses.models import CourseOfferLink
+    
+    links = (
+        CourseOfferLink.objects
+        .filter(offer_id=offer_id)
+        .select_related("course", "course__user")
+    )
+    
+    result = [
+        {
+            "id": link.course_id,
+            "title": link.course.title,
+            "status": link.course.status,
+            "user_email": link.course.user.email,
+        }
+        for link in links
+    ]
+    
+    cache.set(cache_key, result, timeout=CACHE_TTL_LIST)
+    return result
+
+
+def get_linked_live_sections_for_offer(offer_id: int):
+    """
+    Get all live sections linked to a specific offer.
+    Cached for 5 minutes. Invalidated when offer or live section is updated/deleted.
+    Returns list of dicts for lightweight serialization.
+    """
+    # cache_key = get_cache_key("linked_ls", str(offer_id))
+    cache_key = get_cache_key("linked_ls", offer_id)
+    cached = cache.get(cache_key)
+    
+    if cached is not None:
+        return cached
+    
+    from live_sections.models import LiveSectionOfferLink
+    
+    links = (
+        LiveSectionOfferLink.objects
+        .filter(offer_id=offer_id)
+        .select_related("live_section", "live_section__user")
+    )
+    
+    result = [
+        {
+            "id": link.live_section_id,
+            "title": link.live_section.title,
+            "status": link.live_section.status,
+            "effective_status": link.live_section.get_effective_status(),
+            "ending_date": link.live_section.ending_date,
+            "user_email": link.live_section.user.email,
+        }
+        for link in links
+    ]
+    
+    cache.set(cache_key, result, timeout=CACHE_TTL_LIST)
+    return result
+
+
+
 # ---------------------------------------------------------------------------
 # Cache Invalidation (Aggressive — flush ALL list caches on any write)
 # ---------------------------------------------------------------------------
@@ -305,6 +383,10 @@ def invalidate_offer_cache(offer_id: int) -> None:
     cache_key = get_cache_key("offer", offer_id)
     cache.delete(cache_key)
     
+    # Invalidate linked courses and live sections caches
+    cache.delete(get_cache_key("linked_courses", offer_id))
+    cache.delete(get_cache_key("linked_ls", offer_id))
+
     # Flush ALL offer list caches
     invalidate_offers_list_cache()
 
@@ -315,7 +397,14 @@ def invalidate_offers_list_cache() -> None:
         keys = cache.keys("posts:offers_list:*")
         if keys:
             cache.delete_many(keys)
-
+        # keys = cache.keys("posts:linked_courses:*")
+        # if keys:
+        #     cache.delete_many(keys)
+        # keys = cache.keys("posts:linked_ls:*")
+        # if keys:
+        #     cache.delete_many(keys)
+        cache.delete_pattern("posts:linked_courses:*")
+        cache.delete_pattern("posts:linked_ls:*")
 
 def invalidate_request_cache(request_id: int) -> None:
     """

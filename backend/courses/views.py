@@ -25,7 +25,7 @@ from courses.services import (
 )
 from courses.selectors import (
     get_course_by_id, get_courses_queryset,
-    get_content_by_id,
+    get_content_by_id, get_visible_contents_for_course,
     get_cached_course_list, set_cached_course_list
 )
 from courses.permissions import (
@@ -72,8 +72,15 @@ class CourseCreateView(generics.CreateAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
         
-        output = CourseDetailOutputSerializer(course).data
+        output = self._serialize_course_detail(course, request)
         return Response(output, status=status.HTTP_201_CREATED)
+    
+    def _serialize_course_detail(self, course, request):
+        """Serialize course detail with visibility-filtered contents."""
+        data = CourseDetailOutputSerializer(course).data
+        visible_contents = get_visible_contents_for_course(course, request.user)
+        data['contents'] = ContentOutputSerializer(visible_contents, many=True).data
+        return data
 
 
 class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -102,8 +109,12 @@ class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        serializer = CourseDetailOutputSerializer(instance)
-        return Response(serializer.data)
+        # Serialize course with visibility-filtered contents
+        data = CourseDetailOutputSerializer(instance).data
+        visible_contents = get_visible_contents_for_course(instance, request.user)
+        data['contents'] = ContentOutputSerializer(visible_contents, many=True).data
+        
+        return Response(data)
     
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -133,8 +144,12 @@ class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
         except PermissionError as exc:
             raise PermissionDenied(str(exc))
         
-        output_serializer = CourseDetailOutputSerializer(updated_course)
-        return Response(output_serializer.data)
+        # Return with visibility-filtered contents
+        data = CourseDetailOutputSerializer(updated_course).data
+        visible_contents = get_visible_contents_for_course(updated_course, request.user)
+        data['contents'] = ContentOutputSerializer(visible_contents, many=True).data
+        
+        return Response(data)
     
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -228,7 +243,7 @@ class CourseListView(generics.ListAPIView):
 
 
 # ---------------------------------------------------------------------------
-# Content Views (nested under course)
+# Content Views
 # ---------------------------------------------------------------------------
 
 class ContentCreateView(generics.CreateAPIView):
@@ -245,7 +260,6 @@ class ContentCreateView(generics.CreateAPIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        # Check CanCreateContent permission
         permission = CanCreateContent()
         if not permission.has_object_permission(request, self, course):
             raise PermissionDenied("You don't have permission to create content for this course.")

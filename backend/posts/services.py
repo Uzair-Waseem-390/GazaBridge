@@ -13,8 +13,12 @@ from django.db import transaction
 from posts.models import Offer, Request
 from posts.selectors import (
     get_offer_by_id, get_request_by_id,
-    invalidate_offer_cache, invalidate_request_cache
+    invalidate_offer_cache, invalidate_request_cache,
+    invalidate_offers_list_cache          # === ADD THIS IMPORT ===
 )
+
+# Cross-app invalidation
+from courses.selectors import invalidate_courses_list_cache
 
 logger = logging.getLogger(__name__)
 

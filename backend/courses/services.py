@@ -14,8 +14,13 @@ from courses.models import Course, Content, CourseOfferLink
 from courses.selectors import (
     get_course_by_id, get_content_by_id,
     get_link_by_course_and_offer,
-    invalidate_course_cache, invalidate_content_cache
+    invalidate_course_cache, invalidate_content_cache,
+    invalidate_courses_list_cache          # === ADD THIS IMPORT ===
 )
+
+# Cross-app invalidation
+from posts.selectors import invalidate_offers_list_cache
+
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +97,7 @@ def delete_course(
     """
     Delete a course.
     Cascades: deletes all contents and unlinks from all offers.
+    Also invalidates posts list caches since linked offers may be affected.
     """
     course = get_course_by_id(course_id)
     
@@ -103,7 +109,9 @@ def delete_course(
     
     course.delete()  # CASCADE handles contents and links
     
+    # Invalidate both courses and posts caches
     invalidate_course_cache(course_id)
+    invalidate_offers_list_cache()
 
 
 # ---------------------------------------------------------------------------

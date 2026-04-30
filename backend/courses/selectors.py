@@ -108,10 +108,7 @@ def get_cached_course_list(
     page: int = 1,
     page_size: int = 20
 ) -> Optional[List[Course]]:
-    """
-    Get cached course list for a specific page/filter combination.
-    Only caches pages 1 through MAX_CACHED_PAGES.
-    """
+    """Get cached course list. Only pages 1-10."""
     if page > MAX_CACHED_PAGES:
         return None
     
@@ -190,6 +187,33 @@ def get_content_by_id(content_id: int) -> Optional[Content]:
     return content
 
 
+def get_visible_contents_for_course(course: Course, requesting_user: any) -> QuerySet:
+    """
+    Get contents for a course based on visibility rules:
+    - Active course: All authenticated users can see contents
+    - Inactive/Closed course: Only owner, manager, admin, superuser can see contents
+    - Normal users see empty queryset for inactive courses
+    """
+    contents = course.contents.all()
+    
+    # If course is active, everyone can see
+    if course.status == "active":
+        return contents
+    
+    # If course is inactive/closed, check user permissions
+    if requesting_user.is_staff or requesting_user.is_superuser:
+        return contents
+    
+    if requesting_user.is_manager:
+        return contents
+    
+    if course.user_id == requesting_user.pk:
+        return contents
+    
+    # Normal user — hide contents for inactive courses
+    return Content.objects.none()
+
+
 # ---------------------------------------------------------------------------
 # Link Selectors
 # ---------------------------------------------------------------------------
@@ -202,11 +226,6 @@ def get_link_by_course_and_offer(course_id: int, offer_id: int) -> Optional[Cour
         .filter(course_id=course_id, offer_id=offer_id)
         .first()
     )
-
-
-def get_linked_offers_for_course(course_id: int) -> QuerySet:
-    """Get all offers linked to a course."""
-    return CourseOfferLink.objects.filter(course_id=course_id).select_related("offer")
 
 
 # ---------------------------------------------------------------------------

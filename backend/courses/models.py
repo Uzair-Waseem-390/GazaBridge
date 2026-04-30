@@ -65,40 +65,15 @@ class Course(models.Model):
         help_text="User who created this course."
     )
     
-    # Required fields
-    title = models.CharField(
-        max_length=255,
-        help_text="Title of the course."
-    )
-    category = models.CharField(
-        max_length=50,
-        choices=CourseCategoryChoices.choices,
-        help_text="Category of the course."
-    )
-    description = models.TextField(
-        help_text="Detailed description of the course."
-    )
-    skill_level = models.CharField(
-        max_length=20,
-        choices=SkillLevelChoices.choices,
-        help_text="Required skill level for the course."
-    )
-    language = models.CharField(
-        max_length=10,
-        choices=LanguageChoices.choices,
-        help_text="Language of instruction."
-    )
-    sessions_per_week = models.PositiveIntegerField(
-        help_text="Number of sessions per week."
-    )
-    session_duration = models.PositiveIntegerField(
-        help_text="Duration of each session in minutes."
-    )
-    course_duration_days = models.PositiveIntegerField(
-        help_text="Total course duration in days."
-    )
+    title = models.CharField(max_length=255, help_text="Title of the course.")
+    category = models.CharField(max_length=50, choices=CourseCategoryChoices.choices, help_text="Category of the course.")
+    description = models.TextField(help_text="Detailed description of the course.")
+    skill_level = models.CharField(max_length=20, choices=SkillLevelChoices.choices, help_text="Required skill level for the course.")
+    language = models.CharField(max_length=10, choices=LanguageChoices.choices, help_text="Language of instruction.")
+    sessions_per_week = models.PositiveIntegerField(help_text="Number of sessions per week.")
+    session_duration = models.PositiveIntegerField(help_text="Duration of each session in minutes.")
+    course_duration_days = models.PositiveIntegerField(help_text="Total course duration in days.")
     
-    # Status
     status = models.CharField(
         max_length=10,
         choices=CourseStatusChoices.choices,
@@ -106,7 +81,6 @@ class Course(models.Model):
         help_text="Current status of the course."
     )
     
-    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -148,24 +122,10 @@ class Content(models.Model):
         help_text="User who created this content."
     )
     
-    # Required fields
-    content_title = models.CharField(
-        max_length=255,
-        help_text="Title of the content."
-    )
-    link = models.URLField(
-        max_length=500,
-        help_text="URL link to the content resource."
-    )
+    content_title = models.CharField(max_length=255, help_text="Title of the content.")
+    link = models.URLField(max_length=500, help_text="URL link to the content resource.")
+    description = models.TextField(blank=True, default="", help_text="Optional description of the content.")
     
-    # Optional fields
-    description = models.TextField(
-        blank=True,
-        default="",
-        help_text="Optional description of the content."
-    )
-    
-    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -190,6 +150,8 @@ class CourseOfferLink(models.Model):
     """
     Many-to-Many link between Course and Offer.
     A course can be linked to multiple offers, and an offer can have multiple courses.
+    When a course or offer is deleted, the link is automatically removed (CASCADE).
+    When the linking user is deleted, the link remains (SET_NULL).
     """
     course = models.ForeignKey(
         Course,
@@ -205,7 +167,9 @@ class CourseOfferLink(models.Model):
     )
     linked_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,  # === CHANGED: keep link data even if user is deleted ===
+        null=True,                   # === ADDED: allow null ===
+        blank=True,                  # === ADDED: allow blank in forms ===
         related_name="course_links_created",
         help_text="User who created this link."
     )

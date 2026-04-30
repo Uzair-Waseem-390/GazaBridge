@@ -36,6 +36,7 @@ EXTERNAL_APPS = [
     "forget_password",
     "posts",
     "courses",
+    "live_sections",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS

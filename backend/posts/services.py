@@ -19,6 +19,7 @@ from posts.selectors import (
 
 # Cross-app invalidation
 from courses.selectors import invalidate_courses_list_cache
+from live_sections.selectors import invalidate_ls_list_cache
 
 logger = logging.getLogger(__name__)
 
@@ -97,6 +98,7 @@ def delete_offer(
     # Invalidate both posts and courses caches
     invalidate_offer_cache(offer_id)
     invalidate_courses_list_cache()
+    invalidate_ls_list_cache()
 
 
 # ---------------------------------------------------------------------------

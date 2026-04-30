@@ -19,4 +19,5 @@ urlpatterns = [
     path("auth/",   include("auth_app.urls", namespace="auth_app")),
     path("forget-password/", include("forget_password.urls", namespace="forget_password")),
     path("posts/", include("posts.urls", namespace="posts")),
+    path("courses/", include("courses.urls", namespace="courses")),
 ]

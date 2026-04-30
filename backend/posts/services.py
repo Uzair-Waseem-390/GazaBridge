@@ -43,7 +43,6 @@ def create_offer(
             status=status
         )
     
-    # Invalidate list caches since new offer is added
     invalidate_offer_cache(offer.pk)
     
     return offer
@@ -61,7 +60,6 @@ def update_offer(
     if not offer:
         raise ValueError("Offer not found.")
     
-    # Permission check
     if not _can_update_offer(requesting_user, offer):
         raise PermissionError("You don't have permission to update this offer.")
     
@@ -72,31 +70,29 @@ def update_offer(
         
         offer.save()
     
-    # Invalidate caches
     invalidate_offer_cache(offer_id)
     
     return offer
-
 
 def delete_offer(
     *,
     offer_id: int,
     requesting_user: Any
 ) -> None:
-    """Delete an offer post."""
+    """Delete an offer post. Cascades to unlink any linked courses."""
     offer = get_offer_by_id(offer_id)
     
     if not offer:
         raise ValueError("Offer not found.")
     
-    # Permission check
     if not _can_delete_offer(requesting_user, offer):
         raise PermissionError("You don't have permission to delete this offer.")
     
-    offer.delete()
+    offer.delete()  # CASCADE on CourseOfferLink automatically removes links
     
-    # Invalidate caches
+    # Invalidate both posts and courses caches
     invalidate_offer_cache(offer_id)
+    invalidate_courses_list_cache()
 
 
 # ---------------------------------------------------------------------------

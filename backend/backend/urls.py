@@ -21,4 +21,5 @@ urlpatterns = [
     path("posts/", include("posts.urls", namespace="posts")),
     path("courses/", include("courses.urls", namespace="courses")),
     path("live-sections/", include("live_sections.urls", namespace="live_sections")),
+    path("resources/", include("resources.urls", namespace="resources")),
 ]

@@ -11,7 +11,7 @@ def root(request):
     return Response({"message": "Hello Uzair, This is root url of GazeBridge API"})
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('thisis/admin/', admin.site.urls),
     path('', root, name="Uzair"),
 
     # Apps urls
@@ -22,4 +22,5 @@ urlpatterns = [
     path("courses/", include("courses.urls", namespace="courses")),
     path("live-sections/", include("live_sections.urls", namespace="live_sections")),
     path("resources/", include("resources.urls", namespace="resources")),
+    path("admin/", include("admin_app.urls", namespace="admin_app")),
 ]

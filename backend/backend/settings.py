@@ -38,6 +38,7 @@ EXTERNAL_APPS = [
     "courses",
     "live_sections",
     "resources",
+    "admin_app",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS

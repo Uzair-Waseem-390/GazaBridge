@@ -39,6 +39,7 @@ EXTERNAL_APPS = [
     "live_sections",
     "resources",
     "admin_app",
+    "drf_spectacular",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
@@ -136,6 +137,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     # "DEFAULT_RENDERER_CLASSES": [
     #     "rest_framework.renderers.JSONRenderer",
     # ],

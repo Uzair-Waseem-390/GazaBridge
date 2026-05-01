@@ -3,6 +3,7 @@ from django.urls import path, include
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 @api_view(['GET'])
@@ -13,6 +14,10 @@ def root(request):
 urlpatterns = [
     path('thisis/admin/', admin.site.urls),
     path('', root, name="Uzair"),
+
+    # swagger docs
+    # path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema')),
 
     # Apps urls
     path("users/",  include("users.urls", namespace="users")),

@@ -290,8 +290,6 @@ python manage.py runserver
 
 The API will be available at `http://localhost:8000`.
 
-Django admin panel: `http://localhost:8000/admin/`
-
 ---
 
 ## 11. Run the Celery Worker
@@ -394,7 +392,8 @@ The middleware reads the real client IP from `X-Forwarded-For` only when the req
 [ ] backend/.env file created and fully filled in
 [ ] Redis running (redis-cli ping returns PONG)
 [ ] python manage.py migrate
-[ ] python manage.py runserver         (terminal 1)
-[ ] celery -A backend worker -l info   (terminal 2)
+[ ] python manage.py runserver                                         (terminal 1)
+[ ] redis-server (or you can use docker to run redis)                  (terminal 2)
+[ ] celery -A backend worker -l info                                   (terminal 3)
 [ ] Visit http://localhost:8000/api/schema/ to confirm the API is live
 ```

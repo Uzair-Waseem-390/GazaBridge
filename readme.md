@@ -395,5 +395,5 @@ The middleware reads the real client IP from `X-Forwarded-For` only when the req
 [ ] python manage.py runserver                                         (terminal 1)
 [ ] redis-server (or you can use docker to run redis)                  (terminal 2)
 [ ] celery -A backend worker -l info                                   (terminal 3)
-[ ] Visit http://localhost:8000/api/schema/ to confirm the API is live
+[ ] Visit http://localhost:8000/api/docs/ to confirm the API is live
 ```

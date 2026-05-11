@@ -28,4 +28,5 @@ urlpatterns = [
     path("live-sections/", include("live_sections.urls", namespace="live_sections")),
     path("resources/", include("resources.urls", namespace="resources")),
     path("admin/", include("admin_app.urls", namespace="admin_app")),
+    path("notifications/", include("notifications.urls", namespace="notifications")),
 ]

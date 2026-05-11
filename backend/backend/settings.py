@@ -39,7 +39,8 @@ EXTERNAL_APPS = [
     "live_sections",
     "resources",
     "admin_app",
-    "drf_spectacular",
+    # "drf_spectacular",
+    "notifications",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS

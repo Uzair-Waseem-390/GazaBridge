@@ -39,7 +39,7 @@ EXTERNAL_APPS = [
     "live_sections",
     "resources",
     "admin_app",
-    # "drf_spectacular",
+    "drf_spectacular",
     "notifications",
 ]
 

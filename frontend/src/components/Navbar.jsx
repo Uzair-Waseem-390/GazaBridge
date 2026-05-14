@@ -120,7 +120,7 @@ export default function Navbar() {
                       Log In
                     </motion.button>
                   </Link>
-                  <Link to="/login">
+                  <Link to="/register">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -200,7 +200,7 @@ export default function Navbar() {
                           Log In
                         </button>
                       </Link>
-                      <Link to="/login">
+                      <Link to="/register">
                         <button className="w-full px-4 py-2.5 text-white font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg shadow-lg">
                           Get Started
                         </button>

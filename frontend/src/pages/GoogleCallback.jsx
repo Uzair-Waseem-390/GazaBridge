@@ -1,5 +1,5 @@
 // frontend/src/pages/GoogleCallback.jsx
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -10,8 +10,13 @@ export default function GoogleCallback() {
   const { googleLogin } = useAuth();
   const [error, setError] = useState('');
   const [processing, setProcessing] = useState(true);
+  const hasRun = useRef(false);
 
   useEffect(() => {
+    // Guard: only run once even if dependencies change
+    if (hasRun.current) return;
+    hasRun.current = true;
+
     const handleCallback = async () => {
       const code = searchParams.get('code');
       const errorParam = searchParams.get('error');
@@ -35,7 +40,6 @@ export default function GoogleCallback() {
 
       if (result.success) {
         if (result.isNewUser) {
-          // Navigate to registration completion
           navigate('/google-register', {
             state: {
               registrationToken: result.registrationToken,
@@ -44,7 +48,6 @@ export default function GoogleCallback() {
             replace: true,
           });
         } else {
-          // Existing user - redirect to home
           navigate('/', { replace: true });
         }
       } else {
@@ -54,7 +57,7 @@ export default function GoogleCallback() {
     };
 
     handleCallback();
-  }, [searchParams, googleLogin, navigate]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (processing && !error) {
     return (

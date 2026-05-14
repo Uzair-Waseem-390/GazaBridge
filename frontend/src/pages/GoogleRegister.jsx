@@ -5,10 +5,28 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
 const COUNTRIES = [
+  // Middle East & North Africa
   'Palestine', 'Egypt', 'Jordan', 'Lebanon', 'Syria', 'Saudi Arabia',
   'UAE', 'Qatar', 'Kuwait', 'Oman', 'Bahrain', 'Yemen', 'Iraq',
-  'Turkey', 'United States', 'United Kingdom', 'Canada', 'Australia',
-  'Germany', 'France', 'Spain', 'Italy', 'Netherlands', 'Sweden',
+  'Libya', 'Tunisia', 'Algeria', 'Morocco', 'Sudan', 'Somalia',
+  'Mauritania', 'Djibouti', 'Comoros',
+  // Asia
+  'Turkey', 'Pakistan', 'Afghanistan', 'Bangladesh', 'India', 'Indonesia',
+  'Malaysia', 'Iran', 'Azerbaijan', 'Kazakhstan', 'Uzbekistan',
+  'Kyrgyzstan', 'Tajikistan', 'Turkmenistan', 'China', 'Japan',
+  'South Korea', 'Philippines', 'Thailand', 'Vietnam',
+  // Europe
+  'United Kingdom', 'Germany', 'France', 'Spain', 'Italy', 'Netherlands',
+  'Sweden', 'Norway', 'Denmark', 'Finland', 'Belgium', 'Switzerland',
+  'Austria', 'Poland', 'Portugal', 'Greece', 'Ireland',
+  // Americas
+  'United States', 'Canada', 'Brazil', 'Argentina', 'Mexico',
+  'Colombia', 'Chile', 'Venezuela',
+  // Africa (Sub-Saharan)
+  'Nigeria', 'Ethiopia', 'Kenya', 'Ghana', 'Senegal', 'Mali',
+  'Niger', 'Chad', 'Cameroon', 'Tanzania', 'Uganda', 'South Africa',
+  // Oceania
+  'Australia', 'New Zealand',
   'Other'
 ];
 
@@ -20,8 +38,18 @@ const GENDERS = [
 ];
 
 const LANGUAGES = [
-  'Arabic', 'English', 'French', 'Spanish', 'German', 
-  'Turkish', 'Urdu', 'Hindi', 'Hebrew', 'Other'
+  { code: 'ar', label: 'Arabic' },
+  { code: 'zh', label: 'Chinese' },
+  { code: 'en', label: 'English' },
+  { code: 'fr', label: 'French' },
+  { code: 'de', label: 'German' },
+  { code: 'hi', label: 'Hindi' },
+  { code: 'ja', label: 'Japanese' },
+  { code: 'pt', label: 'Portuguese' },
+  { code: 'ru', label: 'Russian' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'tr', label: 'Turkish' },
+  { code: 'ur', label: 'Urdu' },
 ];
 
 const ROLES = [
@@ -231,9 +259,9 @@ export default function GoogleRegister() {
               <div className="grid grid-cols-2 gap-2">
                 {LANGUAGES.map(language => (
                   <label
-                    key={language}
+                    key={language.code}
                     className={`flex items-center p-2 rounded-lg border cursor-pointer transition-all ${
-                      formData.languages.includes(language)
+                      formData.languages.includes(language.code)
                         ? 'border-emerald-500 bg-emerald-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
@@ -241,12 +269,12 @@ export default function GoogleRegister() {
                     <input
                       type="checkbox"
                       name="languages"
-                      value={language}
-                      checked={formData.languages.includes(language)}
+                      value={language.code}
+                      checked={formData.languages.includes(language.code)}
                       onChange={handleChange}
                       className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
                     />
-                    <span className="ml-2 text-sm text-gray-700">{language}</span>
+                    <span className="ml-2 text-sm text-gray-700">{language.label}</span>
                   </label>
                 ))}
               </div>

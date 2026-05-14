@@ -3,7 +3,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
-
+# daphne backend.asgi:application
+# daphne backend.asgi:application
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / '.env')
@@ -13,7 +14,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 INSTALLED_APPS = [
@@ -41,6 +42,8 @@ EXTERNAL_APPS = [
     "admin_app",
     "drf_spectacular",
     "notifications",
+    "channels",
+    "chat",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
@@ -49,10 +52,12 @@ INSTALLED_APPS += EXTERNAL_APPS
 
 AUTH_USER_MODEL = "users.User"
 
-
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",   # <-- by me
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',          # ← must be before CommonMiddleware
     'backend.middleware.GlobalRateLimitMiddleware',
@@ -62,6 +67,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -342,3 +349,22 @@ GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 # request body, so this setting is no longer used by the backend directly.
 # It is kept here only as documentation / fallback reference.
 GOOGLE_REDIRECT_URI  = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:5173/auth/google/callback")
+
+
+
+# =============================================================================
+# CHANNELS (WebSocket)
+# =============================================================================
+
+ASGI_APPLICATION = "backend.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": ["redis://localhost:6379/3"],
+            "capacity": 1500,
+            "expiry": 10,
+        },
+    },
+}

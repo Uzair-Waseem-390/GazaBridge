@@ -1,18 +1,30 @@
 // frontend/src/App.jsx
 import { useState, useEffect, useCallback } from 'react';
-import Hero from './components/Hero';
-import HowItWorks from './components/HowItWorks';
-import Services from './components/Services';
-import TrustUs from './components/TrustUs';
-import CTASection from './components/CTASection';
-import Footer from './components/Footer';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import LoadingScreen from './components/LoadingScreen';
+import PageTransition from './components/PageTransition';
+
+// Pages
+import Home from './pages/Home';
+import HowItWorks from './pages/HowItWorks';
+import Services from './pages/Services';
+import FAQ from './pages/FAQ';
+import AboutUs from './pages/AboutUs';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
+import Mission from './pages/Mission';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
+import CookiePolicy from './pages/CookiePolicy';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const location = useLocation();
 
   const handleScroll = useCallback(() => {
     const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -32,6 +44,10 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   if (loading) {
     return <LoadingScreen />;
   }
@@ -45,13 +61,21 @@ export default function App() {
         />
       </div>
       <Navbar />
-      <main>
-        <Hero />
-        <HowItWorks />
-        <Services />
-        <TrustUs />
-        <CTASection />
-      </main>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          <Route path="/how-it-works" element={<PageTransition><HowItWorks /></PageTransition>} />
+          <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
+          <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
+          <Route path="/about" element={<PageTransition><AboutUs /></PageTransition>} />
+          <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
+          <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
+          <Route path="/mission" element={<PageTransition><Mission /></PageTransition>} />
+          <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+          <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
+          <Route path="/cookie-policy" element={<PageTransition><CookiePolicy /></PageTransition>} />
+        </Routes>
+      </AnimatePresence>
       <Footer />
       <ScrollToTop />
     </div>

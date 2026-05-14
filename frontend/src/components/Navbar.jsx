@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -16,6 +17,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -88,24 +90,47 @@ export default function Navbar() {
             ))}
             
             <div className="flex items-center space-x-3 ml-6">
-              <Link to="/#">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-5 py-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
-                >
-                  Log In
-                </motion.button>
-              </Link>
-              <Link to="/#">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-shadow"
-                >
-                  Get Started
-                </motion.button>
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      {user?.first_name?.[0] || user?.email?.[0] || 'U'}
+                    </div>
+                    <span className="text-sm font-medium text-gray-700 hidden lg:block">
+                      {user?.first_name || 'User'}
+                    </span>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={logout}
+                    className="px-5 py-2 text-sm font-semibold text-red-600 hover:text-red-700 transition-colors"
+                  >
+                    Logout
+                  </motion.button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-5 py-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
+                    >
+                      Log In
+                    </motion.button>
+                  </Link>
+                  <Link to="/login">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-shadow"
+                    >
+                      Get Started
+                    </motion.button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -151,16 +176,37 @@ export default function Navbar() {
                   </Link>
                 ))}
                 <div className="pt-3 border-t space-y-2">
-                  <Link to="/#">
-                    <button className="w-full px-4 py-2.5 text-emerald-600 font-semibold hover:bg-emerald-50 rounded-lg transition-colors">
-                      Log In
-                    </button>
-                  </Link>
-                  <Link to="/#">
-                    <button className="w-full px-4 py-2.5 text-white font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg shadow-lg">
-                      Get Started
-                    </button>
-                  </Link>
+                  {isAuthenticated ? (
+                    <>
+                      <div className="flex items-center gap-3 px-4 py-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                          {user?.first_name?.[0] || user?.email?.[0] || 'U'}
+                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                          {user?.first_name || 'User'}
+                        </span>
+                      </div>
+                      <button
+                        onClick={logout}
+                        className="w-full px-4 py-2.5 text-red-600 font-semibold hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/login">
+                        <button className="w-full px-4 py-2.5 text-emerald-600 font-semibold hover:bg-emerald-50 rounded-lg transition-colors">
+                          Log In
+                        </button>
+                      </Link>
+                      <Link to="/login">
+                        <button className="w-full px-4 py-2.5 text-white font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 rounded-lg shadow-lg">
+                          Get Started
+                        </button>
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>

@@ -7,6 +7,11 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import LoadingScreen from './components/LoadingScreen';
 import PageTransition from './components/PageTransition';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import GoogleCallback from './pages/GoogleCallback';
+import GoogleRegister from './pages/GoogleRegister';
 
 // Pages
 import Home from './pages/Home';
@@ -53,31 +58,42 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-emerald-50/30">
-      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
-        <div 
-          className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300"
-          style={{ width: `${scrollProgress}%` }}
-        />
+    <AuthProvider>
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-emerald-50/30">
+        <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+          <div 
+            className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300"
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+        <Navbar />
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            {/* Auth Routes */}
+            <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+            <Route path="/auth/google/callback" element={<PageTransition><GoogleCallback /></PageTransition>} />
+            <Route path="/google-register" element={<PageTransition><GoogleRegister /></PageTransition>} />
+
+            {/* Protected Routes */}
+            {/* <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} /> */}
+
+            {/* Public Routes */}
+            <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+            <Route path="/how-it-works" element={<PageTransition><HowItWorks /></PageTransition>} />
+            <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
+            <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
+            <Route path="/about" element={<PageTransition><AboutUs /></PageTransition>} />
+            <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
+            <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
+            <Route path="/mission" element={<PageTransition><Mission /></PageTransition>} />
+            <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+            <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
+            <Route path="/cookie-policy" element={<PageTransition><CookiePolicy /></PageTransition>} />
+          </Routes>
+        </AnimatePresence>
+        <Footer />
+        <ScrollToTop />
       </div>
-      <Navbar />
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-          <Route path="/how-it-works" element={<PageTransition><HowItWorks /></PageTransition>} />
-          <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
-          <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
-          <Route path="/about" element={<PageTransition><AboutUs /></PageTransition>} />
-          <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
-          <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
-          <Route path="/mission" element={<PageTransition><Mission /></PageTransition>} />
-          <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
-          <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
-          <Route path="/cookie-policy" element={<PageTransition><CookiePolicy /></PageTransition>} />
-        </Routes>
-      </AnimatePresence>
-      <Footer />
-      <ScrollToTop />
-    </div>
+    </AuthProvider>
   );
 }

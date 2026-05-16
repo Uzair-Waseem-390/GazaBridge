@@ -132,6 +132,34 @@ def register_user(
 
 
 # ---------------------------------------------------------------------------
+# Superuser Creation
+# ---------------------------------------------------------------------------
+
+def create_superuser_account(
+    *,
+    email: str,
+    password: str,
+    first_name: str,
+    last_name: str,
+) -> User:
+    """Create a new superuser account."""
+    if email_exists(email):
+        raise ValueError(f"An account with the email '{email}' already exists.")
+
+    with transaction.atomic():
+        user = User.objects.create_superuser(
+            email=email.lower(),
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+    invalidate_users_list_cache()
+
+    return user
+
+
+# ---------------------------------------------------------------------------
 # OAuth Registration
 # ---------------------------------------------------------------------------
 
@@ -266,20 +294,22 @@ def update_user_profile(
         for field, value in update_data.items():
             if field in forbidden_fields:
                 continue
-            
+
             # Special handling for languages
             if field == 'languages' and isinstance(value, list):
                 target_user.set_languages(value)
             elif hasattr(target_user, field):
                 setattr(target_user, field, value)
-        
+
         target_user.save()
-        
-        # Invalidate caches
+
+        # Invalidate list caches
         invalidate_user_cache(user_id)
         invalidate_users_list_cache()
-    
-    return target_user
+
+    # Re-fetch fresh from DB to return the saved state
+    fresh_user = User.objects.prefetch_related("roles").get(pk=user_id)
+    return fresh_user
 
 
 def delete_user(

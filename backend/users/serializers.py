@@ -142,6 +142,22 @@ class RegisterInputSerializer(serializers.Serializer):
         return list(value)
 
 
+class CreateSuperuserInputSerializer(serializers.Serializer):
+    """Validates POST /users/create-superuser/ payload."""
+    email = serializers.EmailField()
+    password = serializers.CharField(
+        min_length=8,
+        write_only=True,
+        style={"input_type": "password"},
+        validators=[validate_password]
+    )
+    first_name = serializers.CharField(max_length=150)
+    last_name = serializers.CharField(max_length=150)
+
+    def validate_email(self, value: str) -> str:
+        return value.lower().strip()
+
+
 class RegisterOutputSerializer(serializers.ModelSerializer):
     """201 response shape after a successful registration."""
     roles = RoleSerializer(many=True, read_only=True)

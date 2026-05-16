@@ -3,7 +3,8 @@ from django.urls import path
 from .views import (
     RegisterView, ResendVerificationView, VerifyEmailView,
     UserDetailView, UserListView, ChangePasswordView,
-    PromoteToManagerView, DemoteFromManagerView, CurrentUserView
+    PromoteToManagerView, DemoteFromManagerView, CurrentUserView,
+    CreateSuperuserView
 )
 
 app_name = "users"
@@ -11,6 +12,7 @@ app_name = "users"
 urlpatterns = [
     # Registration & verification
     path("register/", RegisterView.as_view(), name="register"),
+    path("create-superuser/", CreateSuperuserView.as_view(), name="create-superuser"),
     path("verify-email/<str:token>/", VerifyEmailView.as_view(), name="verify-email"),
     path("resend-verification/", ResendVerificationView.as_view(), name="resend-verification"),
     

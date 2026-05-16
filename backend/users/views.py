@@ -16,12 +16,13 @@ from users.serializers import (
     RegisterInputSerializer, RegisterOutputSerializer,
     ResendVerificationInputSerializer, UserSerializer,
     UserUpdateInputSerializer, ChangePasswordSerializer,
-    PromoteDemoteSerializer, UserListQuerySerializer
+    PromoteDemoteSerializer, UserListQuerySerializer,
+    CreateSuperuserInputSerializer
 )
 from users.services.user_services import (
     register_user, resend_verification_email, verify_email,
     update_user_profile, delete_user, promote_to_manager,
-    demote_from_manager, change_user_password
+    demote_from_manager, change_user_password, create_superuser_account
 )
 from users.selectors.user_selectors import (
     get_user_by_id, get_users_with_filters, get_user_with_permissions
@@ -84,6 +85,46 @@ class RegisterView(generics.CreateAPIView):
             {
                 **output,
                 "message": "Registration successful. Please check your inbox to verify your email.",
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class CreateSuperuserView(generics.CreateAPIView):
+    """POST /users/create-superuser/ - Create a superuser account."""
+    
+    permission_classes = [AllowAny]
+    serializer_class = CreateSuperuserInputSerializer
+    
+    def create(self, request, *args, **kwargs):
+        input_serializer = self.get_serializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        data = input_serializer.validated_data
+        
+        try:
+            user = create_superuser_account(
+                email=data["email"],
+                password=data["password"],
+                first_name=data["first_name"],
+                last_name=data["last_name"],
+            )
+        except ValueError as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception:
+            logger.exception("Unexpected error during superuser creation.")
+            return Response(
+                {"detail": "Superuser creation failed due to a server error."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        
+        output = UserSerializer(user).data
+        return Response(
+            {
+                **output,
+                "message": "Superuser created successfully.",
             },
             status=status.HTTP_201_CREATED,
         )

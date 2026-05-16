@@ -5,6 +5,80 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { postsAPI } from '../../api/posts';
 import { useAuth } from '../../context/AuthContext';
 
+// Beautiful Confirmation Modal Component
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete' }) => {
+  if (!isOpen) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
+      >
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-emerald-400 to-emerald-600'}`} />
+        
+        <div className="p-6">
+          <div className="flex justify-center mb-4">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+              className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                type === 'delete' ? 'bg-red-100' : 'bg-emerald-100'
+              }`}
+            >
+              {type === 'delete' ? (
+                <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              ) : (
+                <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </motion.div>
+          </div>
+
+          <h3 className="text-xl font-bold text-center text-gray-900 mb-2">{title}</h3>
+          <p className="text-gray-600 text-center mb-6">{message}</p>
+
+          <div className="flex gap-3">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onClose}
+              className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+            >
+              Cancel
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onConfirm}
+              className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
+                type === 'delete'
+                  ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
+                  : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700'
+              }`}
+            >
+              Confirm
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 const CATEGORIES = [
   { value: '', label: 'All Categories' },
   { value: 'learn_language', label: 'Learn a Language' },
@@ -41,6 +115,7 @@ export default function AdminPosts() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, postId: null });
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [filters, setFilters] = useState({
     category: '',
@@ -84,11 +159,8 @@ export default function AdminPosts() {
     fetchPosts(1);
   }, [fetchPosts]);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm(`Are you sure you want to delete this ${activeTab === 'offers' ? 'offer' : 'request'}? This action cannot be undone.`)) {
-      return;
-    }
-
+  const handleDelete = async () => {
+    const id = deleteModal.postId;
     try {
       if (activeTab === 'offers') {
         await postsAPI.deleteOffer(id);
@@ -96,6 +168,7 @@ export default function AdminPosts() {
         await postsAPI.deleteRequest(id);
       }
       setPosts(prev => prev.filter(p => p.id !== id));
+      setDeleteModal({ isOpen: false, postId: null });
     } catch (err) {
       alert(err.response?.data?.detail || 'Failed to delete post');
     }
@@ -233,7 +306,7 @@ export default function AdminPosts() {
                   <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Status</th>
                   <th className="text-left px-6 py-4 text-sm font-semibold text-gray-700">Date</th>
                   <th className="text-right px-6 py-4 text-sm font-semibold text-gray-700">Actions</th>
-                </tr>
+                 </tr>
               </thead>
               <tbody>
                 {loading ? (
@@ -313,7 +386,7 @@ export default function AdminPosts() {
                           )}
                           <motion.button
                             whileHover={{ scale: 1.1 }}
-                            onClick={() => handleDelete(post.id)}
+                            onClick={() => setDeleteModal({ isOpen: true, postId: post.id })}
                             className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
                             title="Delete"
                           >
@@ -366,6 +439,16 @@ export default function AdminPosts() {
           />
         )}
       </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, postId: null })}
+        onConfirm={handleDelete}
+        title={`Delete ${activeTab === 'offers' ? 'Offer' : 'Request'}`}
+        message={`Are you sure you want to delete this ${activeTab === 'offers' ? 'offer' : 'request'}? This action cannot be undone.`}
+        type="delete"
+      />
     </div>
   );
 }

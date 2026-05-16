@@ -146,6 +146,14 @@ export default function Login() {
                   )}
                 </button>
               </div>
+              <div className="text-right mt-1">
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
             </div>
 
             <motion.button

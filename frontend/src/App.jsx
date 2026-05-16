@@ -32,6 +32,8 @@ import VerifyEmail from './pages/VerifyEmail';
 import Profile from './pages/Profile';
 import Notifications from './pages/Notifications';
 import AdminNotifications from './pages/AdminNotifications';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -83,6 +85,8 @@ export default function App() {
                 <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
                 <Route path="/auth/google/callback" element={<PageTransition><GoogleCallback /></PageTransition>} />
                 <Route path="/google-register" element={<PageTransition><GoogleRegister /></PageTransition>} />
+                <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
+                <Route path="/forget-password/confirm/:token" element={<PageTransition><ResetPassword /></PageTransition>} />
 
                 {/* User Routes */}
                 <Route path="/profile" element={<ProtectedRoute><PageTransition><Profile /></PageTransition></ProtectedRoute>} />

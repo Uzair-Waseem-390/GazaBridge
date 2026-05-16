@@ -10,6 +10,7 @@ import PageTransition from './components/PageTransition';
 import { AuthProvider } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
 import { NotificationProvider } from './context/NotificationContext';
+import { ResourceProvider } from './context/ResourceContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
@@ -34,6 +35,7 @@ import Notifications from './pages/Notifications';
 import AdminNotifications from './pages/AdminNotifications';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Resources from './pages/Resources';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -101,6 +103,15 @@ export default function App() {
                 <Route path="/admin/notifications" element={
                   <ProtectedRoute>
                     <PageTransition><AdminNotifications /></PageTransition>
+                  </ProtectedRoute>
+                } />
+
+                {/* Resources Route */}
+                <Route path="/resources" element={
+                  <ProtectedRoute>
+                    <ResourceProvider>
+                      <PageTransition><Resources /></PageTransition>
+                    </ResourceProvider>
                   </ProtectedRoute>
                 } />
 

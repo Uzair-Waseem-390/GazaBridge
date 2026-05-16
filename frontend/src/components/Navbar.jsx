@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import NotificationBell from './NotificationBell';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -92,6 +93,7 @@ export default function Navbar() {
             <div className="flex items-center space-x-3 ml-6">
               {isAuthenticated ? (
                 <>
+                  <NotificationBell />
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                       {user?.first_name?.[0] || user?.email?.[0] || 'U'}
@@ -178,6 +180,7 @@ export default function Navbar() {
                 <div className="pt-3 border-t space-y-2">
                   {isAuthenticated ? (
                     <>
+                      <NotificationBell />
                       <div className="flex items-center gap-3 px-4 py-2">
                         <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                           {user?.first_name?.[0] || user?.email?.[0] || 'U'}

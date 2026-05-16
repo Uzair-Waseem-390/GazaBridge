@@ -36,6 +36,12 @@ import AdminNotifications from './pages/AdminNotifications';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Resources from './pages/Resources';
+import Posts from './pages/Posts';
+
+// Admin Pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminResources from './pages/admin/AdminResources';
+import AdminPosts from './pages/admin/AdminPosts';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -112,6 +118,30 @@ export default function App() {
                     <ResourceProvider>
                       <PageTransition><Resources /></PageTransition>
                     </ResourceProvider>
+                  </ProtectedRoute>
+                } />
+
+                {/* Posts Route */}
+                <Route path="/posts" element={
+                  <ProtectedRoute>
+                    <PageTransition><Posts /></PageTransition>
+                  </ProtectedRoute>
+                } />
+
+                {/* Admin Routes */}
+                <Route path="/admin" element={
+                  <ProtectedRoute>
+                    <PageTransition><AdminDashboard /></PageTransition>
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/resources" element={
+                  <ProtectedRoute>
+                    <PageTransition><AdminResources /></PageTransition>
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/posts" element={
+                  <ProtectedRoute>
+                    <PageTransition><AdminPosts /></PageTransition>
                   </ProtectedRoute>
                 } />
 

@@ -10,6 +10,7 @@ const navLinks = [
   { name: 'How It Works', href: '/how-it-works' },
   { name: 'Services', href: '/services' },
   { name: 'Resources', href: '/resources' },
+  { name: 'Posts', href: '/posts' },
   { name: 'About', href: '/about' },
   { name: 'Blog', href: '/blog' },
   { name: 'FAQ', href: '/faq' },
@@ -95,6 +96,14 @@ export default function Navbar() {
               {isAuthenticated ? (
                 <>
                   <NotificationBell />
+                  {user?.roles?.some(r => ['manager', 'admin', 'superuser'].includes(r.name)) && (
+                    <Link
+                      to="/admin"
+                      className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors"
+                    >
+                      Admin
+                    </Link>
+                  )}
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                       {user?.first_name?.[0] || user?.email?.[0] || 'U'}
@@ -182,6 +191,14 @@ export default function Navbar() {
                   {isAuthenticated ? (
                     <>
                       <NotificationBell />
+                      {user?.roles?.some(r => ['manager', 'admin', 'superuser'].includes(r.name)) && (
+                        <Link
+                          to="/admin"
+                          className="block px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                        >
+                          Admin
+                        </Link>
+                      )}
                       <div className="flex items-center gap-3 px-4 py-2">
                         <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                           {user?.first_name?.[0] || user?.email?.[0] || 'U'}

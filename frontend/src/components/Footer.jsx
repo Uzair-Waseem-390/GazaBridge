@@ -7,6 +7,7 @@ const footerLinks = {
     { name: 'How It Works', href: '/how-it-works' },
     { name: 'Services', href: '/services' },
     { name: 'Resources', href: '/resources' },
+    { name: 'Community Posts', href: '/posts' },
     { name: 'FAQ', href: '/faq' },
   ],
   Company: [

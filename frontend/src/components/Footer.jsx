@@ -1,5 +1,5 @@
 // frontend/src/components/Footer.jsx
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const footerLinks = {
@@ -29,6 +29,11 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  const location = useLocation();
+
+  // Chat page is a full-height layout — footer has no place there
+  if (location.pathname === '/chat') return null;
+
   return (
     <footer className="relative bg-gray-900 text-white pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-6">

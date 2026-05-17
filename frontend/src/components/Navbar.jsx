@@ -98,6 +98,19 @@ export default function Navbar() {
               {isAuthenticated ? (
                 <>
                   <NotificationBell />
+                  <Link
+                    to="/chat"
+                    className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors ${
+                      location.pathname === '/chat'
+                        ? 'text-emerald-600'
+                        : 'text-gray-700 hover:text-emerald-600'
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                    </svg>
+                    Chat
+                  </Link>
                   {user?.roles?.some(r => ['manager', 'admin', 'superuser'].includes(r.name)) && (
                     <Link
                       to="/admin"
@@ -193,6 +206,19 @@ export default function Navbar() {
                   {isAuthenticated ? (
                     <>
                       <NotificationBell />
+                      <Link
+                        to="/chat"
+                        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                          location.pathname === '/chat'
+                            ? 'text-emerald-600 bg-emerald-50'
+                            : 'text-gray-700 hover:text-emerald-600 hover:bg-emerald-50'
+                        }`}
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                        Chat
+                      </Link>
                       {user?.roles?.some(r => ['manager', 'admin', 'superuser'].includes(r.name)) && (
                         <Link
                           to="/admin"

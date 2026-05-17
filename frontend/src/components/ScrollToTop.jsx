@@ -1,17 +1,24 @@
 // frontend/src/components/ScrollToTop.jsx
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
+    // Don't show on /chat — it has its own scroll container
+    if (location.pathname === '/chat') {
+      setIsVisible(false);
+      return;
+    }
     const toggleVisibility = () => {
       setIsVisible(window.scrollY > 500);
     };
     window.addEventListener('scroll', toggleVisibility);
     return () => window.removeEventListener('scroll', toggleVisibility);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <AnimatePresence>

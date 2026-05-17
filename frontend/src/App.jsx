@@ -42,6 +42,7 @@ import CourseDetail from './pages/CourseDetail';
 import OfferDetail from './pages/OfferDetail';
 import LiveSections from './pages/LiveSections';
 import LiveSectionDetail from './pages/LiveSectionDetail';
+import Chat from './pages/Chat';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -73,6 +74,9 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // Skip on /chat — the chat page manages its own internal scroll containers.
+    // Calling window.scrollTo here would fight with the chat's auto-scroll logic.
+    if (location.pathname === '/chat') return;
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
@@ -105,6 +109,13 @@ export default function App() {
                 {/* User Routes */}
                 <Route path="/profile" element={<ProtectedRoute><PageTransition><Profile /></PageTransition></ProtectedRoute>} />
                 <Route path="/users/verify-email/:token" element={<PageTransition><VerifyEmail /></PageTransition>} />
+
+                {/* Chat Route */}
+                <Route path="/chat" element={
+                  <ProtectedRoute>
+                    <Chat />
+                  </ProtectedRoute>
+                } />
 
                 {/* Notification Routes */}
                 <Route path="/notifications" element={

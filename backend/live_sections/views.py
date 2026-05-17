@@ -25,7 +25,6 @@ from live_sections.services import (
 from live_sections.selectors import (
     get_live_section_by_id, get_live_sections_queryset,
     get_content_by_id, get_visible_contents_for_live_section,
-    get_cached_live_section_list, set_cached_live_section_list
 )
 from live_sections.permissions import (
     CanManageLiveSection, CanManageLiveSectionContent,
@@ -161,26 +160,8 @@ class LiveSectionListView(generics.ListAPIView):
         query_serializer = LiveSectionListQuerySerializer(data=self.request.query_params)
         query_serializer.is_valid(raise_exception=True)
         params = query_serializer.validated_data
-        
-        page = int(self.request.query_params.get('page', 1))
-        page_size = int(self.request.query_params.get('page_size', 20))
-        
-        cached = get_cached_live_section_list(
-            category=params.get('category'),
-            skill_level=params.get('skill_level'),
-            language=params.get('language'),
-            status=params.get('status'),
-            user_id=params.get('user_id'),
-            search=params.get('search'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-        
-        if cached is not None:
-            return cached
-        
-        queryset = get_live_sections_queryset(
+
+        return get_live_sections_queryset(
             category=params.get('category'),
             skill_level=params.get('skill_level'),
             language=params.get('language'),
@@ -189,22 +170,6 @@ class LiveSectionListView(generics.ListAPIView):
             search=params.get('search'),
             ordering=params.get('ordering', '-created_at')
         )
-        
-        result_list = list(queryset)
-        set_cached_live_section_list(
-            result_list,
-            category=params.get('category'),
-            skill_level=params.get('skill_level'),
-            language=params.get('language'),
-            status=params.get('status'),
-            user_id=params.get('user_id'),
-            search=params.get('search'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-        
-        return result_list
 
 
 # ---------------------------------------------------------------------------

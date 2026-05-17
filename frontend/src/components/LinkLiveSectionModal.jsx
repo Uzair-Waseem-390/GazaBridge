@@ -1,7 +1,7 @@
-// frontend/src/components/LinkCourseModal.jsx - UPDATED
+// frontend/src/components/LinkLiveSectionModal.jsx
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { coursesAPI } from '../api/courses';
+import { liveSectionsAPI } from '../api/liveSections';
 import { postsAPI } from '../api/posts';
 import { useAuth } from '../context/AuthContext';
 
@@ -79,15 +79,15 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
   );
 };
 
-export default function LinkCourseModal({ offerId, onClose, onLinked }) {
+export default function LinkLiveSectionModal({ offerId, onClose, onLinked }) {
   const { user } = useAuth();
-  const [courses, setCourses] = useState([]);
-  const [linkedCourseIds, setLinkedCourseIds] = useState([]);
+  const [liveSections, setLiveSections] = useState([]);
+  const [linkedLsIds, setLinkedLsIds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [linking, setLinking] = useState(false);
   const [error, setError] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  const [unlinkModal, setUnlinkModal] = useState({ isOpen: false, courseId: null, courseTitle: '' });
+  const [unlinkModal, setUnlinkModal] = useState({ isOpen: false, lsId: null, lsTitle: '' });
 
   const isAdmin = user?.is_staff || user?.is_superuser;
 
@@ -100,13 +100,13 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
           params.user_id = user.id;
         }
 
-        const coursesResponse = await coursesAPI.getCourses(params);
-        setCourses(coursesResponse.data.results || coursesResponse.data);
+        const lsResponse = await liveSectionsAPI.getLiveSections(params);
+        setLiveSections(lsResponse.data.results || lsResponse.data);
 
-        const linkedResponse = await postsAPI.getOfferLinkedCourses(offerId);
-        setLinkedCourseIds(linkedResponse.data.map(c => c.id));
+        const linkedResponse = await postsAPI.getOfferLinkedLiveSections(offerId);
+        setLinkedLsIds(linkedResponse.data.map(ls => ls.id));
       } catch (err) {
-        setError('Failed to load courses');
+        setError('Failed to load live sections');
       } finally {
         setLoading(false);
       }
@@ -115,42 +115,46 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
     fetchData();
   }, [offerId, user, isAdmin]);
 
-  const handleLink = async (courseId) => {
+  const handleLink = async (lsId) => {
     setLinking(true);
     setError('');
 
     try {
-      await coursesAPI.linkCourseToOffer(courseId, offerId);
-      setLinkedCourseIds(prev => [...prev, courseId]);
+      await liveSectionsAPI.linkToOffer(lsId, offerId);
+      setLinkedLsIds(prev => [...prev, lsId]);
       onLinked();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to link course');
+      setError(err.response?.data?.detail || 'Failed to link live section');
     } finally {
       setLinking(false);
     }
   };
 
   const handleUnlink = async () => {
-    const courseId = unlinkModal.courseId;
+    const lsId = unlinkModal.lsId;
     setLinking(true);
     setError('');
 
     try {
-      await coursesAPI.unlinkCourseFromOffer(courseId, offerId);
-      setLinkedCourseIds(prev => prev.filter(id => id !== courseId));
+      await liveSectionsAPI.unlinkFromOffer(lsId, offerId);
+      setLinkedLsIds(prev => prev.filter(id => id !== lsId));
       onLinked();
-      setUnlinkModal({ isOpen: false, courseId: null, courseTitle: '' });
+      setUnlinkModal({ isOpen: false, lsId: null, lsTitle: '' });
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to unlink course');
+      setError(err.response?.data?.detail || 'Failed to unlink live section');
     } finally {
       setLinking(false);
     }
   };
 
-  const filteredCourses = courses.filter(course => 
+  const filteredLiveSections = liveSections.filter(ls => 
     !searchInput || 
-    course.title.toLowerCase().includes(searchInput.toLowerCase())
+    ls.title.toLowerCase().includes(searchInput.toLowerCase())
   );
+
+  const getEffectiveStatus = (ls) => {
+    return ls.effective_status || ls.status;
+  };
 
   return (
     <>
@@ -172,11 +176,11 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Link Courses to Offer</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Link Live Sections to Offer</h2>
                 <p className="text-sm text-gray-500 mt-1">
                   {isAdmin 
-                    ? 'Showing all courses (Admin access)'
-                    : 'Showing your courses only. Create more courses to link them.'}
+                    ? 'Showing all live sections (Admin access)'
+                    : 'Showing your live sections only. Create more live sections to link them.'}
                 </p>
               </div>
               <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
@@ -194,7 +198,7 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                placeholder={isAdmin ? "Search all courses..." : "Search your courses..."}
+                placeholder={isAdmin ? "Search all live sections..." : "Search your live sections..."}
                 className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
               />
             </div>
@@ -216,28 +220,29 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
                   </div>
                 ))}
               </div>
-            ) : filteredCourses.length === 0 ? (
+            ) : filteredLiveSections.length === 0 ? (
               <div className="text-center py-8">
-                <div className="text-4xl mb-4">📚</div>
+                <div className="text-4xl mb-4">📡</div>
                 <p className="text-gray-500">
-                  {searchInput ? 'No courses match your search.' : 'No courses available to link.'}
+                  {searchInput ? 'No live sections match your search.' : 'No live sections available to link.'}
                 </p>
                 {!isAdmin && (
                   <p className="text-sm text-gray-400 mt-2">
-                    You can only link your own courses. Create courses first, then link them to your offers.
+                    You can only link your own live sections. Create live sections first, then link them to your offers.
                   </p>
                 )}
               </div>
             ) : (
               <div className="space-y-3">
-                {filteredCourses.map(course => {
-                  const isLinked = linkedCourseIds.includes(course.id);
-                  const isOwner = course.user === user?.id;
+                {filteredLiveSections.map(ls => {
+                  const isLinked = linkedLsIds.includes(ls.id);
+                  const isOwner = ls.user === user?.id;
                   const canLink = isAdmin || isOwner;
+                  const effectiveStatus = getEffectiveStatus(ls);
                   
                   return (
                     <div
-                      key={course.id}
+                      key={ls.id}
                       className={`p-4 rounded-xl border-2 transition-all ${
                         isLinked
                           ? 'border-emerald-300 bg-emerald-50'
@@ -247,21 +252,26 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-gray-900">{course.title}</h3>
+                            <h3 className="font-semibold text-gray-900">{ls.title}</h3>
                             {!isOwner && isAdmin && (
                               <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
-                                by {course.user_full_name}
+                                by {ls.user_full_name}
                               </span>
                             )}
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                              effectiveStatus === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              {effectiveStatus}
+                            </span>
                           </div>
                           <div className="flex items-center gap-3 mt-1">
-                            <span className="text-xs text-gray-500 capitalize">{course.skill_level}</span>
+                            <span className="text-xs text-gray-500 capitalize">{ls.skill_level}</span>
                             <span className="text-xs text-gray-400">•</span>
-                            <span className="text-xs text-gray-500 uppercase">{course.language}</span>
+                            <span className="text-xs text-gray-500 uppercase">{ls.language}</span>
                             <span className="text-xs text-gray-400">•</span>
-                            <span className="text-xs text-gray-500">{course.sessions_per_week}x/week</span>
+                            <span className="text-xs text-gray-500">Ends: {new Date(ls.ending_date).toLocaleDateString()}</span>
                           </div>
-                          <p className="text-sm text-gray-600 mt-2 line-clamp-2">{course.description}</p>
+                          <p className="text-sm text-gray-600 mt-2 line-clamp-2">{ls.description}</p>
                         </div>
                         
                         {canLink && (
@@ -269,8 +279,8 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => isLinked 
-                              ? setUnlinkModal({ isOpen: true, courseId: course.id, courseTitle: course.title })
-                              : handleLink(course.id)
+                              ? setUnlinkModal({ isOpen: true, lsId: ls.id, lsTitle: ls.title })
+                              : handleLink(ls.id)
                             }
                             disabled={linking}
                             className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all flex-shrink-0 ${
@@ -279,7 +289,7 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
                                 : 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md hover:shadow-lg'
                             } disabled:opacity-50`}
                           >
-                            {isLinked ? 'Unlink' : 'Link Course'}
+                            {isLinked ? 'Unlink' : 'Link'}
                           </motion.button>
                         )}
                       </div>
@@ -304,10 +314,10 @@ export default function LinkCourseModal({ offerId, onClose, onLinked }) {
       {/* Unlink Confirmation Modal */}
       <ConfirmationModal
         isOpen={unlinkModal.isOpen}
-        onClose={() => setUnlinkModal({ isOpen: false, courseId: null, courseTitle: '' })}
+        onClose={() => setUnlinkModal({ isOpen: false, lsId: null, lsTitle: '' })}
         onConfirm={handleUnlink}
-        title="Unlink Course"
-        message={`Are you sure you want to unlink "${unlinkModal.courseTitle}" from this offer? This action can be undone by linking again.`}
+        title="Unlink Live Section"
+        message={`Are you sure you want to unlink "${unlinkModal.lsTitle}" from this offer? This action can be undone by linking again.`}
         type="delete"
       />
     </>

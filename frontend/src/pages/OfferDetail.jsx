@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { postsAPI } from '../api/posts';
 import LinkCourseModal from '../components/LinkCourseModal';
+import LinkLiveSectionModal from '../components/LinkLiveSectionModal';
 import EditPostModal from '../components/EditPostModal';
 
 const CATEGORY_ICONS = {
@@ -45,6 +46,7 @@ export default function OfferDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showLinkModal, setShowLinkModal] = useState(false);
+  const [showLinkLiveSectionModal, setShowLinkLiveSectionModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
   const fetchOffer = async () => {
@@ -236,29 +238,64 @@ export default function OfferDetail() {
             )}
           </div>
 
-          {/* Linked Live Sections (if you want to add later) */}
-          {linkedLiveSections.length > 0 && (
-            <div className="bg-white rounded-3xl shadow-xl p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Linked Live Sessions ({linkedLiveSections.length})
+          {/* Linked Live Sections Section */}
+          <div className="bg-white rounded-3xl shadow-xl p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">
+                Linked Live Sections ({linkedLiveSections.length})
               </h2>
+              {canLink && (
+                <button onClick={() => setShowLinkLiveSectionModal(true)}
+                  className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all">
+                  Manage Live Section Links
+                </button>
+              )}
+            </div>
+
+            {linkedLiveSections.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-4">📡</div>
+                <p className="text-gray-500">No live sections linked to this offer yet.</p>
+                {canLink && (
+                  <button onClick={() => setShowLinkLiveSectionModal(true)}
+                    className="mt-4 text-purple-600 font-semibold text-sm hover:text-purple-700">
+                    Link a live section →
+                  </button>
+                )}
+              </div>
+            ) : (
               <div className="space-y-3">
                 {linkedLiveSections.map(ls => (
-                  <div key={ls.id} className="p-4 bg-gray-50 rounded-xl">
-                    <h3 className="font-semibold text-gray-900">{ls.title}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        ls.effective_status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        {ls.effective_status}
-                      </span>
-                      <span className="text-xs text-gray-400">by {ls.user_email}</span>
+                  <Link
+                    key={ls.id}
+                    to={`/live-sections/${ls.id}`}
+                    className="block p-4 bg-gray-50 rounded-xl hover:bg-purple-50 transition-colors group"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
+                          {ls.title}
+                        </h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                            ls.effective_status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {ls.effective_status}
+                          </span>
+                          <span className="text-xs text-gray-400">by {ls.user_email}</span>
+                          <span className="text-xs text-gray-400">•</span>
+                          <span className="text-xs text-gray-400">Ends: {new Date(ls.ending_date).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                      <svg className="w-5 h-5 text-gray-400 group-hover:text-purple-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </motion.div>
       </div>
 
@@ -267,6 +304,13 @@ export default function OfferDetail() {
           <LinkCourseModal
             offerId={id}
             onClose={() => setShowLinkModal(false)}
+            onLinked={fetchOffer}
+          />
+        )}
+        {showLinkLiveSectionModal && (
+          <LinkLiveSectionModal
+            offerId={id}
+            onClose={() => setShowLinkLiveSectionModal(false)}
             onLinked={fetchOffer}
           />
         )}

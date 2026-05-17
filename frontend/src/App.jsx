@@ -40,6 +40,8 @@ import Posts from './pages/Posts';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
 import OfferDetail from './pages/OfferDetail';
+import LiveSections from './pages/LiveSections';
+import LiveSectionDetail from './pages/LiveSectionDetail';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -125,6 +127,18 @@ export default function App() {
                 <Route path="/courses/:id" element={
                   <ProtectedRoute>
                     <PageTransition><CourseDetail /></PageTransition>
+                  </ProtectedRoute>
+                } />
+
+                {/* Live Sessions Routes */}
+                <Route path="/live-sections" element={
+                  <ProtectedRoute>
+                    <PageTransition><LiveSections /></PageTransition>
+                  </ProtectedRoute>
+                } />
+                <Route path="/live-sections/:id" element={
+                  <ProtectedRoute>
+                    <PageTransition><LiveSectionDetail /></PageTransition>
                   </ProtectedRoute>
                 } />
 

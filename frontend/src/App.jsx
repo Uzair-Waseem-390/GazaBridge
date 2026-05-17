@@ -37,11 +37,15 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Resources from './pages/Resources';
 import Posts from './pages/Posts';
+import Courses from './pages/Courses';
+import CourseDetail from './pages/CourseDetail';
+import OfferDetail from './pages/OfferDetail';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminResources from './pages/admin/AdminResources';
 import AdminPosts from './pages/admin/AdminPosts';
+import AdminCourses from './pages/admin/AdminCourses';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -112,6 +116,18 @@ export default function App() {
                   </ProtectedRoute>
                 } />
 
+                {/* Courses Routes */}
+                <Route path="/courses" element={
+                  <ProtectedRoute>
+                    <PageTransition><Courses /></PageTransition>
+                  </ProtectedRoute>
+                } />
+                <Route path="/courses/:id" element={
+                  <ProtectedRoute>
+                    <PageTransition><CourseDetail /></PageTransition>
+                  </ProtectedRoute>
+                } />
+
                 {/* Resources Route */}
                 <Route path="/resources" element={
                   <ProtectedRoute>
@@ -121,10 +137,15 @@ export default function App() {
                   </ProtectedRoute>
                 } />
 
-                {/* Posts Route */}
+                {/* Posts Routes */}
                 <Route path="/posts" element={
                   <ProtectedRoute>
                     <PageTransition><Posts /></PageTransition>
+                  </ProtectedRoute>
+                } />
+                <Route path="/offers/:id" element={
+                  <ProtectedRoute>
+                    <PageTransition><OfferDetail /></PageTransition>
                   </ProtectedRoute>
                 } />
 
@@ -142,6 +163,11 @@ export default function App() {
                 <Route path="/admin/posts" element={
                   <ProtectedRoute>
                     <PageTransition><AdminPosts /></PageTransition>
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/courses" element={
+                  <ProtectedRoute>
+                    <PageTransition><AdminCourses /></PageTransition>
                   </ProtectedRoute>
                 } />
 

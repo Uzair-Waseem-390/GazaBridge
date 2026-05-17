@@ -1,6 +1,7 @@
-// frontend/src/components/PostCard.jsx - Updated with edit functionality
+// frontend/src/components/PostCard.jsx - Updated with edit functionality and offer links
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const CATEGORY_ICONS = {
   learn_language: '🗣️',
@@ -76,9 +77,17 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
         </div>
 
         {/* Name */}
-        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
-          {name}
-        </h3>
+        {type === 'offer' ? (
+          <Link to={`/offers/${post.id}`}>
+            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors hover:text-emerald-600">
+              {name}
+            </h3>
+          </Link>
+        ) : (
+          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
+            {name}
+          </h3>
+        )}
 
         {/* Category */}
         <div className="mb-3">
@@ -112,6 +121,19 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
               {AVAILABILITY_LABELS[post.availability] || post.availability}
             </span>
           </div>
+        )}
+
+        {/* View Details Link (only for offers) */}
+        {type === 'offer' && (
+          <Link
+            to={`/offers/${post.id}`}
+            className="inline-flex items-center gap-1 text-emerald-600 text-sm font-medium hover:text-emerald-700 transition-colors mt-3 mb-3"
+          >
+            View Details
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
         )}
 
         {/* Author */}

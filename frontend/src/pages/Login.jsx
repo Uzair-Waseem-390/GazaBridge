@@ -33,7 +33,18 @@ export default function Login() {
     const result = await login(formData.email, formData.password);
 
     if (result.success) {
-      navigate('/');
+      const userData = result.user;
+      // FIXED: Roles are strings from backend
+      const adminRoles = ['manager', 'admin', 'superuser'];
+      const isAdmin = userData?.roles?.some(r => adminRoles.includes(r)) || 
+                      userData?.is_staff || 
+                      userData?.is_superuser;
+      
+      console.log('Login - User:', userData?.email);
+      console.log('Login - Roles:', userData?.roles);
+      console.log('Login - Is Admin:', isAdmin);
+      
+      navigate(isAdmin ? '/admin' : '/dashboard');
     } else {
       setError(result.error);
     }

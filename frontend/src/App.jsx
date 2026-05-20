@@ -1,4 +1,4 @@
-// frontend/src/App.jsx - Updated routing logic
+// frontend/src/App.jsx - Complete with fixed showPublicLayout logic
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -120,37 +120,53 @@ function AppRoutes() {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
 
-  // Public paths that logged-in users can still access
+  // Public paths that are ALWAYS accessible with Navbar (even when logged in)
   const alwaysPublicPaths = [
     '/privacy-policy', '/terms-of-service', '/cookie-policy',
   ];
 
-  // Auth paths (login, register, forgot password) - redirect if authenticated
+  // Auth paths - redirect to dashboard if already authenticated
   const authPaths = [
     '/login', '/register', '/forgot-password',
+  ];
+
+  // Landing page and informational pages - always show Navbar
+  const infoPaths = [
+    '/', '/how-it-works', '/services', '/faq', '/about', '/mission',
+    '/blog',  // Added /blog here explicitly
   ];
 
   // Check if current path starts with certain patterns
   const isAlwaysPublic = alwaysPublicPaths.includes(location.pathname) ||
     location.pathname.startsWith('/users/verify-email/') ||
-    location.pathname.startsWith('/forget-password/confirm/') ||
-    location.pathname.startsWith('/blog/');
+    location.pathname.startsWith('/forget-password/confirm/');
 
   const isAuthPath = authPaths.includes(location.pathname) ||
     location.pathname.startsWith('/auth/google/') ||
     location.pathname.startsWith('/google-register');
 
+  const isInfoPath = infoPaths.includes(location.pathname) ||
+    location.pathname.startsWith('/blog/');  // This catches /blog/:slug
+
   const isLandingPage = location.pathname === '/';
 
-  // Show Navbar + Footer only on truly public pages when user is NOT authenticated
-  // OR on always-public pages regardless of auth status
-  const showPublicLayout = (!isAuthenticated && (isLandingPage || isAuthPath)) ||
+  // FIXED: Show Navbar + Footer for:
+  // 1. Always-public pages (legal docs, verification)
+  // 2. Info pages (how-it-works, services, faq, about, mission, blog)
+  // 3. Landing page (when not authenticated, or always show it)
+  // 4. Auth pages (when not authenticated)
+  const showPublicLayout = 
     isAlwaysPublic ||
-    (!isAuthenticated && location.pathname.startsWith('/how-it-works')) ||
-    (!isAuthenticated && location.pathname.startsWith('/services')) ||
-    (!isAuthenticated && location.pathname.startsWith('/faq')) ||
-    (!isAuthenticated && location.pathname.startsWith('/about')) ||
-    (!isAuthenticated && location.pathname.startsWith('/mission'));
+    isInfoPath ||
+    isLandingPage ||
+    (!isAuthenticated && isAuthPath);
+
+  // Debug log
+  console.log('Path:', location.pathname);
+  console.log('showPublicLayout:', showPublicLayout);
+  console.log('isAlwaysPublic:', isAlwaysPublic);
+  console.log('isInfoPath:', isInfoPath);
+  console.log('isAuthPath:', isAuthPath);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-emerald-50/30">
@@ -164,7 +180,7 @@ function AppRoutes() {
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* Auth Routes - Redirect to dashboard if already logged in */}
+          {/* Auth Routes */}
           <Route path="/login" element={
             <PublicOnlyRoute><PageTransition><Login /></PageTransition></PublicOnlyRoute>
           } />
@@ -209,10 +225,10 @@ function AppRoutes() {
             <Route path="/admin/users/:role" element={<AdminRoute><PageTransition><AdminUserList /></PageTransition></AdminRoute>} />
           </Route>
 
-          {/* Root path - redirects authenticated users to dashboard */}
+          {/* Root path */}
           <Route path="/" element={<HomeRedirect />} />
 
-          {/* Public pages (accessible to everyone) */}
+          {/* Public informational pages (always accessible with Navbar) */}
           <Route path="/how-it-works" element={<PageTransition><HowItWorks /></PageTransition>} />
           <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
           <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />

@@ -1,4 +1,4 @@
-// frontend/src/App.jsx - COMPLETE WITH ALL IMPORTS
+// frontend/src/App.jsx - Updated routing logic
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -62,16 +62,55 @@ import AdminLiveSections from './pages/admin/AdminLiveSections';
 import AdminUserList from './pages/admin/AdminUserList';
 import Unauthorized from './pages/Unauthorized';
 
+// Helper function to check if user is admin
+function checkIsAdmin(user) {
+  const adminRoles = ['manager', 'admin', 'superuser'];
+  return user?.roles?.some(r => adminRoles.includes(r)) || 
+         user?.is_staff || 
+         user?.is_superuser;
+}
+
+// Handle root path based on auth status
+function HomeRedirect() {
+  const { user, isAuthenticated, loading } = useAuth();
+
+  if (loading) return <LoadingScreen />;
+
+  // If authenticated, redirect to appropriate dashboard
+  if (isAuthenticated && user) {
+    const isAdmin = checkIsAdmin(user);
+    return <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />;
+  }
+
+  // Not authenticated - show landing page
+  return <PageTransition><Home /></PageTransition>;
+}
+
+// Protect public routes from authenticated users
+function PublicOnlyRoute({ children }) {
+  const { isAuthenticated, user, loading } = useAuth();
+
+  if (loading) return <LoadingScreen />;
+
+  if (isAuthenticated && user) {
+    const isAdmin = checkIsAdmin(user);
+    return <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />;
+  }
+
+  return children;
+}
+
 // DashboardRedirect - inside AuthProvider context
 function DashboardRedirect() {
   const { user, isAuthenticated } = useAuth();
   
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   
-  const isAdmin = user?.roles?.some(r => 
-    typeof r === 'object' ? ['manager', 'admin', 'superuser'].includes(r.name) :
-    ['manager', 'admin', 'superuser'].includes(r)
-  ) || user?.is_staff || user?.is_superuser;
+  const isAdmin = checkIsAdmin(user);
+
+  console.log('DashboardRedirect - User:', user?.email);
+  console.log('DashboardRedirect - Roles:', user?.roles);
+  console.log('DashboardRedirect - Is Admin:', isAdmin);
 
   return <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />;
 }
@@ -81,36 +120,62 @@ function AppRoutes() {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
 
-  const publicPaths = [
-    '/', '/how-it-works', '/services', '/faq', '/about', '/blog',
-    '/mission', '/privacy-policy', '/terms-of-service', '/cookie-policy',
-    '/login', '/register', '/auth/google/callback', '/google-register',
-    '/forgot-password',
+  // Public paths that logged-in users can still access
+  const alwaysPublicPaths = [
+    '/privacy-policy', '/terms-of-service', '/cookie-policy',
   ];
 
-  const isPublicRoute = publicPaths.includes(location.pathname) ||
-    location.pathname.startsWith('/blog/') ||
+  // Auth paths (login, register, forgot password) - redirect if authenticated
+  const authPaths = [
+    '/login', '/register', '/forgot-password',
+  ];
+
+  // Check if current path starts with certain patterns
+  const isAlwaysPublic = alwaysPublicPaths.includes(location.pathname) ||
+    location.pathname.startsWith('/users/verify-email/') ||
     location.pathname.startsWith('/forget-password/confirm/') ||
-    location.pathname.startsWith('/users/verify-email/');
+    location.pathname.startsWith('/blog/');
+
+  const isAuthPath = authPaths.includes(location.pathname) ||
+    location.pathname.startsWith('/auth/google/') ||
+    location.pathname.startsWith('/google-register');
+
+  const isLandingPage = location.pathname === '/';
+
+  // Show Navbar + Footer only on truly public pages when user is NOT authenticated
+  // OR on always-public pages regardless of auth status
+  const showPublicLayout = (!isAuthenticated && (isLandingPage || isAuthPath)) ||
+    isAlwaysPublic ||
+    (!isAuthenticated && location.pathname.startsWith('/how-it-works')) ||
+    (!isAuthenticated && location.pathname.startsWith('/services')) ||
+    (!isAuthenticated && location.pathname.startsWith('/faq')) ||
+    (!isAuthenticated && location.pathname.startsWith('/about')) ||
+    (!isAuthenticated && location.pathname.startsWith('/mission'));
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-emerald-50/30">
-      {isPublicRoute && (
+      {showPublicLayout && (
         <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
           <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300" />
         </div>
       )}
       
-      {isPublicRoute && <Navbar />}
+      {showPublicLayout && <Navbar />}
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* Auth Routes (public) */}
-          <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
-          <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
+          {/* Auth Routes - Redirect to dashboard if already logged in */}
+          <Route path="/login" element={
+            <PublicOnlyRoute><PageTransition><Login /></PageTransition></PublicOnlyRoute>
+          } />
+          <Route path="/register" element={
+            <PublicOnlyRoute><PageTransition><Register /></PageTransition></PublicOnlyRoute>
+          } />
           <Route path="/auth/google/callback" element={<PageTransition><GoogleCallback /></PageTransition>} />
           <Route path="/google-register" element={<PageTransition><GoogleRegister /></PageTransition>} />
-          <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
+          <Route path="/forgot-password" element={
+            <PublicOnlyRoute><PageTransition><ForgotPassword /></PageTransition></PublicOnlyRoute>
+          } />
           <Route path="/forget-password/confirm/:token" element={<PageTransition><ResetPassword /></PageTransition>} />
           <Route path="/users/verify-email/:token" element={<PageTransition><VerifyEmail /></PageTransition>} />
 
@@ -121,10 +186,7 @@ function AppRoutes() {
 
           {/* Authenticated Routes with Sidebar Layout */}
           <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-            {/* Normal User Dashboard */}
             <Route path="/dashboard" element={<PageTransition><UserDashboard /></PageTransition>} />
-            
-            {/* App Pages */}
             <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
             <Route path="/notifications" element={<PageTransition><Notifications /></PageTransition>} />
             <Route path="/resources" element={<ResourceProvider><PageTransition><Resources /></PageTransition></ResourceProvider>} />
@@ -144,13 +206,13 @@ function AppRoutes() {
             <Route path="/admin/posts" element={<AdminRoute><PageTransition><AdminPosts /></PageTransition></AdminRoute>} />
             <Route path="/admin/courses" element={<AdminRoute><PageTransition><AdminCourses /></PageTransition></AdminRoute>} />
             <Route path="/admin/live-sections" element={<AdminRoute><PageTransition><AdminLiveSections /></PageTransition></AdminRoute>} />
-            
-            {/* Admin User Management */}
             <Route path="/admin/users/:role" element={<AdminRoute><PageTransition><AdminUserList /></PageTransition></AdminRoute>} />
           </Route>
 
-          {/* Public Routes */}
-          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+          {/* Root path - redirects authenticated users to dashboard */}
+          <Route path="/" element={<HomeRedirect />} />
+
+          {/* Public pages (accessible to everyone) */}
           <Route path="/how-it-works" element={<PageTransition><HowItWorks /></PageTransition>} />
           <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
           <Route path="/faq" element={<PageTransition><FAQ /></PageTransition>} />
@@ -158,6 +220,8 @@ function AppRoutes() {
           <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
           <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
           <Route path="/mission" element={<PageTransition><Mission /></PageTransition>} />
+          
+          {/* Always public legal pages */}
           <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
           <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
           <Route path="/cookie-policy" element={<PageTransition><CookiePolicy /></PageTransition>} />
@@ -167,8 +231,8 @@ function AppRoutes() {
         </Routes>
       </AnimatePresence>
 
-      {isPublicRoute && <Footer />}
-      {isPublicRoute && <ScrollToTop />}
+      {showPublicLayout && <Footer />}
+      {showPublicLayout && <ScrollToTop />}
     </div>
   );
 }

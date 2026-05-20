@@ -1,4 +1,4 @@
-// frontend/src/context/AuthContext.jsx
+// frontend/src/context/AuthContext.jsx - Updated initializeAuth
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authAPI } from '../api/auth';
 
@@ -24,8 +24,28 @@ export function AuthProvider({ children }) {
 
     if (accessToken && refreshToken && storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
         setIsAuthenticated(true);
+        
+        // Try to refresh the token to make sure it's still valid
+        try {
+          const response = await authAPI.refreshToken(refreshToken);
+          const { access, refresh, user: userData } = response.data;
+          
+          localStorage.setItem('access_token', access);
+          localStorage.setItem('refresh_token', refresh);
+          
+          // Update user data if returned
+          if (userData) {
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
+          }
+        } catch (refreshError) {
+          // Token refresh failed - but user still has tokens, they might be expired
+          // Don't clear auth here, let the axios interceptor handle 401s
+          console.log('Token refresh on init failed, will try on first API call');
+        }
       } catch (error) {
         console.error('Failed to parse stored user:', error);
         clearAuth();
@@ -86,7 +106,6 @@ export function AuthProvider({ children }) {
       const data = response.data;
 
       if (data.is_new_user) {
-        // New user - return registration data
         return {
           success: true,
           isNewUser: true,
@@ -94,7 +113,6 @@ export function AuthProvider({ children }) {
           user: data.user,
         };
       } else {
-        // Existing user - set tokens
         const { access, refresh, user: userData } = data;
 
         localStorage.setItem('access_token', access);

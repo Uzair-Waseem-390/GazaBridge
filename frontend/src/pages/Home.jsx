@@ -1144,7 +1144,7 @@ function FinalCTA() {
   const magnetic2 = useMagnetic(0.5);
 
   return (
-    <section ref={containerRef} className="relative py-40 overflow-hidden bg-gray-900">
+    <section ref={containerRef} className="relative py-40 overflow-hidden bg-[#f8faf8]">
       <NoiseOverlay />
 
       {/* Animated grid background */}
@@ -1153,10 +1153,10 @@ function FinalCTA() {
           style={{ y: bgY }}
           className="absolute inset-0"
           dangerouslySetInnerHTML={{
-            __html: `<svg width="100%" height="120%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;opacity:0.06">
+            __html: `<svg width="100%" height="120%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;opacity:0.5">
               <defs>
-                <pattern id="smallGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#10b981" stroke-width="0.5"/>
+                <pattern id="smallGrid" width="80" height="80" patternUnits="userSpaceOnUse">
+                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#smallGrid)" />
@@ -1166,8 +1166,8 @@ function FinalCTA() {
       </div>
 
       {/* Glowing orbs */}
-      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-teal-500/8 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-400/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-teal-400/6 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto px-6 text-center">
         <motion.div
@@ -1181,18 +1181,18 @@ function FinalCTA() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 rounded-full border border-emerald-500/20 mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-full border border-emerald-200 mb-8"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-semibold text-emerald-400 tracking-wide uppercase" style={{ fontFamily: "'DM Sans', sans-serif" }}>Start Today — No Cost</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-semibold text-emerald-600 tracking-wide uppercase" style={{ fontFamily: "'DM Sans', sans-serif" }}>Start Today — No Cost</span>
           </motion.div>
 
           <h2
-            className="text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.95] mb-8 tracking-tight"
+            className="text-6xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-[0.95] mb-8 tracking-tight"
             style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
           >
             Ready to<br />
-            <em className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
+            <em className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
               Start Your Journey?
             </em>
           </h2>
@@ -1202,7 +1202,7 @@ function FinalCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="text-gray-400 text-lg mb-12 max-w-xl mx-auto leading-relaxed"
+            className="text-gray-500 text-lg mb-12 max-w-xl mx-auto leading-relaxed"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           >
             Join thousands of learners and volunteers making a real difference. Completely free, forever.
@@ -1225,7 +1225,7 @@ function FinalCTA() {
                 <motion.button
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
-                  className="group px-10 py-5 bg-white text-gray-900 font-bold rounded-full shadow-2xl shadow-black/30 text-base hover:bg-emerald-50 transition-colors duration-300 flex items-center gap-2"
+                  className="group px-10 py-5 bg-gray-900 text-white font-bold rounded-full shadow-xl shadow-gray-900/20 text-base hover:bg-emerald-600 transition-colors duration-300 flex items-center gap-2"
                   style={{ fontFamily: "'DM Sans', sans-serif" }}
                 >
                   Get Started Free
@@ -1245,9 +1245,9 @@ function FinalCTA() {
             >
               <Link to="/register">
                 <motion.button
-                  whileHover={{ scale: 1.04, borderColor: 'rgba(52,211,153,0.5)' }}
+                  whileHover={{ scale: 1.04, borderColor: 'rgba(16,185,129,0.5)' }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-10 py-5 border border-white/20 text-white font-semibold rounded-full text-base hover:bg-white/5 transition-all duration-300"
+                  className="px-10 py-5 border border-gray-200 bg-white text-gray-700 font-semibold rounded-full text-base hover:border-emerald-400 hover:text-emerald-600 transition-all duration-300 shadow-sm"
                   style={{ fontFamily: "'DM Sans', sans-serif" }}
                 >
                   Become a Volunteer
@@ -1277,7 +1277,7 @@ function FinalCTA() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.7 + i * 0.07 }}
-                className="flex items-center gap-2 px-4 py-2 bg-white/[0.06] rounded-full border border-white/[0.08] text-gray-400"
+                className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 text-gray-500 shadow-sm"
               >
                 <span className="text-base">{item.icon}</span>
                 <span className="text-xs font-medium" style={{ fontFamily: "'DM Sans', sans-serif" }}>{item.label}</span>

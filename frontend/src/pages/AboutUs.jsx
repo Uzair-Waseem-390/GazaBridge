@@ -3,10 +3,41 @@
 //   Fonts: Instrument Serif + DM Sans (add to index.html)
 //   Deps: framer-motion (already installed)
 
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion';
+import { useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { teamMembers } from '../data/team';
+
+// ─── Magnetic button hook ─────────────────────────────────────────────────────
+function useMagnetic(strength = 0.4) {
+  const ref = useRef(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const handleMouseMove = useCallback((e) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    x.set((e.clientX - (rect.left + rect.width / 2)) * strength);
+    y.set((e.clientY - (rect.top + rect.height / 2)) * strength);
+  }, [strength, x, y]);
+  const handleMouseLeave = useCallback(() => { x.set(0); y.set(0); }, [x, y]);
+  return { ref, x, y, handleMouseMove, handleMouseLeave };
+}
+
+// ─── Magnetic Button wrapper component ───────────────────────────────────────
+function MagneticButton({ children, strength = 0.4 }) {
+  const magnetic = useMagnetic(strength);
+  return (
+    <motion.div
+      ref={magnetic.ref}
+      onMouseMove={magnetic.handleMouseMove}
+      onMouseLeave={magnetic.handleMouseLeave}
+      style={{ x: magnetic.x, y: magnetic.y }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 // ─── Noise overlay ────────────────────────────────────────────────────────────
 function NoiseOverlay() {
@@ -342,9 +373,33 @@ export default function AboutUs() {
       </section>
 
       {/* ── JOIN CTA ────────────────────────────────────────────────────────── */}
-      <section className="py-24 bg-gray-900 relative overflow-hidden">
+      <section className="py-24 bg-[#f8faf8] relative overflow-hidden">
         <NoiseOverlay />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-emerald-700/10 rounded-full blur-[100px] pointer-events-none" />
+        
+        {/* Animated grid background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div
+            className="absolute inset-0"
+            dangerouslySetInnerHTML={{
+              __html: `<svg width="100%" height="120%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;opacity:0.5">
+                <defs>
+                  <pattern id="ctaGrid" width="80" height="80" patternUnits="userSpaceOnUse">
+                    <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#ctaGrid)" />
+              </svg>`
+            }}
+          />
+        </div>
+
+        {/* Glowing orbs */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-emerald-400/8 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-teal-400/6 rounded-full blur-[80px] pointer-events-none" />
+
+        {/* Architectural circles */}
+        <div className="absolute -right-40 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-emerald-200/40 pointer-events-none" />
+        <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-emerald-50/50 pointer-events-none" />
 
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <motion.div
@@ -354,35 +409,55 @@ export default function AboutUs() {
             transition={{ duration: 0.7 }}
           >
             <h2
-              className="text-5xl md:text-6xl font-bold text-white mb-5 leading-[0.95]"
+              className="text-5xl md:text-6xl font-bold text-gray-900 mb-5 leading-[0.95]"
               style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
             >
               Want to join<br />
-              <em className="text-emerald-400">our team?</em>
+              <em className="text-emerald-500">our team?</em>
             </h2>
-            <p className="text-gray-400 mb-10 text-base leading-relaxed max-w-sm mx-auto">
+            <p className="text-gray-500 mb-10 text-base leading-relaxed max-w-sm mx-auto">
               We're always looking for passionate volunteers and collaborators who want to make a real difference.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/register">
-                <motion.button
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="px-8 py-4 bg-white text-gray-900 text-sm font-bold rounded-full hover:bg-emerald-50 transition-colors duration-300 flex items-center gap-2"
-                >
-                  Volunteer With Us
-                  <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
-                </motion.button>
-              </Link>
-              <Link to="/contact">
-                <motion.button
-                  whileHover={{ scale: 1.04, borderColor: 'rgba(52,211,153,0.5)' }}
-                  whileTap={{ scale: 0.97 }}
-                  className="px-8 py-4 border border-white/20 text-white text-sm font-semibold rounded-full hover:bg-white/5 transition-all duration-300"
-                >
-                  Get In Touch
-                </motion.button>
-              </Link>
+            
+            {/* Floating Magnetic Buttons */}
+            <div className="flex flex-wrap justify-center gap-5">
+              {/* Volunteer With Us - Magnetic Button */}
+              <MagneticButton strength={0.5}>
+                <Link to="/register">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="group relative px-8 py-4 bg-gray-900 text-white font-semibold rounded-full overflow-hidden"
+                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                  >
+                    <motion.span
+                      className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    />
+                    <span className="relative z-10 flex items-center gap-2 text-sm tracking-wide">
+                      Volunteer With Us
+                      <motion.span
+                        animate={{ x: [0, 4, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className="inline-block"
+                      >→</motion.span>
+                    </span>
+                  </motion.button>
+                </Link>
+              </MagneticButton>
+
+              {/* Get In Touch - Magnetic Button */}
+              <MagneticButton strength={0.4}>
+                <Link to="/contact">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="px-8 py-4 rounded-full border border-gray-200 bg-white text-gray-700 font-semibold hover:border-emerald-300 transition-colors text-sm tracking-wide"
+                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                  >
+                    Get In Touch
+                  </motion.button>
+                </Link>
+              </MagneticButton>
             </div>
           </motion.div>
         </div>

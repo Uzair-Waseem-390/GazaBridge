@@ -1,10 +1,88 @@
 // frontend/src/pages/admin/AdminUserList.jsx - UPDATED
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { adminAPI } from '../../api/admin';
 import { usersAPI } from '../../api/users';
 import { useAuth } from '../../context/AuthContext';
+
+// Beautiful Confirmation Modal Component
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'promote' }) => {
+  if (!isOpen) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
+      >
+        <div className={`h-1 ${
+          type === 'promote' 
+            ? 'bg-gradient-to-r from-purple-500 to-pink-500' 
+            : 'bg-gradient-to-r from-red-500 to-red-600'
+        }`} />
+        
+        <div className="p-6">
+          <div className="flex justify-center mb-4">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+              className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                type === 'promote' ? 'bg-purple-100' : 'bg-red-100'
+              }`}
+            >
+              {type === 'promote' ? (
+                <svg className="w-8 h-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+              ) : (
+                <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              )}
+            </motion.div>
+          </div>
+
+          <h3 className="text-xl font-bold text-center text-gray-900 mb-2">{title}</h3>
+          <p className="text-gray-600 text-center mb-6">{message}</p>
+
+          <div className="flex gap-3">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onClose}
+              className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+            >
+              Cancel
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onConfirm}
+              className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
+                type === 'promote'
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
+                  : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
+              }`}
+            >
+              Confirm
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const ROLE_LABELS = {
   volunteers: { title: 'Volunteers', icon: '🙌', description: 'Users with only volunteer role' },
@@ -31,19 +109,19 @@ export default function AdminUserList() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [actionLoading, setActionLoading] = useState(null); // Track which user ID is being processed
+  const [actionLoading, setActionLoading] = useState(null);
   const [message, setMessage] = useState('');
+  const [promoteModal, setPromoteModal] = useState({ isOpen: false, userId: null, userEmail: '' });
+  const [demoteModal, setDemoteModal] = useState({ isOpen: false, userId: null, userEmail: '' });
 
   const roleInfo = ROLE_LABELS[role] || { title: 'Users', icon: '👥', description: '' };
   const fetchFn = API_MAP[role];
 
-  // Check if current user is admin or superuser (can promote/demote)
   const adminRoles = ['admin', 'superuser'];
   const canManageRoles = currentUser?.roles?.some(r => adminRoles.includes(r)) || 
                          currentUser?.is_staff || 
                          currentUser?.is_superuser;
 
-  // Show promote/demote buttons only on volunteers, seekers, both, and managers tabs
   const showRoleActions = ['volunteers', 'seekers', 'both', 'managers'].includes(role);
 
   const fetchUsers = async () => {
@@ -64,17 +142,17 @@ export default function AdminUserList() {
     fetchUsers();
   }, [role, page]);
 
-  const handlePromote = async (userId, userEmail) => {
-    if (!window.confirm(`Promote ${userEmail} to manager?`)) return;
-    
+  const handlePromote = async () => {
+    const userId = promoteModal.userId;
+    const userEmail = promoteModal.userEmail;
     setActionLoading(userId);
     setMessage('');
     
     try {
       const response = await usersAPI.promoteToManager(userId);
       setMessage(response.data.detail);
-      // Refresh the list
       fetchUsers();
+      setPromoteModal({ isOpen: false, userId: null, userEmail: '' });
     } catch (err) {
       setMessage(err.response?.data?.detail || 'Failed to promote user');
     } finally {
@@ -82,17 +160,17 @@ export default function AdminUserList() {
     }
   };
 
-  const handleDemote = async (userId, userEmail) => {
-    if (!window.confirm(`Demote ${userEmail} from manager?`)) return;
-    
+  const handleDemote = async () => {
+    const userId = demoteModal.userId;
+    const userEmail = demoteModal.userEmail;
     setActionLoading(userId);
     setMessage('');
     
     try {
       const response = await usersAPI.demoteFromManager(userId);
       setMessage(response.data.detail);
-      // Refresh the list
       fetchUsers();
+      setDemoteModal({ isOpen: false, userId: null, userEmail: '' });
     } catch (err) {
       setMessage(err.response?.data?.detail || 'Failed to demote user');
     } finally {
@@ -194,7 +272,7 @@ export default function AdminUserList() {
                             {user.first_name} {user.last_name}
                           </span>
                         </div>
-                      </td>
+                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
                       <td className="px-6 py-4">
                         <div className="flex flex-wrap gap-1">
@@ -223,7 +301,7 @@ export default function AdminUserList() {
                               <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => handlePromote(user.id, user.email)}
+                                onClick={() => setPromoteModal({ isOpen: true, userId: user.id, userEmail: user.email })}
                                 disabled={actionLoading === user.id}
                                 className="px-3 py-1.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-semibold rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-1"
                                 title="Promote to Manager"
@@ -249,7 +327,7 @@ export default function AdminUserList() {
                               <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => handleDemote(user.id, user.email)}
+                                onClick={() => setDemoteModal({ isOpen: true, userId: user.id, userEmail: user.email })}
                                 disabled={actionLoading === user.id}
                                 className="px-3 py-1.5 bg-red-100 text-red-700 text-xs font-semibold rounded-lg hover:bg-red-200 transition-all disabled:opacity-50 flex items-center gap-1"
                                 title="Demote from Manager"
@@ -331,6 +409,26 @@ export default function AdminUserList() {
           </div>
         )}
       </motion.div>
+
+      {/* Promote Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={promoteModal.isOpen}
+        onClose={() => setPromoteModal({ isOpen: false, userId: null, userEmail: '' })}
+        onConfirm={handlePromote}
+        title="Promote to Manager"
+        message={`Are you sure you want to promote ${promoteModal.userEmail} to Manager? This will give them additional privileges.`}
+        type="promote"
+      />
+
+      {/* Demote Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={demoteModal.isOpen}
+        onClose={() => setDemoteModal({ isOpen: false, userId: null, userEmail: '' })}
+        onConfirm={handleDemote}
+        title="Demote from Manager"
+        message={`Are you sure you want to demote ${demoteModal.userEmail} from Manager? They will lose their manager privileges.`}
+        type="demote"
+      />
     </div>
   );
 }

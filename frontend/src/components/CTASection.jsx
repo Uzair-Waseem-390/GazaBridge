@@ -8,7 +8,7 @@ export default function CTASection() {
   const isInView = useInView(ref, { once: true });
 
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-12 md:py-24 overflow-hidden">
       {/* Animated Gradient Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600" />
@@ -38,7 +38,7 @@ export default function CTASection() {
         />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6">
+      <div className="relative max-w-7xl mx-auto px-4 md:px-6">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 50 }}
@@ -50,7 +50,7 @@ export default function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.2 }}
-            className="text-4xl md:text-6xl font-bold text-white mb-6"
+            className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6"
           >
             Ready to Start Your
             <br />
@@ -87,7 +87,7 @@ export default function CTASection() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ delay: 0.6 }}
-            className="flex flex-wrap justify-center gap-4"
+            className="flex flex-col sm:flex-row justify-center gap-4 w-full sm:w-auto"
           >
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0, 0, 0, 0.2)" }}
@@ -116,7 +116,7 @@ export default function CTASection() {
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : { opacity: 0 }}
             transition={{ delay: 0.8 }}
-            className="flex justify-center mt-16 space-x-12"
+            className="flex flex-col sm:flex-row justify-center items-center mt-12 md:mt-16 gap-8 md:gap-12"
           >
             {[
               { label: 'Free Forever', icon: '🎓' },

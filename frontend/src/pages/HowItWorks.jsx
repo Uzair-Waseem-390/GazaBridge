@@ -232,7 +232,7 @@ export default function HowItWorks() {
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8] pt-24"
+        className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8] pt-20 md:pt-24"
       >
         <NoiseOverlay />
         <MouseGradient />
@@ -277,39 +277,8 @@ export default function HowItWorks() {
           </motion.div>
         </motion.div>
 
-        {/* Floating card — bottom left, same as Home */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2, duration: 0.8 }}
-          className="absolute bottom-36 left-8 hidden xl:block"
-        >
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="bg-white rounded-2xl shadow-xl shadow-black/5 border border-gray-100 p-4 w-54"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-base">🤝</div>
-              <div>
-                <div className="text-xs text-gray-400 font-medium">Live right now</div>
-                <div className="text-sm font-semibold text-gray-800">238 active sessions</div>
-              </div>
-            </div>
-            <div className="flex gap-1">
-              {[60, 80, 55, 90, 70, 85, 95].map((h, i) => (
-                <motion.div key={i}
-                  initial={{ scaleY: 0 }} animate={{ scaleY: 1 }}
-                  transition={{ delay: 2.4 + i * 0.07, duration: 0.4 }}
-                  style={{ height: `${h * 0.28}px`, originY: 1 }}
-                  className="flex-1 bg-gradient-to-t from-emerald-500 to-teal-400 rounded-sm"
-                />
-              ))}
-            </div>
-          </motion.div>
-        </motion.div>
-
         {/* Hero content */}
-        <motion.div style={{ y: heroY }} className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+        <motion.div style={{ y: heroY }} className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 w-full">
           <div className="max-w-2xl space-y-8">
 
             {/* Eyebrow — same as Home */}
@@ -331,18 +300,18 @@ export default function HowItWorks() {
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-gray-900 leading-[0.95] tracking-tight"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700 }}
+                className="text-4xl md:text-5xl lg:text-7xl text-gray-900 leading-[0.95] tracking-tight"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 700 }}
               >
                 How
               </motion.h1>
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.38, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="italic leading-[0.95] tracking-tight"
+                className="text-4xl md:text-5xl lg:text-7xl italic leading-[0.95] tracking-tight"
                 style={{
                   fontFamily: "'Instrument Serif', Georgia, serif",
-                  fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700,
+                  fontWeight: 700,
                   background: 'linear-gradient(90deg,#10b981,#14b8a6,#06b6d4)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
                 }}
@@ -352,8 +321,8 @@ export default function HowItWorks() {
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-gray-900 leading-[0.95] tracking-tight"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700 }}
+                className="text-4xl md:text-5xl lg:text-7xl text-gray-900 leading-[0.95] tracking-tight"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 700 }}
               >
                 Works
               </motion.h1>
@@ -372,7 +341,7 @@ export default function HowItWorks() {
             <motion.div
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.75, duration: 0.8 }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full sm:w-auto"
             >
               <Magnetic>
                 <Link to="/register">
@@ -455,8 +424,8 @@ export default function HowItWorks() {
       </div>
 
       {/* ══════════════════════════════════════════════ ROLE TOGGLE ══ */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-10 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
 
           {/* Toggle */}
           <motion.div
@@ -505,7 +474,7 @@ export default function HowItWorks() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -24 }}
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="grid lg:grid-cols-[1.6fr_1fr] gap-12 items-start"
+              className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-12 items-start"
             >
               {/* Left — scroll-driven timeline */}
               <div ref={stepsRef} className="relative">
@@ -567,10 +536,10 @@ export default function HowItWorks() {
       </section>
 
       {/* ══════════════════════════════════════════════ STATS BAND ══ */}
-      <section className="py-16 bg-[#f8faf8] overflow-hidden">
+      <section className="py-10 md:py-16 bg-[#f8faf8] overflow-hidden">
         <NoiseOverlay />
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200 rounded-3xl overflow-hidden border border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200 rounded-3xl overflow-hidden border border-gray-200">
             {[
               { v: '5,000+', l: 'Active Learners',    icon: '🎓' },
               { v: '850+',   l: 'Expert Volunteers',  icon: '🙌' },
@@ -604,7 +573,7 @@ export default function HowItWorks() {
 
       {/* ══════════════════════════════════════════════ FINAL CTA ══ */}
       {/* Exact same gradient as Home FinalCTA */}
-      <section className="relative py-32 overflow-hidden">
+      <section className="relative py-16 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700" />
         <div className="absolute inset-0 overflow-hidden">
           <motion.div animate={{ x: [0, -50, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
@@ -632,7 +601,7 @@ export default function HowItWorks() {
             <motion.h2
               initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: 0.2 }}
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
+              className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight"
               style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
             >
               Ready to Start<br />
@@ -658,7 +627,7 @@ export default function HowItWorks() {
             <motion.div
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }} transition={{ delay: 0.5 }}
-              className="flex flex-wrap justify-center gap-4 pt-2"
+              className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-2 w-full"
             >
               <Magnetic>
                 <Link to="/register">

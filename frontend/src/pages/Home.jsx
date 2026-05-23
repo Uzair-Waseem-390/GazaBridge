@@ -197,42 +197,8 @@ function Hero() {
         </motion.div>
       </motion.div>
 
-      {/* Bottom-left floating card */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2, duration: 0.8 }}
-        className="absolute bottom-32 left-8 hidden xl:block"
-      >
-        <motion.div
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-          className="bg-white rounded-2xl shadow-xl shadow-black/5 border border-gray-100 p-4 w-52"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-base">🚀</div>
-            <div>
-              <div className="text-xs text-gray-400 font-medium">This month</div>
-              <div className="text-sm font-semibold text-gray-800">312 launched careers</div>
-            </div>
-          </div>
-          <div className="flex gap-1">
-            {[90, 65, 80, 95, 70, 85, 100].map((h, i) => (
-              <motion.div
-                key={i}
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
-                transition={{ delay: 2.4 + i * 0.07, duration: 0.4 }}
-                style={{ height: `${h * 0.28}px`, originY: 1 }}
-                className="flex-1 bg-gradient-to-t from-emerald-500 to-teal-400 rounded-sm"
-              />
-            ))}
-          </div>
-        </motion.div>
-      </motion.div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-28 pb-20 w-full">
-        <div className="grid lg:grid-cols-[1fr_420px] gap-20 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 pt-16 md:pt-28 pb-12 md:pb-20 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-12 md:gap-20 items-center">
 
           {/* LEFT */}
           <div className="space-y-10">
@@ -254,7 +220,7 @@ function Hero() {
             </motion.div>
 
             {/* HEADLINE — giant serif + word swap */}
-            <div className="space-y-1">
+            <div className="space-y-0">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -262,7 +228,7 @@ function Hero() {
                 className="overflow-hidden"
               >
                 <h1
-                  className="text-[clamp(3.2rem,7vw,6.5rem)] font-serif leading-[0.95] tracking-tight text-gray-900"
+                  className="text-4xl md:text-5xl lg:text-[6.5rem] font-serif leading-[0.95] tracking-tight text-gray-900"
                   style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
                 >
                   Build Your
@@ -331,10 +297,9 @@ function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.75, duration: 0.8 }}
-              className="flex flex-wrap items-center gap-4"
+              className="flex flex-col items-center gap-4 mt-8 sm:flex-row sm:items-center sm:justify-start"
             >
-              {/* Primary magnetic CTA */}
-              <motion.div
+              <motion.div className="w-full sm:w-auto"
                 ref={magnetic.ref}
                 onMouseMove={magnetic.handleMouseMove}
                 onMouseLeave={magnetic.handleMouseLeave}
@@ -344,13 +309,13 @@ function Hero() {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className="group relative px-8 py-4 bg-gray-900 text-white font-semibold rounded-full overflow-hidden"
+                    className="w-full sm:w-auto group relative px-8 py-4 bg-gray-900 text-white font-semibold rounded-full overflow-hidden"
                     style={{ fontFamily: "'DM Sans', sans-serif" }}
                   >
                     <motion.span
                       className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     />
-                    <span className="relative z-10 flex items-center gap-2 text-sm tracking-wide">
+                    <span className="relative z-10 flex items-center justify-center gap-2 text-sm tracking-wide">
                       Start Learning Free
                       <motion.span
                         animate={{ x: [0, 4, 0] }}
@@ -362,8 +327,7 @@ function Hero() {
                 </Link>
               </motion.div>
 
-              {/* Secondary */}
-              <motion.div
+              <motion.div className="w-full sm:w-auto"
                 ref={magnetic2.ref}
                 onMouseMove={magnetic2.handleMouseMove}
                 onMouseLeave={magnetic2.handleMouseLeave}
@@ -373,7 +337,7 @@ function Hero() {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className="px-8 py-4 rounded-full border border-gray-200 bg-white text-gray-700 font-semibold hover:border-emerald-300 transition-colors text-sm tracking-wide"
+                    className="w-full sm:w-auto px-8 py-4 rounded-full border border-gray-200 bg-white text-gray-700 font-semibold hover:border-emerald-300 transition-colors text-sm tracking-wide"
                     style={{ fontFamily: "'DM Sans', sans-serif" }}
                   >
                     Volunteer With Us
@@ -807,7 +771,7 @@ function ServicesSection() {
               <span className="text-xs font-semibold tracking-[0.2em] uppercase text-emerald-600" style={{ fontFamily: "'DM Sans', sans-serif" }}>What We Offer</span>
             </div>
             <h2
-              className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05]"
+              className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05]"
               style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
             >
               Skills That<br />
@@ -969,7 +933,7 @@ function TestimonialsSection() {
         </motion.div>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
@@ -1144,7 +1108,7 @@ function FinalCTA() {
   const magnetic2 = useMagnetic(0.5);
 
   return (
-    <section ref={containerRef} className="relative py-40 overflow-hidden bg-[#f8faf8]">
+    <section ref={containerRef} className="relative py-20 md:py-40 overflow-hidden bg-[#f8faf8]">
       <NoiseOverlay />
 
       {/* Animated grid background */}
@@ -1188,7 +1152,7 @@ function FinalCTA() {
           </motion.div>
 
           <h2
-            className="text-6xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-[0.95] mb-8 tracking-tight"
+            className="text-4xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-[0.95] mb-8 tracking-tight"
             style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
           >
             Ready to<br />
@@ -1213,7 +1177,7 @@ function FinalCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.45 }}
-            className="flex flex-wrap items-center justify-center gap-4 mb-16"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 w-full"
           >
             <motion.div
               ref={magnetic.ref}

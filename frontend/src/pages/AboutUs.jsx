@@ -186,15 +186,16 @@ export default function AboutUs() {
                 </h2>
 
                 {/* Big stat */}
-                <div className="mt-8 bg-gray-900 rounded-3xl p-7 text-white">
-                  <div
-                    className="text-5xl font-bold mb-2"
+                <article className="mt-8 bg-slate-950 rounded-3xl p-8 text-white border border-white/10 shadow-2xl shadow-black/30">
+                  <h3
+                    className="text-[clamp(4rem,8vw,5.5rem)] font-serif leading-[0.95] tracking-tight text-white mb-4"
                     style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
-                  >45+</div>
-                  <div className="text-sm text-gray-400 leading-relaxed">
+                  >45+</h3>
+                  <p className="text-sm text-slate-300 leading-relaxed max-w-2xl">
                     Countries with volunteers who believe that talent is universal — but opportunity isn't.
-                  </div>
-                  <div className="mt-5 flex gap-1">
+                  </p>
+
+                  <div className="mt-6 flex items-end gap-2">
                     {[70, 85, 60, 95, 75, 90, 65].map((h, i) => (
                       <motion.div
                         key={i}
@@ -203,11 +204,11 @@ export default function AboutUs() {
                         viewport={{ once: true }}
                         transition={{ delay: i * 0.07, duration: 0.4 }}
                         style={{ height: `${h * 0.3}px`, originY: 1 }}
-                        className="flex-1 bg-gradient-to-t from-emerald-500 to-teal-400 rounded-sm opacity-80"
+                        className="flex-1 rounded-2xl bg-gradient-to-t from-emerald-500 to-teal-400 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]"
                       />
                     ))}
                   </div>
-                </div>
+                </article>
               </motion.div>
             </div>
 

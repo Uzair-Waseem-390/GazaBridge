@@ -126,7 +126,7 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
         </div>
 
         {/* Author & Actions */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
               {course.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
@@ -139,10 +139,10 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
             <Link
               to={`/courses/${course.id}`}
-              className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="flex-1 sm:flex-none text-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
             >
               View Course
             </Link>

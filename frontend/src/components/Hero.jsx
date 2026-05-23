@@ -57,14 +57,14 @@ export default function Hero() {
         </FloatingElement>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 py-12 md:px-6 md:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-8"
+            className="space-y-6 md:space-y-8 text-center lg:text-left flex flex-col items-center lg:items-start"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -83,7 +83,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-5xl lg:text-7xl font-bold leading-tight"
+              className="text-3xl md:text-5xl lg:text-7xl font-bold leading-tight"
             >
               <span className="text-gray-900">Build Your </span>
               <span className="relative">
@@ -113,7 +113,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="text-xl text-gray-600 leading-relaxed max-w-xl"
+              className="text-base md:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-xl"
             >
               Connecting passionate volunteers worldwide with talented individuals in Gaza. 
               Free education, mentorship, and career guidance to build a brighter tomorrow.
@@ -123,7 +123,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
             >
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(16, 185, 129, 0.3)" }}
@@ -152,7 +152,7 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1, duration: 0.8 }}
-              className="flex items-center space-x-8 pt-4"
+              className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-8 pt-4"
             >
               <div className="flex -space-x-3">
                 {[...Array(4)].map((_, i) => (
@@ -234,7 +234,7 @@ export default function Hero() {
                   ease: "easeInOut",
                   delay: 0.5,
                 }}
-                className="absolute top-10 -left-10 bg-white shadow-xl rounded-2xl p-4 border border-gray-100"
+                className="absolute top-10 -left-10 lg:-left-10 bg-white shadow-xl rounded-2xl p-4 border border-gray-100 hidden sm:block"
               >
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
@@ -259,7 +259,7 @@ export default function Hero() {
                   ease: "easeInOut",
                   delay: 1,
                 }}
-                className="absolute bottom-20 -right-10 bg-white shadow-xl rounded-2xl p-4 border border-gray-100"
+                className="absolute bottom-20 -right-10 lg:-right-10 bg-white shadow-xl rounded-2xl p-4 border border-gray-100 hidden sm:block"
               >
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
@@ -284,7 +284,7 @@ export default function Hero() {
                   ease: "easeInOut",
                   delay: 1.5,
                 }}
-                className="absolute top-1/2 -right-20 bg-white shadow-xl rounded-2xl p-3 border border-gray-100"
+                className="absolute top-1/2 -right-20 lg:-right-20 bg-white shadow-xl rounded-2xl p-3 border border-gray-100 hidden sm:block"
               >
                 <div className="text-center">
                   <div className="text-2xl font-bold text-emerald-600">100%</div>

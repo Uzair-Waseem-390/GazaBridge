@@ -30,7 +30,7 @@ We invite volunteers worldwide to join our mission. Whether you can teach coding
 
 Our founder, Sana Adeel, recognized a critical gap. While there were thousands of talented people in Gaza eager to learn digital skills, they lacked access to structured training and mentorship. At the same time, countless professionals worldwide wanted to help but didn't know how to connect meaningfully.
 
-The solution was GazaBridge — a platform that makes these connections possible. We launched with a small team of five passionate individuals who believed in the power of community-driven education. Sana Adeel (Founder) and Mir Sadat Bin Rakib (Co-Founder) provided the vision. Uzair Waseem built the robust backend systems. Saja created the beautiful, intuitive interface. Zohaib Adnan ensured we could reach those who needed us most.
+The solution was GazaBridge — a platform that makes these connections possible. We launched with a small team of five passionate individuals who believed in the power of community-driven education. Sana Adeel (Founder) and Mir Sadat Bin Rakib (Co-Founder) provided the vision. Uzair Waseem built the robust backend systems. Saja abu hasan created the beautiful, intuitive interface. Zohaib Adnan ensured we could reach those who needed us most.
 
 What sets GazaBridge apart is our commitment to keeping everything free forever. We believe that financial barriers should never prevent someone from learning. Our volunteers are motivated by the desire to make a difference, not by profit.
 

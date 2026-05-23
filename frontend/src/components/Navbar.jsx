@@ -126,7 +126,7 @@ export default function Navbar() {
             : 'bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-[72px] flex items-center justify-between">
 
           {/* ── Logo ── */}
           <Link to="/">
@@ -165,7 +165,7 @@ export default function Navbar() {
           <div
             ref={containerRef}
             onMouseLeave={handleContainerLeave}
-            className="hidden lg:flex items-center relative"
+            className="hidden md:flex items-center relative"
           >
             {/* Hover background pill */}
             <motion.div
@@ -209,7 +209,7 @@ export default function Navbar() {
           </div>
 
           {/* ── Desktop auth CTA ── */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             {isAuthenticated ? (
               <>
                 <NotificationBell />
@@ -314,7 +314,7 @@ export default function Navbar() {
           <motion.button
             whileTap={{ scale: 0.88 }}
             onClick={() => setMobileMenu(!isMobileMenuOpen)}
-            className="lg:hidden relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
+            className="md:hidden relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
           >
             <div className="flex flex-col gap-[5px] w-5">
               <motion.span
@@ -345,7 +345,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:hidden mx-4 mt-1 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-black/10 border border-gray-100 overflow-hidden"
+            className="md:hidden mx-4 mt-1 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-black/10 border border-gray-100 overflow-hidden"
           >
             <div className="p-4">
 

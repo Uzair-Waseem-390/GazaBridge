@@ -26,7 +26,7 @@ export const teamMembers = [
   },
   {
     id: 4,
-    name: 'Saja',
+    name: 'Saja abu hasan',
     role: 'Frontend Developer',
     bio: 'Creating beautiful, intuitive interfaces that make learning accessible and enjoyable.',
     avatar: 'SJ',

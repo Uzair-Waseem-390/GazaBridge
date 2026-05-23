@@ -81,7 +81,7 @@ export default function TrustUs() {
   const isInView = useInView(ref, { once: true });
 
   return (
-    <section id="trust-us" className="relative py-24 overflow-hidden">
+    <section id="trust-us" className="relative py-12 md:py-24 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900">
         <div className="absolute inset-0 opacity-10">
@@ -92,14 +92,14 @@ export default function TrustUs() {
         </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6">
+      <div className="relative max-w-7xl mx-auto px-4 md:px-6">
         {/* Stats Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12 md:mb-20"
         >
           {stats.map((stat, index) => (
             <StatCard key={stat.label} stat={stat} index={index} />
@@ -122,7 +122,7 @@ export default function TrustUs() {
           >
             Trust & Transparency
           </motion.span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
             Why Trust <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">GazaBridge?</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
@@ -131,7 +131,7 @@ export default function TrustUs() {
         </motion.div>
 
         {/* Trust Points */}
-        <div className="grid md:grid-cols-3 gap-8 mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 md:mb-20">
           {[
             {
               title: '100% Free Forever',
@@ -178,7 +178,7 @@ export default function TrustUs() {
           <p className="text-gray-400">Real stories from real people whose lives we've touched</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.name}

@@ -58,32 +58,32 @@ const StepCard = ({ step, index }) => {
       transition={{ delay: index * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="relative group"
     >
-      <div className="relative p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2 border border-gray-100">
-        {/* Number */}
-        <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform duration-500">
+      <div className="relative p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2 border border-[#808000]/10">
+        {/* Number - Olive */}
+        <div className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-[#808000] to-[#6b6b00] rounded-xl flex items-center justify-center shadow-lg transform rotate-6 group-hover:rotate-12 transition-transform duration-500">
           <span className="text-lg font-bold text-white">{step.number}</span>
         </div>
 
-        {/* Icon */}
+        {/* Icon - Olive */}
         <motion.div
           whileHover={{ rotate: 360, scale: 1.1 }}
           transition={{ duration: 0.6 }}
-          className="w-16 h-16 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl flex items-center justify-center mb-6 text-emerald-600"
+          className="w-16 h-16 bg-gradient-to-br from-[#808000]/5 to-[#808000]/10 rounded-2xl flex items-center justify-center mb-6 text-[#808000]"
         >
           {step.icon}
         </motion.div>
 
         {/* Content */}
-        <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-        <p className="text-gray-600 leading-relaxed">{step.description}</p>
+        <h3 className="text-xl font-bold text-[#111100] mb-3">{step.title}</h3>
+        <p className="text-[#555500] leading-relaxed">{step.description}</p>
 
-        {/* Hover Line */}
-        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-2xl" />
+        {/* Hover Line - Olive */}
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#808000] to-[#6b6b00] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-2xl" />
       </div>
 
-      {/* Connection Line */}
+      {/* Connection Line - Olive */}
       {index < steps.length - 1 && (
-        <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-emerald-300 to-transparent" />
+        <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-[#808000]/30 to-transparent" />
       )}
     </motion.div>
   );
@@ -95,10 +95,10 @@ export default function HowItWorks() {
 
   return (
     <section id="how-it-works" className="relative py-24 overflow-hidden">
-      {/* Background Pattern */}
+      {/* Background Pattern - Olive */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, #059669 1px, transparent 0)',
+          backgroundImage: 'radial-gradient(circle at 1px 1px, #808000 1px, transparent 0)',
           backgroundSize: '40px 40px',
         }} />
       </div>
@@ -116,14 +116,18 @@ export default function HowItWorks() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             transition={{ delay: 0.2 }}
-            className="inline-block px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold mb-4 border border-emerald-200"
+            className="inline-block px-4 py-2 bg-[#808000]/5 text-[#808000] rounded-full text-sm font-semibold mb-4 border border-[#808000]/20"
           >
             Simple Process
           </motion.span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            How It <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Works</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-[#111100] mb-4" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
+            How It <span style={{
+              background: 'linear-gradient(90deg,#808000,#6b6b00)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>Works</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-[#555500] max-w-2xl mx-auto">
             From sign-up to career launch, we make your journey seamless and impactful
           </p>
         </motion.div>
@@ -135,7 +139,7 @@ export default function HowItWorks() {
           ))}
         </div>
 
-        {/* Bottom CTA */}
+        {/* Bottom CTA - Olive */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -146,7 +150,7 @@ export default function HowItWorks() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
+            className="px-8 py-4 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
             onClick={() => window.location.href = '#'}
           >
             Start Your Journey Now

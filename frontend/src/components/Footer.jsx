@@ -1,10 +1,7 @@
-// frontend/src/components/Footer.jsx
-// Design system: Instrument Serif + DM Sans — matches Home.jsx
-// Deps: framer-motion (already installed)
 
 import { Link, useLocation } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
 
 // ─── Noise overlay ─────────────────────────────────────────────────────────
 function NoiseOverlay() {
@@ -23,30 +20,33 @@ function NoiseOverlay() {
 }
 
 // ─── Marquee ───────────────────────────────────────────────────────────────
-function FooterMarquee() {
-  const words = [
-    'Web Development', '✦', 'UI/UX Design', '✦', 'Data Science', '✦',
-    'Digital Marketing', '✦', 'Career Coaching', '✦', 'Cybersecurity',
-    '✦', 'Mobile Apps', '✦', 'AI & Machine Learning', '✦',
-  ];
-  const doubled = [...words, ...words];
+function MarqueeStrip() {
+  const items = ['Web Development', '✦', 'UI/UX Design', '✦', 'Data Science', '✦', 'Digital Marketing', '✦', 'Freelancing', '✦', 'AI & Machine Learning', '✦', 'Cybersecurity', '✦', 'Mobile Apps', '✦'];
+  const doubled = [...items, ...items];
 
   return (
-    <div className="relative overflow-hidden border-b border-white/[0.06] py-4">
+    <div
+      className="relative py-4 overflow-hidden border-y z-10 backdrop-blur-sm"
+      style={{
+        backgroundColor: 'rgba(252, 236, 222, 0.6)',
+        borderColor: 'rgba(128, 128, 0, 0.15)'
+      }}
+    >
       <motion.div
         animate={{ x: ['0%', '-50%'] }}
-        transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
         className="flex items-center gap-8 whitespace-nowrap"
       >
-        {doubled.map((w, i) => (
+        {doubled.map((item, i) => (
           <span
             key={i}
-            className={`text-xs font-medium tracking-widest uppercase ${
-              w === '✦' ? 'text-emerald-500' : 'text-gray-600'
-            }`}
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
+            className="text-sm font-bold tracking-wide"
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              color: item === '✦' ? '#808000' : '#111111'
+            }}
           >
-            {w}
+            {item}
           </span>
         ))}
       </motion.div>
@@ -88,7 +88,7 @@ const socials = [
     href: 'https://www.linkedin.com/company/gazabridge/posts/?feedView=all',
     icon: (
       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
       </svg>
     ),
   },
@@ -119,7 +119,6 @@ export default function Footer() {
   const location  = useLocation();
   const footerRef = useRef(null);
 
-  // Parallax big text
   const { scrollYProgress } = useScroll({
     target: footerRef,
     offset: ['start end', 'end end'],
@@ -131,28 +130,28 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="relative bg-gray-900 text-white overflow-hidden"
-      style={{ fontFamily: "'DM Sans', sans-serif" }}
+      className="relative overflow-hidden"
+      style={{ fontFamily: "'DM Sans', sans-serif", backgroundColor: '#FAF3E8', color: '#1a1a1a' }}
     >
       <NoiseOverlay />
 
-      {/* Grid lines — same as Home hero but subtler */}
+      {/* Grid lines */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(16,185,129,1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(16,185,129,1) 1px, transparent 1px)`,
+            linear-gradient(rgba(128,128,0,1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(128,128,0,1) 1px, transparent 1px)`,
           backgroundSize: '80px 80px',
         }}
       />
 
       {/* Glow orbs */}
-      <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-emerald-700/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-[300px] h-[200px] bg-teal-600/8 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-[#808000]/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-[300px] h-[200px] bg-[#C26100]/8 rounded-full blur-[80px] pointer-events-none" />
 
       {/* Scrolling marquee strip */}
-      <FooterMarquee />
+      <MarqueeStrip />
 
       {/* ── Main grid ── */}
       <div className="relative max-w-7xl mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-8 md:pb-10">
@@ -174,7 +173,7 @@ export default function Footer() {
                   whileHover={{ rotate: 0 }}
                   initial={{ rotate: 12 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl shadow-md shadow-emerald-500/20"
+                  className="absolute inset-0 bg-gradient-to-br from-[#808000] to-[#949413] rounded-xl shadow-md shadow-[#808000]/20"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -184,7 +183,7 @@ export default function Footer() {
                 </div>
               </div>
               <span
-                className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent"
+                className="text-xl font-bold bg-gradient-to-r from-[#C26100] to-[#E07A1B] bg-clip-text text-transparent"
                 style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
               >
                 GazaBridge
@@ -192,8 +191,8 @@ export default function Footer() {
             </Link>
 
             {/* Tagline */}
-            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Empowering people in Gaza through free digital skills education. 
+            <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
+              Empowering people in Gaza through free digital skills education.
               Connecting passionate volunteers with talented learners — worldwide, forever free.
             </p>
 
@@ -208,7 +207,7 @@ export default function Footer() {
                   aria-label={s.label}
                   whileHover={{ scale: 1.15, y: -2 }}
                   whileTap={{ scale: 0.93 }}
-                  className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/20 transition-colors duration-200"
+                  className="w-9 h-9 rounded-xl bg-black/[0.05] border border-black/[0.08] flex items-center justify-center text-gray-500 hover:text-[#C26100] hover:bg-[#C26100]/10 hover:border-[#C26100]/20 transition-colors duration-200"
                 >
                   {s.icon}
                 </motion.a>
@@ -219,9 +218,9 @@ export default function Footer() {
             <motion.a
               href="mailto:hello@gazabridge.org"
               whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-emerald-400 transition-colors group"
+              className="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-[#C26100] transition-colors group"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 group-hover:animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#808000] group-hover:animate-pulse" />
               hello@gazabridge.org
             </motion.a>
           </motion.div>
@@ -235,10 +234,9 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ delay: catIndex * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             >
-              {/* Category heading */}
               <div className="flex items-center gap-2 mb-5">
-                <div className="h-px w-4 bg-emerald-500/50" />
-                <h4 className="text-[11px] font-bold tracking-[0.18em] uppercase text-gray-500">
+                <div className="h-px w-4 bg-[#808000]/60" />
+                <h4 className="text-[11px] font-bold tracking-[0.18em] uppercase text-gray-400">
                   {category}
                 </h4>
               </div>
@@ -254,10 +252,10 @@ export default function Footer() {
                   >
                     <Link
                       to={link.href}
-                      className="group flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-400 transition-colors duration-200"
+                      className="group flex items-center gap-2 text-sm text-gray-500 hover:text-[#C26100] transition-colors duration-200"
                     >
                       <motion.span
-                        className="w-0 h-px bg-emerald-400 group-hover:w-3 transition-all duration-300"
+                        className="w-0 h-px bg-[#C26100] group-hover:w-3 transition-all duration-300"
                       />
                       {link.name}
                     </Link>
@@ -274,32 +272,34 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="border-t border-white/[0.07] pt-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 text-center md:text-left"
+          className="border-t border-black/[0.07] pt-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 text-center md:text-left"
         >
           {/* Left */}
           <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-600">
+            <span className="text-xs text-gray-400">
               © {new Date().getFullYear()} GazaBridge.
             </span>
-            <span className="w-1 h-1 rounded-full bg-gray-700" />
-            <span className="text-xs text-gray-600">
+            <span className="w-1 h-1 rounded-full bg-gray-300" />
+            <span className="text-xs text-gray-400">
               Made with{' '}
               <motion.span
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity }}
                 className="inline-block"
-              >❤️</motion.span>
+              >
+                ❤️
+              </motion.span>
               {' '}for Gaza.
             </span>
           </div>
 
-          {/* Centre — free badge */}
+          {/* Centre */}
           <motion.div
             whileHover={{ scale: 1.04 }}
-            className="flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full"
+            className="flex items-center gap-2 px-4 py-1.5 bg-[#C26100]/10 border border-[#C26100]/20 rounded-full"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[11px] font-semibold text-emerald-400 tracking-wide uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C26100] animate-pulse" />
+            <span className="text-[11px] font-semibold text-[#C26100] tracking-wide uppercase">
               100% Free Forever
             </span>
           </motion.div>
@@ -313,7 +313,7 @@ export default function Footer() {
               <Link
                 key={l.name}
                 to={l.href}
-                className="text-xs text-gray-600 hover:text-emerald-400 transition-colors duration-200"
+                className="text-xs text-gray-400 hover:text-[#C26100] transition-colors duration-200"
               >
                 {l.name}
               </Link>
@@ -329,7 +329,7 @@ export default function Footer() {
           className="text-center leading-none"
         >
           <span
-            className="text-[clamp(6rem,18vw,16rem)] font-bold text-white/[0.02]"
+            className="text-[clamp(6rem,18vw,16rem)] font-bold text-black/[0.03]"
             style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
           >
             GazaBridge

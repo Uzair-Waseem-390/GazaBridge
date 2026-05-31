@@ -6,27 +6,21 @@ import { usersAPI } from '../api/users';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 
 const COUNTRIES = [
-  // Middle East & North Africa
   'Palestine', 'Egypt', 'Jordan', 'Lebanon', 'Syria', 'Saudi Arabia',
   'UAE', 'Qatar', 'Kuwait', 'Oman', 'Bahrain', 'Yemen', 'Iraq',
   'Libya', 'Tunisia', 'Algeria', 'Morocco', 'Sudan', 'Somalia',
   'Mauritania', 'Djibouti', 'Comoros',
-  // Asia
   'Turkey', 'Pakistan', 'Afghanistan', 'Bangladesh', 'India', 'Indonesia',
   'Malaysia', 'Iran', 'Azerbaijan', 'Kazakhstan', 'Uzbekistan',
   'Kyrgyzstan', 'Tajikistan', 'Turkmenistan', 'China', 'Japan',
   'South Korea', 'Philippines', 'Thailand', 'Vietnam',
-  // Europe
   'United Kingdom', 'Germany', 'France', 'Spain', 'Italy', 'Netherlands',
   'Sweden', 'Norway', 'Denmark', 'Finland', 'Belgium', 'Switzerland',
   'Austria', 'Poland', 'Portugal', 'Greece', 'Ireland',
-  // Americas
   'United States', 'Canada', 'Brazil', 'Argentina', 'Mexico',
   'Colombia', 'Chile', 'Venezuela',
-  // Africa (Sub-Saharan)
   'Nigeria', 'Ethiopia', 'Kenya', 'Ghana', 'Senegal', 'Mali',
   'Niger', 'Chad', 'Cameroon', 'Tanzania', 'Uganda', 'South Africa',
-  // Oceania
   'Australia', 'New Zealand',
   'Other'
 ];
@@ -166,7 +160,6 @@ export default function Register() {
     } catch (err) {
       const errorData = err.response?.data;
       if (errorData) {
-        // Handle nested errors
         const messages = [];
         Object.entries(errorData).forEach(([key, value]) => {
           if (Array.isArray(value)) {
@@ -192,7 +185,7 @@ export default function Register() {
       className="space-y-5"
     >
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="email" className="block text-sm font-semibold text-[#111100] mb-2">
           Email address <span className="text-red-500">*</span>
         </label>
         <input
@@ -202,13 +195,13 @@ export default function Register() {
           required
           value={formData.email}
           onChange={handleChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
           placeholder="you@example.com"
         />
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="password" className="block text-sm font-semibold text-[#111100] mb-2">
           Password <span className="text-red-500">*</span>
         </label>
         <div className="relative">
@@ -219,13 +212,13 @@ export default function Register() {
             required
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+            className="w-full px-4 py-3 pr-12 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
             placeholder="At least 8 characters"
           />
           <button
             type="button"
             onClick={() => setShowPassword(prev => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#808000] transition-colors"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
             {showPassword ? (
@@ -243,7 +236,7 @@ export default function Register() {
       </div>
 
       <div>
-        <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="confirmPassword" className="block text-sm font-semibold text-[#111100] mb-2">
           Confirm Password <span className="text-red-500">*</span>
         </label>
         <div className="relative">
@@ -254,13 +247,13 @@ export default function Register() {
             required
             value={formData.confirmPassword}
             onChange={handleChange}
-            className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+            className="w-full px-4 py-3 pr-12 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
             placeholder="Repeat your password"
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(prev => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#808000] transition-colors"
             aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
           >
             {showConfirmPassword ? (
@@ -288,7 +281,7 @@ export default function Register() {
     >
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="first_name" className="block text-sm font-semibold text-[#111100] mb-2">
             First Name <span className="text-red-500">*</span>
           </label>
           <input
@@ -298,11 +291,11 @@ export default function Register() {
             required
             value={formData.first_name}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+            className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
           />
         </div>
         <div>
-          <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="last_name" className="block text-sm font-semibold text-[#111100] mb-2">
             Last Name <span className="text-red-500">*</span>
           </label>
           <input
@@ -312,13 +305,13 @@ export default function Register() {
             required
             value={formData.last_name}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+            className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+        <label className="block text-sm font-semibold text-[#111100] mb-3">
           I want to... <span className="text-red-500">*</span>
         </label>
         <div className="space-y-3">
@@ -327,8 +320,8 @@ export default function Register() {
               key={role.value}
               className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
                 formData.roles.includes(role.value)
-                  ? 'border-emerald-500 bg-emerald-50'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-[#808000] bg-[#808000]/5'
+                  : 'border-[#808000]/20 hover:border-[#808000]/40'
               }`}
             >
               <input
@@ -337,11 +330,11 @@ export default function Register() {
                 value={role.value}
                 checked={formData.roles.includes(role.value)}
                 onChange={handleChange}
-                className="mt-0.5 h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                className="mt-0.5 h-4 w-4 text-[#808000] focus:ring-[#808000] border-[#808000]/30 rounded"
               />
               <div className="ml-3">
-                <div className="text-sm font-medium text-gray-900">{role.label}</div>
-                <div className="text-sm text-gray-500">{role.description}</div>
+                <div className="text-sm font-medium text-[#111100]">{role.label}</div>
+                <div className="text-sm text-[#555500]">{role.description}</div>
               </div>
             </label>
           ))}
@@ -349,16 +342,16 @@ export default function Register() {
       </div>
 
       <div>
-        <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="country" className="block text-sm font-semibold text-[#111100] mb-2">
           Country <span className="text-red-500">*</span>
         </label>
-        <select
+              <select
           id="country"
           name="country"
           required
           value={formData.country}
           onChange={handleChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
         >
           <option value="">Select your country</option>
           {COUNTRIES.map(country => (
@@ -368,7 +361,7 @@ export default function Register() {
       </div>
 
       <div>
-        <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="gender" className="block text-sm font-semibold text-[#111100] mb-2">
           Gender <span className="text-red-500">*</span>
         </label>
         <select
@@ -377,7 +370,7 @@ export default function Register() {
           required
           value={formData.gender}
           onChange={handleChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
         >
           <option value="">Select gender</option>
           {GENDERS.map(gender => (
@@ -387,7 +380,7 @@ export default function Register() {
       </div>
 
       <div>
-        <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="linkedin" className="block text-sm font-semibold text-[#111100] mb-2">
           LinkedIn Profile <span className="text-red-500">*</span>
         </label>
         <input
@@ -398,12 +391,12 @@ export default function Register() {
           value={formData.linkedin}
           onChange={handleChange}
           placeholder="https://linkedin.com/in/yourprofile"
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">
+        <label className="block text-sm font-semibold text-[#111100] mb-3">
           Languages you speak
         </label>
         <div className="grid grid-cols-2 gap-2">
@@ -412,8 +405,8 @@ export default function Register() {
               key={language.code}
               className={`flex items-center p-2 rounded-lg border cursor-pointer transition-all ${
                 formData.languages.includes(language.code)
-                  ? 'border-emerald-500 bg-emerald-50'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? 'border-[#808000] bg-[#808000]/5'
+                  : 'border-[#808000]/20 hover:border-[#808000]/40'
               }`}
             >
               <input
@@ -422,16 +415,16 @@ export default function Register() {
                 value={language.code}
                 checked={formData.languages.includes(language.code)}
                 onChange={handleChange}
-                className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                className="h-4 w-4 text-[#808000] focus:ring-[#808000] border-[#808000]/30 rounded"
               />
-              <span className="ml-2 text-sm text-gray-700">{language.label}</span>
+              <span className="ml-2 text-sm text-[#111100]">{language.label}</span>
             </label>
           ))}
         </div>
       </div>
 
       <div>
-        <label htmlFor="whatsapp_number" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="whatsapp_number" className="block text-sm font-semibold text-[#111100] mb-2">
           WhatsApp Number <span className="text-gray-400">(optional)</span>
         </label>
         <input
@@ -441,7 +434,7 @@ export default function Register() {
           value={formData.whatsapp_number}
           onChange={handleChange}
           placeholder="+1234567890"
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
         />
       </div>
     </motion.div>
@@ -456,28 +449,28 @@ export default function Register() {
       <motion.div
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 0.5 }}
-        className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center"
+        className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#808000] to-[#6b6b00] rounded-full flex items-center justify-center"
       >
         <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
         </svg>
       </motion.div>
-      <h3 className="text-2xl font-bold text-gray-900 mb-4">Check Your Email</h3>
-      <p className="text-gray-600 mb-6">
+      <h3 className="text-2xl font-bold text-[#111100] mb-4" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Check Your Email</h3>
+      <p className="text-[#555500] mb-6">
         {successMessage || 'We\'ve sent a verification link to your email address. Please verify your email to activate your account.'}
       </p>
-      <p className="text-sm text-gray-500 mb-8">
+      <p className="text-sm text-[#555500] mb-8">
         Didn't receive the email? Check your spam folder or{' '}
         <button
           onClick={() => usersAPI.resendVerification(formData.email)}
-          className="text-emerald-600 hover:text-emerald-700 font-semibold"
+          className="text-[#808000] hover:text-[#6b6b00] font-semibold"
         >
           click here to resend
         </button>
       </p>
       <Link
         to="/login"
-        className="inline-block px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+        className="inline-block px-8 py-3 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
       >
         Go to Login
       </Link>
@@ -486,7 +479,8 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+      {/* Background - Cream/Beige */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E6] via-white to-[#E8E0D0]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -494,19 +488,42 @@ export default function Register() {
         transition={{ duration: 0.6 }}
         className="relative max-w-2xl w-full"
       >
+        {/* Logo - Centered with Image */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-              GazaBridge
-            </span>
-          </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
-          <p className="mt-2 text-gray-600">Join our community of learners and volunteers</p>
+          <div className="w-full mt-4">
+            <Link to="/" className="inline-flex flex-col items-center justify-center mb-1 mx-auto">
+              <div className="w-36 h-36 relative flex-shrink-0 mb-1 mx-auto">
+                <img 
+                  src="/assets/public/gazabrige.jpg" 
+                  alt="GazaBridge Logo" 
+                  className="w-full h-full object-contain rounded-2xl"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div 
+                  className="absolute inset-0 w-full h-full rounded-2xl flex items-center justify-center"
+                  style={{ 
+                    display: 'none',
+                    background: 'linear-gradient(135deg, #808000, #6b6b00)' 
+                  }}
+                >
+                  <svg className="w-16 h-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+          </div>
+          
+          <h2 className="text-3xl font-bold text-[#111100]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Create your account</h2>
+          <p className="mt-2 text-[#555500]">Join our community of learners and volunteers</p>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
-          {/* Progress Steps */}
+        {/* Form Card */}
+        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#808000]/10">
+          {/* Progress Steps - Olive */}
           {step < 3 && (
             <div className="mb-8">
               <div className="flex items-center justify-between">
@@ -514,19 +531,19 @@ export default function Register() {
                   <div key={stepName} className="flex items-center">
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
                       index + 1 <= step
-                        ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white'
-                        : 'bg-gray-200 text-gray-500'
+                        ? 'bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white'
+                        : 'bg-[#808000]/10 text-[#555500]'
                     }`}>
                       {index + 1 < step ? '✓' : index + 1}
                     </div>
                     <span className={`ml-2 text-sm font-medium hidden sm:block ${
-                      index + 1 <= step ? 'text-emerald-600' : 'text-gray-400'
+                      index + 1 <= step ? 'text-[#808000]' : 'text-gray-400'
                     }`}>
                       {stepName}
                     </span>
                     {index < STEPS.length - 1 && (
                       <div className={`w-12 sm:w-20 h-0.5 mx-2 ${
-                        index + 1 < step ? 'bg-emerald-500' : 'bg-gray-200'
+                        index + 1 < step ? 'bg-[#808000]' : 'bg-[#808000]/10'
                       }`} />
                     )}
                   </div>
@@ -535,16 +552,16 @@ export default function Register() {
             </div>
           )}
 
-          {/* Google Sign Up */}
+          {/* Google Sign Up - Olive */}
           {step === 1 && (
             <>
               <GoogleLoginButton className="mb-6" />
               <div className="relative mb-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200" />
+                  <div className="w-full border-t border-[#808000]/10" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-white text-gray-500">or continue with email</span>
+                  <span className="px-4 bg-white text-[#555500]">or continue with email</span>
                 </div>
               </div>
             </>
@@ -571,7 +588,7 @@ export default function Register() {
             {step === 2 && renderStep2()}
             {step === 3 && renderStep3()}
 
-            {/* Navigation Buttons */}
+            {/* Navigation Buttons - Olive */}
             {step < 3 && (
               <div className="flex gap-4 mt-8">
                 {step > 1 && (
@@ -580,7 +597,7 @@ export default function Register() {
                     onClick={handleBack}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                    className="flex-1 py-3 border-2 border-[#808000]/20 text-[#808000] font-semibold rounded-xl hover:bg-[#808000]/5 transition-colors"
                   >
                     Back
                   </motion.button>
@@ -591,7 +608,7 @@ export default function Register() {
                     onClick={handleNext}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all"
+                    className="flex-1 py-3 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[#808000]/25 hover:shadow-[#808000]/40 transition-all"
                   >
                     Continue
                   </motion.button>
@@ -601,7 +618,7 @@ export default function Register() {
                     disabled={loading}
                     whileHover={{ scale: loading ? 1 : 1.02 }}
                     whileTap={{ scale: loading ? 1 : 0.98 }}
-                    className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-3 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[#808000]/25 hover:shadow-[#808000]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <div className="flex items-center justify-center gap-2">
@@ -621,10 +638,11 @@ export default function Register() {
           </form>
         </div>
 
+        {/* Login Link - Olive */}
         {step < 3 && (
-          <p className="text-center mt-6 text-gray-600">
+          <p className="text-center mt-6 text-[#555500]">
             Already have an account?{' '}
-            <Link to="/login" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+            <Link to="/login" className="text-[#808000] hover:text-[#6b6b00] font-semibold">
               Sign in
             </Link>
           </p>

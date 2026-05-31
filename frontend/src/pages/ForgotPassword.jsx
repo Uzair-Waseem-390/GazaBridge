@@ -35,8 +35,8 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+      {/* Background - Cream/Beige */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E6] via-white to-[#E8E0D0]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -44,22 +44,43 @@ export default function ForgotPassword() {
         transition={{ duration: 0.6 }}
         className="relative max-w-md w-full"
       >
-        {/* Logo */}
+        {/* Logo - Centered with Image */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-              GazaBridge
-            </span>
-          </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Forgot your password?</h2>
-          <p className="mt-2 text-gray-600">
+          <div className="w-full mt-4">
+            <Link to="/" className="inline-flex flex-col items-center justify-center mb-1 mx-auto">
+              <div className="w-36 h-36 relative flex-shrink-0 mb-1 mx-auto">
+                <img 
+                  src="/assets/public/gazabrige.jpg" 
+                  alt="GazaBridge Logo" 
+                  className="w-full h-full object-contain rounded-2xl"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div 
+                  className="absolute inset-0 w-full h-full rounded-2xl flex items-center justify-center"
+                  style={{ 
+                    display: 'none',
+                    background: 'linear-gradient(135deg, #808000, #6b6b00)' 
+                  }}
+                >
+                  <svg className="w-16 h-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+          </div>
+          
+          <h2 className="text-3xl font-bold text-[#111100]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Forgot your password?</h2>
+          <p className="mt-2 text-[#555500]">
             No worries, we'll send you reset instructions.
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#808000]/10">
           {/* Error Message */}
           {error && (
             <motion.div
@@ -76,7 +97,7 @@ export default function ForgotPassword() {
             </motion.div>
           )}
 
-          {/* Success Message */}
+          {/* Success Message - Olive */}
           {success && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -86,31 +107,31 @@ export default function ForgotPassword() {
               <motion.div
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.5 }}
-                className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center"
+                className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#808000] to-[#6b6b00] rounded-full flex items-center justify-center"
               >
                 <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </motion.div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Check your email</h3>
-              <p className="text-gray-600 mb-4">
-                We've sent a password reset link to <span className="font-semibold text-gray-900">{email}</span>
+              <h3 className="text-2xl font-bold text-[#111100] mb-4" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Check your email</h3>
+              <p className="text-[#555500] mb-4">
+                We've sent a password reset link to <span className="font-semibold text-[#111100]">{email}</span>
               </p>
-              <p className="text-sm text-gray-500 mb-8">
+              <p className="text-sm text-[#555500] mb-8">
                 Didn't receive the email? Check your spam folder or{' '}
                 <button
                   onClick={() => {
                     setSuccess(false);
                     setError('');
                   }}
-                  className="text-emerald-600 hover:text-emerald-700 font-semibold"
+                  className="text-[#808000] hover:text-[#6b6b00] font-semibold"
                 >
                   try again
                 </button>
               </p>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold"
+                className="inline-flex items-center gap-2 text-[#808000] hover:text-[#6b6b00] font-semibold"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -123,7 +144,7 @@ export default function ForgotPassword() {
           {!success && (
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-semibold text-[#111100] mb-2">
                   Email address
                 </label>
                 <input
@@ -136,7 +157,7 @@ export default function ForgotPassword() {
                   }}
                   required
                   autoFocus
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100] placeholder-gray-400"
                   placeholder="you@example.com"
                 />
               </div>
@@ -146,7 +167,7 @@ export default function ForgotPassword() {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3.5 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[#808000]/25 hover:shadow-[#808000]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -164,7 +185,7 @@ export default function ForgotPassword() {
               <div className="text-center mt-6">
                 <Link
                   to="/login"
-                  className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-emerald-600 transition-colors"
+                  className="inline-flex items-center gap-2 text-sm text-[#555500] hover:text-[#808000] transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

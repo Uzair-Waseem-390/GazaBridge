@@ -311,7 +311,7 @@ export default function GoogleRegister() {
                   </svg>
                   Creating account...
                 </div>
-              ) : (
+              ) :ئ (
                 'Complete Registration'
               )}
             </motion.button>

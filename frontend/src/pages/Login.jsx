@@ -34,7 +34,6 @@ export default function Login() {
 
     if (result.success) {
       const userData = result.user;
-      // FIXED: Roles are strings from backend
       const adminRoles = ['manager', 'admin', 'superuser'];
       const isAdmin = userData?.roles?.some(r => adminRoles.includes(r)) || 
                       userData?.is_staff || 
@@ -54,8 +53,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+      {/* Background - Cream/Beige */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E6] via-white to-[#E8E0D0]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -63,29 +62,54 @@ export default function Login() {
         transition={{ duration: 0.6 }}
         className="relative max-w-md w-full"
       >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-              GazaBridge
-            </span>
-          </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-gray-600">Sign in to your account to continue</p>
+              {/* Logo */}
+        <div className="text-center mb-8 w-full">
+  <div className="text-center mb-2 w-full mt-4"> 
+  {/* mt-4 بتدفعه لتحت شوي إذا بدك ينزل عن أعلى الشاشة، وتم تقليل mb إلى mb-2 عشان المسافة تحت اللوجو تصغر */}
+  <Link to="/" className="inline-flex flex-col items-center justify-center mb-1 mx-auto">
+    
+    {/* 🖼️ اللوجو صار أكبر (w-36 h-36) والمسافة تحته صغرت لـ mb-1 */}
+    <div className="w-36 h-36 relative flex-shrink-0 mb-1 mx-auto">
+      <img 
+        src="/assets/public/gazabrige.jpg" 
+        alt="GazaBridge Logo" 
+        className="w-full h-full object-contain rounded-2xl"
+        onError={(e) => {
+          e.target.style.display = 'none';
+          e.target.nextSibling.style.display = 'flex';
+        }}
+      />
+      {/* Icon Fallback */}
+      <div 
+        className="absolute inset-0 w-full h-full rounded-2xl flex items-center justify-center"
+        style={{ 
+          display: 'none',
+          background: 'linear-gradient(135deg, #808000, #6b6b00)' 
+        }}
+      >
+        {/* تكبير الأيقونة البديلة لتناسب الحجم الجديد الكابير */}
+        <svg className="w-16 h-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      </div>
+    </div>
+  </Link>
+</div>
+          <h2 className="text-3xl font-bold text-[#111100]" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>Welcome back</h2>
+          <p className="mt-2 text-[#555500]">Sign in to your account to continue</p>
         </div>
-
+        
         {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#808000]/10">
           {/* Google Login */}
           <GoogleLoginButton />
           
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+              <div className="w-full border-t border-[#808000]/10" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">or continue with email</span>
+              <span className="px-4 bg-white text-[#555500]">or continue with email</span>
             </div>
           </div>
 
@@ -107,7 +131,7 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-[#111100] mb-2">
                 Email address
               </label>
               <input
@@ -118,13 +142,13 @@ export default function Login() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100] placeholder-gray-400"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-semibold text-[#111100] mb-2">
                 Password
               </label>
               <div className="relative">
@@ -136,13 +160,13 @@ export default function Login() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3 pr-12 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100] placeholder-gray-400"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(prev => !prev)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#808000] transition-colors"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? (
@@ -160,7 +184,7 @@ export default function Login() {
               <div className="text-right mt-1">
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                  className="text-sm text-[#808000] hover:text-[#6b6b00] font-medium transition-colors"
                 >
                   Forgot your password?
                 </Link>
@@ -172,7 +196,7 @@ export default function Login() {
               disabled={loading}
               whileHover={{ scale: loading ? 1 : 1.02 }}
               whileTap={{ scale: loading ? 1 : 0.98 }}
-              className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[#808000]/25 hover:shadow-[#808000]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
@@ -189,9 +213,9 @@ export default function Login() {
           </form>
         </div>
 
-        <p className="text-center mt-6 text-gray-600">
+        <p className="text-center mt-6 text-[#555500]">
           Don't have an account?{' '}
-          <Link to="/register" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link to="/register" className="text-[#808000] hover:text-[#6b6b00] font-semibold">
             Create one free
           </Link>
         </p>

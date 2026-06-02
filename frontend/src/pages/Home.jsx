@@ -183,17 +183,13 @@ function Hero() {
       style={{ opacity }}
       className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8]"
     >
-      {/* Video Background */}
+      {/* GIF Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
+        <img
+          src="/assets/public/bride.gif"
+          alt="Background GIF"
           className="w-full h-full object-cover opacity-80"
-        >
-          <source src="/assets/public/gaabridge.mp4" type="video/mp4" />
-        </video>
+        />
         <div className="absolute inset-0 bg-[#f8faf8]/20" />
       </div>
 

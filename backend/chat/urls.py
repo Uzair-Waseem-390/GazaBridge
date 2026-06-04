@@ -4,7 +4,7 @@ from chat.views import (
     MarkMessageReadView, MarkGroupMessageReadView,
     BlockUserView, UnblockUserView, BlockedListView,
     GroupCreateView, GroupListView, GroupDetailView, GroupMessagesView,
-    AddMemberView, RemoveMemberView, MakeAdminView,
+    AddMemberView, RemoveMemberView, MakeAdminView, LeaveGroupView,
 )
 
 app_name = "chat"
@@ -31,4 +31,5 @@ urlpatterns = [
     path("groups/<int:group_id>/add-member/", AddMemberView.as_view(), name="add-member"),
     path("groups/<int:group_id>/remove-member/<int:user_id>/", RemoveMemberView.as_view(), name="remove-member"),
     path("groups/<int:group_id>/make-admin/<int:user_id>/", MakeAdminView.as_view(), name="make-admin"),
+    path("groups/<int:group_id>/leave/", LeaveGroupView.as_view(), name="leave-group"),
 ]

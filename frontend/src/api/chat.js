@@ -80,4 +80,8 @@ export const chatAPI = {
   /** POST /chat/groups/<group_id>/make-admin/<user_id>/ */
   makeGroupAdmin: (groupId, userId) =>
     api.post(`/chat/groups/${groupId}/make-admin/${userId}/`),
+
+  /** POST /chat/groups/<group_id>/leave/ */
+  leaveGroup: (groupId) =>
+    api.post(`/chat/groups/${groupId}/leave/`),
 };

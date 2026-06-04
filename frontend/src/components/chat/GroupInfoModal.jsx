@@ -13,6 +13,9 @@ export default function GroupInfoModal({ groupId, onClose, onUpdate }) {
   const [addLoading, setAddLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(null); // member id being acted on
 
+  const [leaveLoading, setLeaveLoading] = useState(false);
+  const [leaveError, setLeaveError]     = useState('');
+
   const fetchGroup = async () => {
     try {
       const res = await chatAPI.getGroupDetail(groupId);
@@ -83,6 +86,21 @@ export default function GroupInfoModal({ groupId, onClose, onUpdate }) {
       onClose();
     } catch (err) {
       console.error('Delete group error:', err);
+    }
+  };
+
+  const handleLeaveGroup = async () => {
+    if (!window.confirm('Are you sure you want to leave this group?')) return;
+    setLeaveLoading(true);
+    setLeaveError('');
+    try {
+      await chatAPI.leaveGroup(groupId);
+      onUpdate?.();
+      onClose();
+    } catch (err) {
+      setLeaveError(err.response?.data?.detail || 'Failed to leave the group.');
+    } finally {
+      setLeaveLoading(false);
     }
   };
 
@@ -225,6 +243,23 @@ export default function GroupInfoModal({ groupId, onClose, onUpdate }) {
                       className="w-full py-2 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
                     >
                       Delete Group
+                    </button>
+                  </div>
+                )}
+
+                {/* Leave Group (non-owner members only) */}
+                {!isOwner && currentMembership && (
+                  <div className="border border-orange-200 rounded-xl p-4">
+                    <h3 className="text-sm font-semibold text-orange-600 mb-2">Leave Group</h3>
+                    {leaveError && (
+                      <p className="text-red-500 text-xs mb-2">{leaveError}</p>
+                    )}
+                    <button
+                      onClick={handleLeaveGroup}
+                      disabled={leaveLoading}
+                      className="w-full py-2 text-sm font-semibold text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {leaveLoading ? 'Leaving…' : 'Leave Group'}
                     </button>
                   </div>
                 )}

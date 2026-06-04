@@ -16,7 +16,7 @@ from chat.serializers import (
 from chat.services import (
     block_user, unblock_user,
     create_group, add_member_to_group, remove_member_from_group,
-    make_group_admin, delete_group,
+    make_group_admin, delete_group, leave_group,
     mark_message_read, mark_group_message_read,
 )
 from chat.selectors import (
@@ -260,3 +260,19 @@ class MakeAdminView(generics.GenericAPIView):
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"detail": "User is now an admin."})
+
+
+class LeaveGroupView(generics.GenericAPIView):
+    """POST /chat/groups/<group_id>/leave/"""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, group_id, *args, **kwargs):
+        try:
+            leave_group(
+                group_id=group_id,
+                user_id=request.user.pk,
+            )
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"detail": "You have left the group."})

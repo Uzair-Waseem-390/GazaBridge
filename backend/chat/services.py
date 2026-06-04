@@ -189,6 +189,27 @@ def make_group_admin(*, group_id: int, user_id: int, promoter_id: int) -> None:
     GroupMembership.objects.filter(group=group, user_id=user_id).update(is_admin=True)
 
 
+def leave_group(*, group_id: int, user_id: int) -> None:
+    """Leave a group. The owner cannot leave — they must delete the group instead."""
+    group = get_group_by_id(group_id)
+    if not group:
+        raise ValueError("Group not found.")
+
+    if group.owner_id == user_id:
+        raise ValueError("You are the owner. Transfer ownership or delete the group instead.")
+
+    membership = GroupMembership.objects.filter(group=group, user_id=user_id).first()
+    if not membership:
+        raise ValueError("You are not a member of this group.")
+
+    with transaction.atomic():
+        membership.delete()
+        group.member_count = GroupMembership.objects.filter(group=group).count()
+        group.save(update_fields=["member_count"])
+
+    invalidate_user_chat_caches(user_id)
+
+
 def delete_group(*, group_id: int, requesting_user_id: int) -> None:
     """Delete a group. Owner, group admin, manager, admin, superuser can delete."""
     from users.models import User

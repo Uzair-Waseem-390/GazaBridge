@@ -2,26 +2,26 @@
 Selectors
 =========
 Pure read layer — no writes, no side effects.
+With Redis caching integration (DB 1).
 
-Caching policy:
-- Single LiveSection/Content objects: NOT cached (mutable, causes stale-data bugs).
-- Paginated list results: NOT cached (invalidation is unreliable across cache backends).
-- Static lookups (links): NOT cached.
-
-All reads go directly to the DB. Django's connection pooling and indexed PKs
-make single-row lookups fast enough without an application-level cache.
+Caching Strategy:
+- Single items: cached 1 hour, invalidated on update/delete
+- Filtered lists: cached 5 minutes, first 10 pages only
+- On any write: List cache version is incremented (O(1) consistent invalidation)
 """
 
-from typing import Optional, Any
+from typing import Optional, Any, List
 
+from django.core.cache import cache
 from django.db.models import QuerySet, Q
 from django.utils import timezone
 
 from live_sections.models import LiveSection, LiveSectionContent, LiveSectionOfferLink
+from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_SINGLE
 
 
 # ---------------------------------------------------------------------------
-# Cache key helper — kept for call-site compatibility in services
+# Cache key helper
 # ---------------------------------------------------------------------------
 
 def get_cache_key(prefix: str, identifier: str) -> str:
@@ -29,17 +29,21 @@ def get_cache_key(prefix: str, identifier: str) -> str:
 
 
 def invalidate_live_section_cache(ls_id: int) -> None:
-    """No-op — live section objects are no longer cached."""
-    pass
+    """Invalidate single live section cache + ALL list caches."""
+    cache_key = get_cache_key("live_section", str(ls_id))
+    cache.delete(cache_key)
+    invalidate_ls_list_cache()
 
 
 def invalidate_ls_list_cache() -> None:
-    """No-op — list results are no longer cached."""
-    pass
+    """Flush ALL cached live section list results by incrementing the version."""
+    increment_cache_version("live_sections_list")
+
 
 def invalidate_content_cache(content_id: int) -> None:
-    """No-op — content objects are no longer cached."""
-    pass
+    """Invalidate single content cache."""
+    cache_key = get_cache_key("content", str(content_id))
+    cache.delete(cache_key)
 
 
 # ---------------------------------------------------------------------------
@@ -47,14 +51,24 @@ def invalidate_content_cache(content_id: int) -> None:
 # ---------------------------------------------------------------------------
 
 def get_live_section_by_id(ls_id: int) -> Optional[LiveSection]:
-    """Get a single live section by ID. Always reads from DB."""
-    return (
-        LiveSection.objects
-        .select_related("user")
-        .prefetch_related("contents")
-        .filter(pk=ls_id)
-        .first()
-    )
+    """Get a single live section by ID with caching.
+    Cache TTL: 1 hour. Invalidated on update/delete.
+    """
+    cache_key = get_cache_key("live_section", str(ls_id))
+    ls = cache.get(cache_key)
+
+    if ls is None:
+        ls = (
+            LiveSection.objects
+            .select_related("user")
+            .prefetch_related("contents")
+            .filter(pk=ls_id)
+            .first()
+        )
+        if ls:
+            cache.set(cache_key, ls, timeout=CACHE_TTL_SINGLE)
+
+    return ls
 
 
 def get_live_sections_queryset(
@@ -91,14 +105,48 @@ def get_live_sections_queryset(
 def get_cached_live_section_list(
     category=None, skill_level=None, language=None, status=None,
     user_id=None, search=None, ordering="-created_at", page=1, page_size=20
-):
-    """Always returns None — caching removed. View will always query the DB."""
-    return None
+) -> Optional[List[LiveSection]]:
+    """Get cached live section list."""
+    return get_cached_list(
+        "live_sections_list",
+        category=category or 'all',
+        skill_level=skill_level or 'all',
+        language=language or 'all',
+        status=status or 'all',
+        user_id=str(user_id) if user_id else 'all',
+        search=search or 'none',
+        ordering=ordering,
+        page=page,
+        page_size=page_size
+    )
 
 
-def set_cached_live_section_list(live_sections, **kwargs) -> None:
-    """No-op — list caching removed."""
-    pass
+def set_cached_live_section_list(live_sections: List[LiveSection], **kwargs) -> None:
+    """Cache a live section list result."""
+    # Ensure page is within the allowed kwargs
+    page = kwargs.get('page', 1)
+    page_size = kwargs.get('page_size', 20)
+    category = kwargs.get('category')
+    skill_level = kwargs.get('skill_level')
+    language = kwargs.get('language')
+    status = kwargs.get('status')
+    user_id = kwargs.get('user_id')
+    search = kwargs.get('search')
+    ordering = kwargs.get('ordering', '-created_at')
+
+    set_cached_list(
+        "live_sections_list",
+        live_sections,
+        category=category or 'all',
+        skill_level=skill_level or 'all',
+        language=language or 'all',
+        status=status or 'all',
+        user_id=str(user_id) if user_id else 'all',
+        search=search or 'none',
+        ordering=ordering,
+        page=page,
+        page_size=page_size
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -106,13 +154,21 @@ def set_cached_live_section_list(live_sections, **kwargs) -> None:
 # ---------------------------------------------------------------------------
 
 def get_content_by_id(content_id: int) -> Optional[LiveSectionContent]:
-    """Get a single content by ID. Always reads from DB."""
-    return (
-        LiveSectionContent.objects
-        .select_related("user", "live_section")
-        .filter(pk=content_id)
-        .first()
-    )
+    """Get a single content by ID with caching."""
+    cache_key = get_cache_key("content", str(content_id))
+    content = cache.get(cache_key)
+
+    if content is None:
+        content = (
+            LiveSectionContent.objects
+            .select_related("user", "live_section")
+            .filter(pk=content_id)
+            .first()
+        )
+        if content:
+            cache.set(cache_key, content, timeout=CACHE_TTL_SINGLE)
+
+    return content
 
 
 def get_visible_contents_for_live_section(live_section: LiveSection, requesting_user: Any) -> QuerySet:

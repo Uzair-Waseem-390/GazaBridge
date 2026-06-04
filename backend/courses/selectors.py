@@ -7,22 +7,16 @@ With Redis caching integration (DB 1).
 Caching Strategy:
 - Single items: cached 1 hour, invalidated on update/delete
 - Filtered lists: cached 5 minutes, first 10 pages only
-- On any write: ALL list caches are flushed (aggressive invalidation for 100% consistency)
+- On any write: List cache version is incremented (O(1) consistent invalidation)
 """
 
-import hashlib
 from typing import Optional, List
 
 from django.core.cache import cache
 from django.db.models import QuerySet, Q
 
 from courses.models import Course, Content, CourseOfferLink
-
-
-# Redis cache configuration (DB 1)
-CACHE_TTL_SINGLE = 3600   # 1 hour for single items
-CACHE_TTL_LIST = 300      # 5 minutes for filtered lists
-MAX_CACHED_PAGES = 10     # Only cache first 10 pages
+from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_SINGLE
 
 
 def get_cache_key(prefix: str, identifier: str) -> str:
@@ -109,24 +103,18 @@ def get_cached_course_list(
     page_size: int = 20
 ) -> Optional[List[Course]]:
     """Get cached course list. Only pages 1-10."""
-    if page > MAX_CACHED_PAGES:
-        return None
-    
-    raw_key = (
-        f"courses_list|cat:{category or 'all'}|"
-        f"skill:{skill_level or 'all'}|"
-        f"lang:{language or 'all'}|"
-        f"status:{status or 'all'}|"
-        f"user:{user_id or 'all'}|"
-        f"search:{search or 'none'}|"
-        f"order:{ordering}|"
-        f"page:{page}|"
-        f"size:{page_size}"
+    return get_cached_list(
+        "courses_list",
+        category=category or 'all',
+        skill_level=skill_level or 'all',
+        language=language or 'all',
+        status=status or 'all',
+        user_id=str(user_id) if user_id else 'all',
+        search=search or 'none',
+        ordering=ordering,
+        page=page,
+        page_size=page_size
     )
-    cache_key_hash = hashlib.md5(raw_key.encode()).hexdigest()
-    cache_key = get_cache_key("courses_list", cache_key_hash)
-    
-    return cache.get(cache_key)
 
 
 def set_cached_course_list(
@@ -142,24 +130,19 @@ def set_cached_course_list(
     page_size: int = 20
 ) -> None:
     """Cache a course list result. Only pages 1-10."""
-    if page > MAX_CACHED_PAGES:
-        return
-    
-    raw_key = (
-        f"courses_list|cat:{category or 'all'}|"
-        f"skill:{skill_level or 'all'}|"
-        f"lang:{language or 'all'}|"
-        f"status:{status or 'all'}|"
-        f"user:{user_id or 'all'}|"
-        f"search:{search or 'none'}|"
-        f"order:{ordering}|"
-        f"page:{page}|"
-        f"size:{page_size}"
+    set_cached_list(
+        "courses_list",
+        courses,
+        category=category or 'all',
+        skill_level=skill_level or 'all',
+        language=language or 'all',
+        status=status or 'all',
+        user_id=str(user_id) if user_id else 'all',
+        search=search or 'none',
+        ordering=ordering,
+        page=page,
+        page_size=page_size
     )
-    cache_key_hash = hashlib.md5(raw_key.encode()).hexdigest()
-    cache_key = get_cache_key("courses_list", cache_key_hash)
-    
-    cache.set(cache_key, courses, timeout=CACHE_TTL_LIST)
 
 
 # ---------------------------------------------------------------------------
@@ -233,18 +216,15 @@ def get_link_by_course_and_offer(course_id: int, offer_id: int) -> Optional[Cour
 # ---------------------------------------------------------------------------
 
 def invalidate_course_cache(course_id: int) -> None:
-    """Invalidate single course cache + ALL course list caches."""
+    """Invalidate single course cache + ALL course list caches (O(1) version increment)."""
     cache_key = get_cache_key("course", str(course_id))
     cache.delete(cache_key)
     invalidate_courses_list_cache()
 
 
 def invalidate_courses_list_cache() -> None:
-    """Flush ALL cached course list results."""
-    if hasattr(cache, 'keys'):
-        keys = cache.keys("courses:courses_list:*")
-        if keys:
-            cache.delete_many(keys)
+    """Flush ALL cached course list results by incrementing the version."""
+    increment_cache_version("courses_list")
 
 
 def invalidate_content_cache(content_id: int) -> None:

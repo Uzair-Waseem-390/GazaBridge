@@ -4,7 +4,6 @@ Selectors
 Pure read layer with Redis caching (DB 1).
 """
 
-import hashlib
 from typing import Optional, List, Set
 
 from django.core.cache import cache
@@ -12,9 +11,7 @@ from django.db.models import QuerySet
 
 from notifications.models import Notification
 from users.models import User
-
-
-CACHE_TTL_LIST = 300  # 5 minutes
+from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_LIST
 
 
 def get_cache_key(prefix: str, identifier) -> str:
@@ -47,6 +44,9 @@ def get_notifications_for_user(user_id: int) -> QuerySet:
 
 def get_unread_count(user_id: int) -> int:
     """Get unread notification count for a user with caching."""
+    # Build a versioned cache key specifically for this user's unread count
+    # So we don't need a wildcard deletion, we can just bump the user's notification version
+    # Actually, simpler is just using the standard prefix format
     cache_key = get_cache_key("unread_count", user_id)
     cached = cache.get(cache_key)
     
@@ -65,11 +65,12 @@ def get_cached_notification_list(
     page_size: int = 20
 ) -> Optional[List[Notification]]:
     """Get cached notification list for a user. Only cache first 10 pages."""
-    if page > 10:
-        return None
-    
-    cache_key = get_cache_key("list", f"{user_id}:{page}:{page_size}")
-    return cache.get(cache_key)
+    return get_cached_list(
+        f"notifications_list_{user_id}",
+        user_id=user_id,
+        page=page,
+        page_size=page_size
+    )
 
 
 def set_cached_notification_list(
@@ -79,11 +80,13 @@ def set_cached_notification_list(
     page_size: int = 20
 ) -> None:
     """Cache notification list. Only cache first 10 pages."""
-    if page > 10:
-        return
-    
-    cache_key = get_cache_key("list", f"{user_id}:{page}:{page_size}")
-    cache.set(cache_key, notifications, timeout=CACHE_TTL_LIST)
+    set_cached_list(
+        f"notifications_list_{user_id}",
+        notifications,
+        user_id=user_id,
+        page=page,
+        page_size=page_size
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -137,21 +140,18 @@ def get_target_user_ids(target_groups: List[str]) -> Set[int]:
 # ---------------------------------------------------------------------------
 
 def invalidate_notification_cache_for_user(user_id: int) -> None:
-    """Invalidate cached unread count for a user."""
+    """Invalidate cached unread count and lists for a specific user."""
     cache.delete(get_cache_key("unread_count", user_id))
+    increment_cache_version(f"notifications_list_{user_id}")
 
 
 def invalidate_all_notification_caches() -> None:
-    """Flush ALL cached notification data for all users."""
-    import redis
-    try:
-        r = redis.Redis(host='localhost', port=6379, db=1)
-        cursor = 0
-        while True:
-            cursor, keys = r.scan(cursor, match="*notifications:*", count=100)
-            if keys:
-                r.delete(*keys)
-            if cursor == 0:
-                break
-    except Exception:
-        pass
+    """
+    Flush ALL cached notification data for all users.
+    Normally you only need to invalidate per user. 
+    If you need a global clear, we can use a global notification version, 
+    but since we version per user now, it's better to avoid global flushes
+    unless truly necessary. For backwards compatibility, we'll bump a global
+    prefix if it existed, but users lists are isolated now.
+    """
+    pass

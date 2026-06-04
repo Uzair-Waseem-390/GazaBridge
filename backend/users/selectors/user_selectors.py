@@ -11,7 +11,6 @@ Caching policy:
 - Paginated user lists: cached 5 min (admin/list views only).
 """
 
-import hashlib
 from typing import Optional, List, Dict, Any
 
 from django.core.cache import cache
@@ -19,14 +18,7 @@ from django.db.models import QuerySet
 from django.utils import timezone
 
 from users.models import EmailVerificationToken, Role, User
-
-
-# ---------------------------------------------------------------------------
-# Cache TTLs
-# ---------------------------------------------------------------------------
-
-CACHE_TTL_SHORT = 300    # 5 minutes  — paginated list results
-CACHE_TTL_LONG  = 86400  # 24 hours   — static role objects
+from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_LONG
 
 
 def get_cache_key(prefix: str, identifier: Any) -> str:
@@ -43,11 +35,8 @@ def invalidate_user_cache(user_id: int) -> None:
 
 
 def invalidate_users_list_cache() -> None:
-    """Invalidate paginated user-list cache entries."""
-    if hasattr(cache, 'keys'):
-        keys = cache.keys("users:users_list:*")
-        if keys:
-            cache.delete_many(keys)
+    """Invalidate paginated user-list cache entries using versioning (O(1))."""
+    increment_cache_version("users_list")
 
 
 # ---------------------------------------------------------------------------
@@ -121,14 +110,14 @@ def get_users_with_filters(
     Get users with filters and pagination.
     Results are cached briefly (5 min) — this is an admin/list view.
     """
-    cache_key_data = (
-        f"role:{role or 'all'}|country:{country or 'all'}"
-        f"|active:{is_active or 'all'}|page:{page}|size:{page_size}"
+    cached_result = get_cached_list(
+        "users_list", 
+        role=role or 'all', 
+        country=country or 'all', 
+        active=str(is_active) if is_active is not None else 'all', 
+        page=page, 
+        page_size=page_size
     )
-    cache_key_hash = hashlib.md5(cache_key_data.encode()).hexdigest()
-    cache_key = get_cache_key("users_list", cache_key_hash)
-
-    cached_result = cache.get(cache_key)
     if cached_result is not None:
         return cached_result
 
@@ -157,7 +146,15 @@ def get_users_with_filters(
         "total_pages": (total_count + page_size - 1) // page_size if total_count > 0 else 1,
     }
 
-    cache.set(cache_key, result, timeout=CACHE_TTL_SHORT)
+    set_cached_list(
+        "users_list", 
+        result, 
+        role=role or 'all', 
+        country=country or 'all', 
+        active=str(is_active) if is_active is not None else 'all', 
+        page=page, 
+        page_size=page_size
+    )
     return result
 
 

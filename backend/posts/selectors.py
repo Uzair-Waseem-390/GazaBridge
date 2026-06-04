@@ -7,22 +7,16 @@ With Redis caching integration (DB 1).
 Caching Strategy:
 - Single items: cached 1 hour, invalidated on update/delete
 - Filtered lists: cached 5 minutes, first 10 pages only
-- On any write: ALL list caches are flushed (aggressive invalidation for 100% consistency)
+- On any write: List cache version is incremented (O(1) consistent invalidation)
 """
 
-import hashlib
 from typing import Optional, Any, List
 
 from django.core.cache import cache
 from django.db.models import QuerySet, Q
 
 from posts.models import Offer, Request
-
-
-# Redis cache configuration (DB 1)
-CACHE_TTL_SINGLE = 3600   # 1 hour for single items
-CACHE_TTL_LIST = 300      # 5 minutes for filtered lists
-MAX_CACHED_PAGES = 10     # Only cache first 10 pages
+from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_SINGLE, CACHE_TTL_LIST
 
 
 def get_cache_key(prefix: str, identifier: Any) -> str:
@@ -111,24 +105,17 @@ def get_cached_offer_list(
     - Page > MAX_CACHED_PAGES (don't cache)
     - Cache miss (caller should fetch from DB and cache it)
     """
-    if page > MAX_CACHED_PAGES:
-        return None
-    
-    # Build unique cache key from all parameters
-    raw_key = (
-        f"offers_list|cat:{category or 'all'}|"
-        f"avail:{availability or 'all'}|"
-        f"status:{status or 'all'}|"
-        f"user:{user_id or 'all'}|"
-        f"search:{search or 'none'}|"
-        f"order:{ordering}|"
-        f"page:{page}|"
-        f"size:{page_size}"
+    return get_cached_list(
+        "offers_list",
+        category=category or 'all',
+        availability=availability or 'all',
+        status=status or 'all',
+        user_id=str(user_id) if user_id else 'all',
+        search=search or 'none',
+        ordering=ordering,
+        page=page,
+        page_size=page_size
     )
-    cache_key_hash = hashlib.md5(raw_key.encode()).hexdigest()
-    cache_key = get_cache_key("offers_list", cache_key_hash)
-    
-    return cache.get(cache_key)
 
 
 def set_cached_offer_list(
@@ -146,23 +133,18 @@ def set_cached_offer_list(
     Cache an offer list result.
     Only caches pages 1 through MAX_CACHED_PAGES.
     """
-    if page > MAX_CACHED_PAGES:
-        return
-    
-    raw_key = (
-        f"offers_list|cat:{category or 'all'}|"
-        f"avail:{availability or 'all'}|"
-        f"status:{status or 'all'}|"
-        f"user:{user_id or 'all'}|"
-        f"search:{search or 'none'}|"
-        f"order:{ordering}|"
-        f"page:{page}|"
-        f"size:{page_size}"
+    set_cached_list(
+        "offers_list",
+        offers,
+        category=category or 'all',
+        availability=availability or 'all',
+        status=status or 'all',
+        user_id=str(user_id) if user_id else 'all',
+        search=search or 'none',
+        ordering=ordering,
+        page=page,
+        page_size=page_size
     )
-    cache_key_hash = hashlib.md5(raw_key.encode()).hexdigest()
-    cache_key = get_cache_key("offers_list", cache_key_hash)
-    
-    cache.set(cache_key, offers, timeout=CACHE_TTL_LIST)
 
 
 # ---------------------------------------------------------------------------
@@ -241,22 +223,16 @@ def get_cached_request_list(
     - Page > MAX_CACHED_PAGES (don't cache)
     - Cache miss (caller should fetch from DB and cache it)
     """
-    if page > MAX_CACHED_PAGES:
-        return None
-    
-    raw_key = (
-        f"requests_list|cat:{category or 'all'}|"
-        f"status:{status or 'all'}|"
-        f"user:{user_id or 'all'}|"
-        f"search:{search or 'none'}|"
-        f"order:{ordering}|"
-        f"page:{page}|"
-        f"size:{page_size}"
+    return get_cached_list(
+        "requests_list",
+        category=category or 'all',
+        status=status or 'all',
+        user_id=str(user_id) if user_id else 'all',
+        search=search or 'none',
+        ordering=ordering,
+        page=page,
+        page_size=page_size
     )
-    cache_key_hash = hashlib.md5(raw_key.encode()).hexdigest()
-    cache_key = get_cache_key("requests_list", cache_key_hash)
-    
-    return cache.get(cache_key)
 
 
 def set_cached_request_list(
@@ -273,22 +249,17 @@ def set_cached_request_list(
     Cache a request list result.
     Only caches pages 1 through MAX_CACHED_PAGES.
     """
-    if page > MAX_CACHED_PAGES:
-        return
-    
-    raw_key = (
-        f"requests_list|cat:{category or 'all'}|"
-        f"status:{status or 'all'}|"
-        f"user:{user_id or 'all'}|"
-        f"search:{search or 'none'}|"
-        f"order:{ordering}|"
-        f"page:{page}|"
-        f"size:{page_size}"
+    set_cached_list(
+        "requests_list",
+        requests,
+        category=category or 'all',
+        status=status or 'all',
+        user_id=str(user_id) if user_id else 'all',
+        search=search or 'none',
+        ordering=ordering,
+        page=page,
+        page_size=page_size
     )
-    cache_key_hash = hashlib.md5(raw_key.encode()).hexdigest()
-    cache_key = get_cache_key("requests_list", cache_key_hash)
-    
-    cache.set(cache_key, requests, timeout=CACHE_TTL_LIST)
 
 
 
@@ -377,7 +348,7 @@ def invalidate_offer_cache(offer_id: int) -> None:
     """
     Invalidate all cache entries related to offers.
     - Deletes the single-offer cache
-    - Flushes ALL offer list caches (aggressive, ensures 100% consistency)
+    - Flushes ALL offer list caches (O(1) version increment)
     """
     # Delete single item
     cache_key = get_cache_key("offer", offer_id)
@@ -392,25 +363,14 @@ def invalidate_offer_cache(offer_id: int) -> None:
 
 
 def invalidate_offers_list_cache() -> None:
-    """Flush ALL cached offer list results."""
-    if hasattr(cache, 'keys'):
-        keys = cache.keys("posts:offers_list:*")
-        if keys:
-            cache.delete_many(keys)
-        # keys = cache.keys("posts:linked_courses:*")
-        # if keys:
-        #     cache.delete_many(keys)
-        # keys = cache.keys("posts:linked_ls:*")
-        # if keys:
-        #     cache.delete_many(keys)
-        cache.delete_pattern("posts:linked_courses:*")
-        cache.delete_pattern("posts:linked_ls:*")
+    """Flush ALL cached offer list results (O(1) version increment)."""
+    increment_cache_version("offers_list")
 
 def invalidate_request_cache(request_id: int) -> None:
     """
     Invalidate all cache entries related to requests.
     - Deletes the single-request cache
-    - Flushes ALL request list caches (aggressive, ensures 100% consistency)
+    - Flushes ALL request list caches (O(1) version increment)
     """
     # Delete single item
     cache_key = get_cache_key("request", request_id)
@@ -421,8 +381,5 @@ def invalidate_request_cache(request_id: int) -> None:
 
 
 def invalidate_requests_list_cache() -> None:
-    """Flush ALL cached request list results."""
-    if hasattr(cache, 'keys'):
-        keys = cache.keys("posts:requests_list:*")
-        if keys:
-            cache.delete_many(keys)
+    """Flush ALL cached request list results (O(1) version increment)."""
+    increment_cache_version("requests_list")

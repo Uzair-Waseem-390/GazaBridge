@@ -147,6 +147,7 @@ export default function AdminPosts() {
       setPagination({
         page: data.page || page,
         totalPages: data.total_pages || 1,
+        totalCount: data.count || (data.results || []).length,
       });
     } catch (err) {
       console.error(`Error fetching ${activeTab}:`, err);

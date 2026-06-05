@@ -143,15 +143,21 @@ export default function LiveSections() {
 
       const response = await liveSectionsAPI.getLiveSections(params);
       const data = response.data;
+      
+      // Extract pagination info - handle both nested and flat structures
+      const paginationData = data.pagination || data;
+      const results = data.results || data;
+      
       if (append) {
-        setLiveSections(prev => [...prev, ...(data.results || data)]);
+        setLiveSections(prev => [...prev, ...results]);
       } else {
-        setLiveSections(data.results || data);
+        setLiveSections(results);
       }
+      
       setPagination({
-        page: data.pagination?.page || page,
-        totalPages: data.pagination?.total_pages || 1,
-        totalCount: data.pagination?.count || (data.results || data).length,
+        page: paginationData.page || page,
+        totalPages: paginationData.total_pages || 1,
+        totalCount: paginationData.count || results.length,
       });
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to load live sections');

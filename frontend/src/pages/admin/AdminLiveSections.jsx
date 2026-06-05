@@ -12,7 +12,7 @@ export default function AdminLiveSections() {
   const { user } = useAuth();
   const [liveSections, setLiveSections] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, totalCount: 0 });
   const [filters, setFilters] = useState({ category: '', status: '', skill_level: '' });
 
   const fetchLiveSections = useCallback(async (page = 1) => {
@@ -26,7 +26,11 @@ export default function AdminLiveSections() {
       const response = await liveSectionsAPI.getLiveSections(params);
       const data = response.data;
       setLiveSections(data.results || data);
-      setPagination({ page: data.page || page, totalPages: data.total_pages || 1 });
+      setPagination({
+        page: data.page || page,
+        totalPages: data.total_pages || 1,
+        totalCount: data.count || (data.results || []).length,
+      });
     } catch (err) {
       console.error('Error:', err);
     } finally {

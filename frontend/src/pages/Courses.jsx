@@ -160,17 +160,18 @@ export default function Courses() {
 
       const response = await coursesAPI.getCourses(params);
       const data = response.data;
+      const results = data.results || data;
 
       if (append) {
-        setCourses(prev => [...prev, ...(data.results || data)]);
+        setCourses(prev => [...prev, ...results]);
       } else {
-        setCourses(data.results || data);
+        setCourses(results);
       }
 
       setPagination({
         page: data.page || page,
         totalPages: data.total_pages || 1,
-        totalCount: data.count || (data.results || data).length,
+        totalCount: data.count || results.length,
       });
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to load courses');

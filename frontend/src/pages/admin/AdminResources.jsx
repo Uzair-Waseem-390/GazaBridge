@@ -99,7 +99,7 @@ export default function AdminResources() {
   const [editingResource, setEditingResource] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, resourceId: null });
-  const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
+  const [pagination, setPagination] = useState({ page: 1, totalPages: 1, totalCount: 0 });
   const [filters, setFilters] = useState({
     category: '',
     search: '',
@@ -122,11 +122,13 @@ export default function AdminResources() {
 
       const response = await resourcesAPI.getResources(params);
       const data = response.data;
+      const results = data.results || data;
 
-      setResources(data.results || data);
+      setResources(results);
       setPagination({
         page: data.page || page,
         totalPages: data.total_pages || 1,
+        totalCount: data.count || results.length,
       });
     } catch (err) {
       setError('Failed to load resources');

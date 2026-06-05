@@ -13,7 +13,7 @@ export default function AdminDashboard() {
   });
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -39,7 +39,7 @@ export default function AdminDashboard() {
             <p className="text-gray-600 mb-4">Create and manage learning resources</p>
             <Link
               to="/admin/resources"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
             >
               Manage Resources
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,7 +54,7 @@ export default function AdminDashboard() {
             <p className="text-gray-600 mb-4">Manage all courses and content</p>
             <Link
               to="/admin/courses"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
             >
               Manage Courses
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -72,7 +72,7 @@ export default function AdminDashboard() {
             <p className="text-gray-600 mb-4">Manage community offers and posts</p>
             <Link
               to="/admin/posts?tab=offers"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
             >
               Manage Offers
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
             <p className="text-gray-600 mb-4">Manage community requests</p>
             <Link
               to="/admin/posts?tab=requests"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
             >
               Manage Requests
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

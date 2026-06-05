@@ -12,7 +12,7 @@ export default function BlogPost() {
       <div className="pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Post Not Found</h1>
-          <Link to="/blog" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+          <Link to="/blog" className="text-olive hover:text-olive-dark font-semibold">
             ← Back to Blog
           </Link>
         </div>
@@ -23,7 +23,7 @@ export default function BlogPost() {
   return (
     <div className="pt-24">
       <article className="relative py-20">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]" />
         <div className="relative max-w-4xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -32,7 +32,7 @@ export default function BlogPost() {
           >
             <Link
               to="/blog"
-              className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold mb-8 transition-colors"
+              className="inline-flex items-center gap-2 text-olive hover:text-olive-dark font-semibold mb-8 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -62,12 +62,12 @@ export default function BlogPost() {
               ))}
             </div>
 
-            <div className="mt-16 p-8 bg-emerald-50 rounded-2xl border border-emerald-200 text-center">
+            <div className="mt-16 p-8 bg-olive-5 rounded-2xl border border-olive-20 text-center">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Want to get involved?</h3>
               <p className="text-gray-600 mb-6">Join our community of volunteers and learners making a difference.</p>
               <Link
                 to="/#"
-                className="inline-block px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
+                className="inline-block px-8 py-4 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
               >
                 Get Started Free
               </Link>

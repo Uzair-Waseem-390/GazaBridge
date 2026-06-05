@@ -32,8 +32,8 @@ const services = [
     title: 'Data Science',
     description: 'Dive into Python, machine learning, and data analytics to solve complex problems.',
     icon: '📊',
-    color: 'from-green-500 to-emerald-500',
-    bgColor: 'bg-green-50',
+    color: 'from-olive to-olive',
+    bgColor: 'bg-olive-5',
     stats: '980+ Learners',
   },
   {
@@ -48,8 +48,8 @@ const services = [
     title: 'Career Coaching',
     description: 'Get personalized guidance on CV building, interviews, and landing your dream job.',
     icon: '🎯',
-    color: 'from-teal-500 to-green-500',
-    bgColor: 'bg-teal-50',
+    color: 'from-[#F5F0E6]0 to-olive',
+    bgColor: 'bg-[#F5F0E6]',
     stats: '3,100+ Sessions',
   },
 ];
@@ -81,7 +81,7 @@ const ServiceCard = ({ service, index }) => {
         </motion.div>
 
         {/* Content */}
-        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-emerald-600 transition-colors">
+        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-olive transition-colors">
           {service.title}
         </h3>
         <p className="text-gray-600 mb-4 leading-relaxed">
@@ -90,10 +90,10 @@ const ServiceCard = ({ service, index }) => {
 
         {/* Stats */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <span className="text-sm font-semibold text-emerald-600">{service.stats}</span>
+          <span className="text-sm font-semibold text-olive">{service.stats}</span>
           <motion.button
             whileHover={{ x: 5 }}
-            className="text-sm font-medium text-gray-400 group-hover:text-emerald-600 transition-colors"
+            className="text-sm font-medium text-gray-400 group-hover:text-olive transition-colors"
             onClick={() => window.location.href = '#'}
           >
             Learn More →
@@ -101,7 +101,7 @@ const ServiceCard = ({ service, index }) => {
         </div>
 
         {/* Corner Decoration */}
-        <div className="absolute -top-2 -right-2 w-20 h-20 bg-gradient-to-br from-emerald-400/0 to-teal-500/0 group-hover:from-emerald-400/10 group-hover:to-teal-500/10 rounded-full transition-all duration-500" />
+        <div className="absolute -top-2 -right-2 w-20 h-20 bg-gradient-to-br from-olive-light/0 to-[#F5F0E6]0/0 group-hover:from-olive-light/10 group-hover:to-[#F5F0E6]0/10 rounded-full transition-all duration-500" />
       </div>
     </motion.div>
   );
@@ -112,7 +112,7 @@ export default function Services() {
   const isInView = useInView(ref, { once: true });
 
   return (
-    <section id="services" className="relative py-24 bg-gradient-to-b from-white via-emerald-50/30 to-white">
+    <section id="services" className="relative py-24 bg-gradient-to-b from-white via-olive-5/30 to-white">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <motion.div
@@ -126,12 +126,12 @@ export default function Services() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             transition={{ delay: 0.2 }}
-            className="inline-block px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold mb-4 border border-emerald-200"
+            className="inline-block px-4 py-2 bg-olive-5 text-olive-dark rounded-full text-sm font-semibold mb-4 border border-olive-20"
           >
             What We Offer
           </motion.span>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Our <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Services</span>
+            Our <span className="bg-gradient-to-r from-olive to-olive-dark bg-clip-text text-transparent">Services</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Comprehensive digital skills training to empower your career journey

@@ -14,7 +14,8 @@ export default function GoogleLoginButton({ className = '' }) {
 
   const handleGoogleLogin = () => {
     if (!GOOGLE_CLIENT_ID) {
-      console.error('Google Client ID is not configured');
+      console.error('❌ Google Client ID is not configured. Please set VITE_GOOGLE_CLIENT_ID in .env.local');
+      alert('Google login is not configured yet. Please contact support or try logging in with email.');
       return;
     }
 

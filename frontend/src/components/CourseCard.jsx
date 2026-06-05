@@ -24,13 +24,13 @@ const CATEGORY_LABELS = {
 };
 
 const SKILL_LEVEL_COLORS = {
-  beginner: 'bg-green-100 text-green-700',
+  beginner: 'bg-olive-10 text-olive-dark',
   intermediate: 'bg-yellow-100 text-yellow-700',
   advanced: 'bg-red-100 text-red-700',
 };
 
 const STATUS_COLORS = {
-  active: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+  active: 'bg-olive-10 text-olive-dark border-olive-20',
   inactive: 'bg-gray-100 text-gray-700 border-gray-200',
   closed: 'bg-red-100 text-red-700 border-red-200',
 };
@@ -69,7 +69,7 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
 
         {/* Title */}
         <Link to={`/courses/${course.id}`}>
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-olive transition-colors">
             {course.title}
           </h3>
         </Link>
@@ -89,7 +89,7 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
           {course.description?.length > 120 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium mt-1 transition-colors"
+              className="text-olive hover:text-olive-dark text-sm font-medium mt-1 transition-colors"
             >
               {isExpanded ? 'Show less' : 'Read more'}
             </button>
@@ -128,7 +128,7 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
         {/* Author & Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-8 h-8 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white text-xs font-bold">
               {course.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
             </div>
             <div>
@@ -142,7 +142,7 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
             <Link
               to={`/courses/${course.id}`}
-              className="flex-1 sm:flex-none text-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="flex-1 sm:flex-none text-center px-4 py-2 bg-gradient-to-r from-olive to-olive-dark text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
             >
               View Course
             </Link>

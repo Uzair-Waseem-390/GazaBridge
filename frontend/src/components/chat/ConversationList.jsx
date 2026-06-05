@@ -12,12 +12,12 @@ export default function ConversationList({ conversations, groups, activeChat, ac
           onClick={() => onSelectConversation(conv)}
           className={`w-full p-4 text-left transition-colors ${
             activeChat?.type === 'dm' && activeChat?.id === conv.id
-              ? 'bg-emerald-50 border-l-4 border-emerald-500'
+              ? 'bg-olive-5 border-l-4 border-olive'
               : 'hover:bg-gray-50 border-l-4 border-transparent'
           }`}
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+            <div className="w-10 h-10 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
               {conv.other_user?.first_name?.[0] || '?'}
             </div>
             <div className="flex-1 min-w-0">
@@ -26,7 +26,7 @@ export default function ConversationList({ conversations, groups, activeChat, ac
                   {conv.other_user?.first_name} {conv.other_user?.last_name}
                 </span>
                 {conv.unread_count > 0 && (
-                  <span className="bg-emerald-500 text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2">
+                  <span className="bg-olive text-white text-xs font-bold px-2 py-0.5 rounded-full ml-2">
                     {conv.unread_count}
                   </span>
                 )}

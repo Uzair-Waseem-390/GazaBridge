@@ -174,7 +174,7 @@ export default function Chat() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search conversations…"
-              className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-xl text-sm text-gray-700 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-xl text-sm text-gray-700 outline-none focus:bg-white focus:ring-2 focus:ring-olive transition-all"
             />
           </div>
 
@@ -205,7 +205,7 @@ export default function Chat() {
         <div className="flex-1 overflow-y-auto">
           {loadingList ? (
             <div className="flex justify-center py-10">
-              <div className="animate-spin w-6 h-6 border-4 border-emerald-500 border-t-transparent rounded-full" />
+              <div className="animate-spin w-6 h-6 border-4 border-olive border-t-transparent rounded-full" />
             </div>
           ) : (
             <ConversationList
@@ -262,7 +262,7 @@ export default function Chat() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center text-5xl shadow-inner">
+              <div className="w-24 h-24 bg-gradient-to-br from-olive-10 to-olive-10 rounded-full flex items-center justify-center text-5xl shadow-inner">
                 💬
               </div>
               <div>
@@ -275,7 +275,7 @@ export default function Chat() {
                 <button
                   id="empty-new-dm-btn"
                   onClick={() => setShowStartConv(true)}
-                  className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                  className="px-5 py-2.5 bg-gradient-to-r from-olive to-olive-dark text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
                 >
                   New Message
                 </button>

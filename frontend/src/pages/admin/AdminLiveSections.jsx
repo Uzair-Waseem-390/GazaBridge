@@ -86,14 +86,14 @@ export default function AdminLiveSections() {
                   liveSections.map(ls => (
                     <motion.tr key={ls.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="px-6 py-4">
-                        <Link to={`/live-sections/${ls.id}`} className="font-medium text-gray-900 hover:text-emerald-600">{ls.title}</Link>
+                        <Link to={`/live-sections/${ls.id}`} className="font-medium text-gray-900 hover:text-olive">{ls.title}</Link>
                       </td>
                       <td className="px-6 py-4"><span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">{ls.category}</span></td>
                       <td className="px-6 py-4 text-sm text-gray-600">{ls.user_full_name}</td>
                       <td className="px-6 py-4 text-sm text-gray-500">{new Date(ls.ending_date).toLocaleDateString()}</td>
                       <td className="px-6 py-4">
                         <select value={ls.status} onChange={(e) => handleStatusChange(ls, e.target.value)}
-                          className={`px-2 py-1 rounded-lg text-xs font-semibold border outline-none cursor-pointer ${ls.status === 'active' ? 'bg-emerald-50 text-emerald-700' : ls.status === 'inactive' ? 'bg-gray-50 text-gray-700' : 'bg-red-50 text-red-700'}`}>
+                          className={`px-2 py-1 rounded-lg text-xs font-semibold border outline-none cursor-pointer ${ls.status === 'active' ? 'bg-olive-5 text-olive-dark' : ls.status === 'inactive' ? 'bg-gray-50 text-gray-700' : 'bg-red-50 text-red-700'}`}>
                           <option value="active">Active</option>
                           <option value="inactive">Inactive</option>
                           <option value="closed">Closed</option>

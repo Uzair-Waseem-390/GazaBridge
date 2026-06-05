@@ -26,7 +26,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-emerald-400 to-emerald-600'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-olive-light to-olive-dark'}`} />
         
         <div className="p-6">
           <div className="flex justify-center mb-4">
@@ -35,7 +35,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
               className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                type === 'delete' ? 'bg-red-100' : 'bg-emerald-100'
+                type === 'delete' ? 'bg-red-100' : 'bg-olive-10'
               }`}
             >
               {type === 'delete' ? (
@@ -43,7 +43,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
@@ -69,7 +69,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
                 type === 'delete'
                   ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700'
+                  : 'bg-gradient-to-r from-olive to-olive-dark hover:from-olive-dark hover:to-olive-dark'
               }`}
             >
               Confirm
@@ -139,19 +139,19 @@ export default function LiveSectionDetail() {
     return content?.content_title || 'this content';
   };
 
-  if (loading) return <div className="pt-24 min-h-screen flex items-center justify-center"><div className="animate-spin w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full" /></div>;
-  if (error || !liveSection) return <div className="pt-24 min-h-screen flex items-center justify-center"><div className="text-center"><h2 className="text-2xl font-bold text-gray-900 mb-4">Not found</h2><Link to="/live-sections" className="text-emerald-600 font-semibold">← Back</Link></div></div>;
+  if (loading) return <div className="pt-24 min-h-screen flex items-center justify-center"><div className="animate-spin w-12 h-12 border-4 border-olive border-t-transparent rounded-full" /></div>;
+  if (error || !liveSection) return <div className="pt-24 min-h-screen flex items-center justify-center"><div className="text-center"><h2 className="text-2xl font-bold text-gray-900 mb-4">Not found</h2><Link to="/live-sections" className="text-olive font-semibold">← Back</Link></div></div>;
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link to="/live-sections" className="inline-flex items-center gap-2 text-emerald-600 font-semibold mb-6">← Back</Link>
+        <Link to="/live-sections" className="inline-flex items-center gap-2 text-olive font-semibold mb-6">← Back</Link>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${effectiveStatus === 'active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-700 border-red-200'}`}>{isEnded ? 'Ended' : effectiveStatus}</span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${effectiveStatus === 'active' ? 'bg-olive-10 text-olive-dark border-olive-20' : 'bg-red-100 text-red-700 border-red-200'}`}>{isEnded ? 'Ended' : effectiveStatus}</span>
                   {isEnded && <span className="text-xs text-red-500">(Auto-closed, ending date passed)</span>}
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{liveSection.title}</h1>
@@ -172,7 +172,7 @@ export default function LiveSectionDetail() {
               <div className="p-4 bg-gray-50 rounded-xl col-span-2"><div className="text-sm text-gray-500">Ending Date</div><div className="font-semibold">{new Date(liveSection.ending_date).toLocaleString()}</div></div>
             </div>
             <div className="flex items-center gap-3 pt-4 border-t">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold">{liveSection.user_full_name?.split(' ').map(n => n[0]).join('')}</div>
+              <div className="w-10 h-10 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white font-bold">{liveSection.user_full_name?.split(' ').map(n => n[0]).join('')}</div>
               <div><div className="font-medium">{liveSection.user_full_name}</div><div className="text-sm text-gray-500">{liveSection.user_email}</div></div>
             </div>
           </div>
@@ -180,14 +180,14 @@ export default function LiveSectionDetail() {
           <div className="bg-white rounded-3xl shadow-xl p-8">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Contents ({liveSection.contents?.length || 0})</h2>
-              {canAddContent && <button onClick={() => setShowAddContentModal(true)} className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-semibold text-sm">Add Content</button>}
+              {canAddContent && <button onClick={() => setShowAddContentModal(true)} className="px-4 py-2 bg-gradient-to-r from-olive to-olive-dark text-white rounded-xl font-semibold text-sm">Add Content</button>}
             </div>
             {liveSection.contents?.length === 0 ? <p className="text-gray-500 text-center py-8">No content yet.</p> : (
               <div className="space-y-4">
                 {liveSection.contents?.map((c, i) => (
                   <div key={c.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                    <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-bold text-sm">{i + 1}</div>
-                    <div className="flex-1"><h3 className="font-semibold">{c.content_title}</h3>{c.description && <p className="text-sm text-gray-600 mt-1">{c.description}</p>}<a href={c.link} target="_blank" rel="noopener noreferrer" className="text-emerald-600 text-sm mt-2 inline-block">Open →</a></div>
+                    <div className="w-8 h-8 bg-olive-10 text-olive-dark rounded-full flex items-center justify-center font-bold text-sm">{i + 1}</div>
+                    <div className="flex-1"><h3 className="font-semibold">{c.content_title}</h3>{c.description && <p className="text-sm text-gray-600 mt-1">{c.description}</p>}<a href={c.link} target="_blank" rel="noopener noreferrer" className="text-olive text-sm mt-2 inline-block">Open →</a></div>
                     {(c.user === user?.id || user?.is_staff || user?.is_superuser) && (
                       <button onClick={() => setDeleteContentModal({ isOpen: true, contentId: c.id, contentTitle: c.content_title })} className="text-red-500 hover:text-red-700">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

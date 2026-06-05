@@ -96,7 +96,7 @@ export default function Sidebar() {
               to={item.path}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all relative ${
                 isActive
-                  ? 'bg-emerald-50 text-emerald-700'
+                  ? 'bg-olive-5 text-olive-dark'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
@@ -105,7 +105,7 @@ export default function Sidebar() {
               {isActive && (
                 <motion.div
                   layoutId="activeSidebar"
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-emerald-500 rounded-r-full"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-olive rounded-r-full"
                 />
               )}
             </NavLink>

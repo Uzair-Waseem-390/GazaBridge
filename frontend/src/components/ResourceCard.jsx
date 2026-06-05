@@ -16,11 +16,11 @@ const CATEGORY_ICONS = {
 const CATEGORY_COLORS = {
   job: 'from-blue-500 to-cyan-500',
   internship: 'from-purple-500 to-pink-500',
-  scholarship: 'from-emerald-500 to-teal-500',
+  scholarship: 'from-olive to-[#F5F0E6]0',
   grant: 'from-orange-500 to-red-500',
   fellowship: 'from-indigo-500 to-blue-500',
-  funding: 'from-green-500 to-emerald-500',
-  volunteer: 'from-teal-500 to-green-500',
+  funding: 'from-olive to-olive',
+  volunteer: 'from-[#F5F0E6]0 to-olive',
   other: 'from-gray-500 to-slate-500',
 };
 
@@ -51,7 +51,7 @@ export default function ResourceCard({ resource, index, canManage, onEdit, onDel
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-emerald-600 transition-colors">
+        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-olive transition-colors">
           {resource.title}
         </h3>
 
@@ -63,7 +63,7 @@ export default function ResourceCard({ resource, index, canManage, onEdit, onDel
           {resource.description.length > 150 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium mt-1 transition-colors"
+              className="text-olive hover:text-olive-dark text-sm font-medium mt-1 transition-colors"
             >
               {isExpanded ? 'Show less' : 'Read more'}
             </button>
@@ -72,7 +72,7 @@ export default function ResourceCard({ resource, index, canManage, onEdit, onDel
 
         {/* Author */}
         <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
-          <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-8 h-8 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white text-xs font-bold">
             {resource.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
           </div>
           <div>
@@ -95,7 +95,7 @@ export default function ResourceCard({ resource, index, canManage, onEdit, onDel
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-olive to-olive-dark text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

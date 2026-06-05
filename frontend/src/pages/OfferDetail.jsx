@@ -91,7 +91,7 @@ export default function OfferDetail() {
   if (loading) {
     return (
       <div className="pt-24 min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-12 h-12 border-4 border-olive border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -101,16 +101,16 @@ export default function OfferDetail() {
       <div className="pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Offer not found</h2>
-          <Link to="/posts" className="text-emerald-600 font-semibold">← Back to Posts</Link>
+          <Link to="/posts" className="text-olive font-semibold">← Back to Posts</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link to="/posts" className="inline-flex items-center gap-2 text-emerald-600 font-semibold mb-6">
+        <Link to="/posts" className="inline-flex items-center gap-2 text-olive font-semibold mb-6">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -127,7 +127,7 @@ export default function OfferDetail() {
                     🙌 Offer
                   </span>
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                    offer.status === 'active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' :
+                    offer.status === 'active' ? 'bg-olive-10 text-olive-dark border-olive-20' :
                     offer.status === 'inactive' ? 'bg-gray-100 text-gray-700 border-gray-200' :
                     'bg-red-100 text-red-700 border-red-200'
                   }`}>
@@ -171,7 +171,7 @@ export default function OfferDetail() {
             </div>
 
             <div className="flex items-center gap-3 pt-4 border-t">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white font-bold">
                 {offer.user_full_name?.split(' ').map(n => n[0]).join('')}
               </div>
               <div>
@@ -189,7 +189,7 @@ export default function OfferDetail() {
               </h2>
               {canLink && (
                 <button onClick={() => setShowLinkModal(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all">
+                  className="px-4 py-2 bg-gradient-to-r from-olive to-olive-dark text-white rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all">
                   Manage Links
                 </button>
               )}
@@ -201,7 +201,7 @@ export default function OfferDetail() {
                 <p className="text-gray-500">No courses linked to this offer yet.</p>
                 {canLink && (
                   <button onClick={() => setShowLinkModal(true)}
-                    className="mt-4 text-emerald-600 font-semibold text-sm hover:text-emerald-700">
+                    className="mt-4 text-olive font-semibold text-sm hover:text-olive-dark">
                     Link a course →
                   </button>
                 )}
@@ -212,23 +212,23 @@ export default function OfferDetail() {
                   <Link
                     key={course.id}
                     to={`/courses/${course.id}`}
-                    className="block p-4 bg-gray-50 rounded-xl hover:bg-emerald-50 transition-colors group"
+                    className="block p-4 bg-gray-50 rounded-xl hover:bg-olive-5 transition-colors group"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors">
+                        <h3 className="font-semibold text-gray-900 group-hover:text-olive transition-colors">
                           {course.title}
                         </h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            course.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'
+                            course.status === 'active' ? 'bg-olive-10 text-olive-dark' : 'bg-gray-100 text-gray-600'
                           }`}>
                             {course.status}
                           </span>
                           <span className="text-xs text-gray-400">by {course.user_email}</span>
                         </div>
                       </div>
-                      <svg className="w-5 h-5 text-gray-400 group-hover:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5 text-gray-400 group-hover:text-olive transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
@@ -278,7 +278,7 @@ export default function OfferDetail() {
                         </h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            ls.effective_status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'
+                            ls.effective_status === 'active' ? 'bg-olive-10 text-olive-dark' : 'bg-gray-100 text-gray-600'
                           }`}>
                             {ls.effective_status}
                           </span>

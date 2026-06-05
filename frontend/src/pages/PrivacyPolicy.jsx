@@ -5,7 +5,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="pt-24">
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]" />
         <div className="relative max-w-4xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Privacy <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Policy</span>
+              Privacy <span className="bg-gradient-to-r from-olive to-olive-dark bg-clip-text text-transparent">Policy</span>
             </h1>
             <p className="text-gray-500 mb-12">Last updated: December 2024</p>
 
@@ -73,7 +73,7 @@ export default function PrivacyPolicy() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Contact Us</h2>
                 <p className="text-gray-600 leading-relaxed">
                   If you have questions about this Privacy Policy, please contact us at{' '}
-                  <a href="mailto:hello@gazabridge.org" className="text-emerald-600 hover:text-emerald-700">
+                  <a href="mailto:hello@gazabridge.org" className="text-olive hover:text-olive-dark">
                     hello@gazabridge.org
                   </a>
                 </p>

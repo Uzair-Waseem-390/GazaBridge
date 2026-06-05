@@ -61,12 +61,12 @@ export default function GoogleCallback() {
 
   if (processing && !error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
         <div className="text-center">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center"
+            className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-olive-light to-olive-dark rounded-full flex items-center justify-center"
           >
             <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -81,7 +81,7 @@ export default function GoogleCallback() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -97,7 +97,7 @@ export default function GoogleCallback() {
           <div className="flex flex-col gap-3">
             <button
               onClick={() => navigate('/login')}
-              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg"
+              className="w-full py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg"
             >
               Try Again
             </button>

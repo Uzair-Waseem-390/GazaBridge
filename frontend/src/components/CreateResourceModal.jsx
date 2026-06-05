@@ -98,7 +98,7 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 placeholder="Enter resource title"
               />
             </div>
@@ -111,7 +111,7 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -129,7 +129,7 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 onChange={handleChange}
                 required
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none resize-none"
                 placeholder="Describe the resource..."
               />
             </div>
@@ -144,7 +144,7 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 value={formData.link}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 placeholder="https://example.com/resource"
               />
             </div>
@@ -164,7 +164,7 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50"
+                className="flex-1 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg shadow-olive/25 hover:shadow-olive/40 transition-all disabled:opacity-50"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

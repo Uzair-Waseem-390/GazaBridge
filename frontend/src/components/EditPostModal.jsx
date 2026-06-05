@@ -102,7 +102,7 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
                 name={type === 'offer' ? 'offer_name' : 'request_name'}
                 value={formData[type === 'offer' ? 'offer_name' : 'request_name']}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
               />
             </div>
 
@@ -112,7 +112,7 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -127,7 +127,7 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none resize-none"
               />
             </div>
 
@@ -138,7 +138,7 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
                   name="availability"
                   value={formData.availability}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 >
                   {AVAILABILITY.map(a => (
                     <option key={a.value} value={a.value}>{a.label}</option>
@@ -153,7 +153,7 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -174,7 +174,7 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className="flex-1 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
               >
                 {loading ? 'Saving...' : 'Update'}
               </motion.button>

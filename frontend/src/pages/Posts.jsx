@@ -26,7 +26,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-emerald-400 to-emerald-600'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-olive-light to-olive-dark'}`} />
         
         <div className="p-6">
           <div className="flex justify-center mb-4">
@@ -35,7 +35,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
               className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                type === 'delete' ? 'bg-red-100' : 'bg-emerald-100'
+                type === 'delete' ? 'bg-red-100' : 'bg-olive-10'
               }`}
             >
               {type === 'delete' ? (
@@ -43,7 +43,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
@@ -69,7 +69,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
                 type === 'delete'
                   ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700'
+                  : 'bg-gradient-to-r from-olive to-olive-dark hover:from-olive-dark hover:to-olive-dark'
               }`}
             >
               Confirm
@@ -101,7 +101,7 @@ const AVAILABILITY = [
 ];
 
 const STATUS = [
-  { value: 'active', label: 'Active', color: 'bg-emerald-100 text-emerald-700' },
+  { value: 'active', label: 'Active', color: 'bg-olive-10 text-olive-dark' },
   { value: 'inactive', label: 'Inactive', color: 'bg-gray-100 text-gray-700' },
   { value: 'closed', label: 'Closed', color: 'bg-red-100 text-red-700' },
 ];
@@ -230,7 +230,7 @@ export default function Posts() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
         <motion.div
@@ -252,7 +252,7 @@ export default function Posts() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -274,7 +274,7 @@ export default function Posts() {
                 onClick={() => handleTabChange(tab.value)}
                 className={`flex-1 p-4 rounded-2xl text-left transition-all ${
                   activeTab === tab.value
-                    ? 'bg-white shadow-lg border-2 border-emerald-500'
+                    ? 'bg-white shadow-lg border-2 border-olive'
                     : 'bg-white/50 border-2 border-transparent hover:border-gray-200'
                 }`}
               >
@@ -296,14 +296,14 @@ export default function Posts() {
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   placeholder={`Search ${activeTab}...`}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 />
               </div>
               <motion.button
                 type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
               >
                 Search
               </motion.button>
@@ -327,7 +327,7 @@ export default function Posts() {
               <select
                 value={filters.category}
                 onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-olive outline-none"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.icon} {cat.label}</option>
@@ -337,7 +337,7 @@ export default function Posts() {
               <select
                 value={filters.status}
                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none"
+                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-olive outline-none"
               >
                 <option value="">All Statuses</option>
                 {STATUS.map(s => (
@@ -349,7 +349,7 @@ export default function Posts() {
                 <select
                   value={filters.availability}
                   onChange={(e) => setFilters(prev => ({ ...prev, availability: e.target.value }))}
-                  className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-olive outline-none"
                 >
                   <option value="">All Availability</option>
                   {AVAILABILITY.map(a => (
@@ -418,7 +418,7 @@ export default function Posts() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg"
+                className="px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg"
               >
                 Create Your First Post
               </motion.button>
@@ -451,7 +451,7 @@ export default function Posts() {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLoadMore}
                   disabled={loading}
-                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-emerald-300 hover:text-emerald-600 transition-all shadow-sm disabled:opacity-50"
+                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-olive-light hover:text-olive transition-all shadow-sm disabled:opacity-50"
                 >
                   {loading ? 'Loading...' : `Load More (${pagination.totalPages - pagination.page} pages)`}
                 </motion.button>

@@ -70,7 +70,7 @@ export default function UserDashboard() {
         {/* Welcome Section */}
         <div className="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-gray-100">
           <div className="flex items-center gap-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+            <div className="w-20 h-20 bg-gradient-to-br from-olive-light to-olive-dark rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
               {getInitials()}
             </div>
             <div>
@@ -80,7 +80,7 @@ export default function UserDashboard() {
               <p className="text-gray-600 mt-1">{user?.email}</p>
               <div className="flex gap-2 mt-3">
                 {user?.roles?.map(role => (
-                  <span key={role.id || role} className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold capitalize">
+                  <span key={role.id || role} className="px-3 py-1 bg-olive-10 text-olive-dark rounded-full text-xs font-semibold capitalize">
                     {typeof role === 'string' ? role : role.name}
                   </span>
                 ))}
@@ -94,7 +94,7 @@ export default function UserDashboard() {
           {[
             { label: 'Offers', value: stats.offers, icon: '🙌', color: 'from-blue-500 to-cyan-500', path: '/posts' },
             { label: 'Requests', value: stats.requests, icon: '🌟', color: 'from-purple-500 to-pink-500', path: '/posts' },
-            { label: 'Courses', value: stats.courses, icon: '📚', color: 'from-emerald-500 to-teal-500', path: '/courses' },
+            { label: 'Courses', value: stats.courses, icon: '📚', color: 'from-olive to-[#F5F0E6]0', path: '/courses' },
             { label: 'Live Sections', value: stats.liveSections, icon: '📡', color: 'from-orange-500 to-red-500', path: '/live-sections' },
           ].map(stat => (
             <Link key={stat.label} to={stat.path}>
@@ -116,7 +116,7 @@ export default function UserDashboard() {
         <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">Recent Posts</h2>
-            <Link to="/posts" className="text-emerald-600 hover:text-emerald-700 font-semibold text-sm">
+            <Link to="/posts" className="text-olive hover:text-olive-dark font-semibold text-sm">
               View All →
             </Link>
           </div>
@@ -134,7 +134,7 @@ export default function UserDashboard() {
             <div className="text-center py-8 text-gray-500">
               <div className="text-4xl mb-4">📝</div>
               <p>No posts yet. Create your first offer or request!</p>
-              <Link to="/posts" className="text-emerald-600 font-semibold mt-2 inline-block">
+              <Link to="/posts" className="text-olive font-semibold mt-2 inline-block">
                 Create Post →
               </Link>
             </div>
@@ -144,7 +144,7 @@ export default function UserDashboard() {
                 <Link
                   key={post.id}
                   to={post.postType === 'offer' ? `/offers/${post.id}` : `/posts`}
-                  className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-emerald-50 transition-colors"
+                  className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-olive-5 transition-colors"
                 >
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold mt-1 ${
                     post.postType === 'offer'

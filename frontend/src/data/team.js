@@ -6,7 +6,7 @@ export const teamMembers = [
     role: 'Founder',
     bio: 'Visionary leader dedicated to bridging the digital divide and empowering communities through education.',
     avatar: 'SA',
-    gradient: 'from-emerald-400 to-teal-500',
+    gradient: 'from-olive-light to-olive',
   },
   {
     id: 2,

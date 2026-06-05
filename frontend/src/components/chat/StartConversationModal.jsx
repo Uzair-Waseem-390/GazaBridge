@@ -96,13 +96,13 @@ export default function StartConversationModal({ onClose, onStarted }) {
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setSearchDone(false); }}
                 placeholder="Search by name or email..."
-                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-olive focus:border-olive outline-none"
                 autoFocus
               />
               <button
                 type="submit"
                 disabled={searching || !query.trim()}
-                className="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-xl disabled:opacity-50 hover:shadow-md transition-all"
+                className="px-4 py-2.5 bg-gradient-to-r from-olive to-olive-dark text-white text-sm font-semibold rounded-xl disabled:opacity-50 hover:shadow-md transition-all"
               >
                 {searching ? (
                   <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
@@ -118,7 +118,7 @@ export default function StartConversationModal({ onClose, onStarted }) {
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-9 h-9 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white font-bold text-sm">
                       {u.first_name?.[0] || u.email?.[0]?.toUpperCase() || '?'}
                     </div>
                     <div>
@@ -131,7 +131,7 @@ export default function StartConversationModal({ onClose, onStarted }) {
                   <button
                     onClick={() => handleStartChat(u)}
                     disabled={starting === u.id}
-                    className="px-3 py-1.5 bg-emerald-500 text-white text-xs font-semibold rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                    className="px-3 py-1.5 bg-olive text-white text-xs font-semibold rounded-lg hover:bg-olive transition-colors disabled:opacity-50"
                   >
                     {starting === u.id ? '...' : 'Chat'}
                   </button>

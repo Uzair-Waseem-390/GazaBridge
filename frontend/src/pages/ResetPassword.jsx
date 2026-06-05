@@ -64,7 +64,7 @@ export default function ResetPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -75,8 +75,8 @@ export default function ResetPassword() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            <div className="w-12 h-12 bg-gradient-to-br from-olive-light to-olive-dark rounded-xl rotate-12" />
+            <span className="text-3xl font-bold bg-gradient-to-r from-olive to-olive-dark bg-clip-text text-transparent">
               GazaBridge
             </span>
           </Link>
@@ -98,7 +98,7 @@ export default function ResetPassword() {
               <motion.div
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.5 }}
-                className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center"
+                className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-olive-light to-olive-dark rounded-full flex items-center justify-center"
               >
                 <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -113,12 +113,12 @@ export default function ResetPassword() {
                   initial={{ width: '100%' }}
                   animate={{ width: '0%' }}
                   transition={{ duration: 3, ease: 'linear' }}
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full"
+                  className="h-full bg-gradient-to-r from-olive to-olive-dark rounded-full"
                 />
               </div>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
               >
                 Go to Login Now
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -160,7 +160,7 @@ export default function ResetPassword() {
                     value={passwords.new_password}
                     onChange={handleChange}
                     autoFocus
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none text-gray-900 placeholder-gray-400"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none text-gray-900 placeholder-gray-400"
                     placeholder="At least 8 characters"
                   />
                   {passwords.new_password && (
@@ -179,7 +179,7 @@ export default function ResetPassword() {
                     required
                     value={passwords.confirm_password}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none text-gray-900 placeholder-gray-400 ${
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none text-gray-900 placeholder-gray-400 ${
                       passwords.confirm_password && passwords.new_password !== passwords.confirm_password
                         ? 'border-red-300'
                         : 'border-gray-300'
@@ -190,7 +190,7 @@ export default function ResetPassword() {
                     <p className="mt-2 text-sm text-red-600">Passwords do not match</p>
                   )}
                   {passwords.confirm_password && passwords.new_password === passwords.confirm_password && (
-                    <p className="mt-2 text-sm text-emerald-600">✓ Passwords match</p>
+                    <p className="mt-2 text-sm text-olive">✓ Passwords match</p>
                   )}
                 </div>
 
@@ -210,7 +210,7 @@ export default function ResetPassword() {
                           className={`w-4 h-4 flex-shrink-0 ${
                             passwords.new_password
                               ? req.met
-                                ? 'text-emerald-500'
+                                ? 'text-olive'
                                 : 'text-gray-300'
                               : 'text-gray-300'
                           }`}
@@ -225,7 +225,7 @@ export default function ResetPassword() {
                             d={req.met && passwords.new_password ? 'M5 13l4 4L19 7' : 'M12 8v4m0 4h.01'}
                           />
                         </svg>
-                        <span className={passwords.new_password ? (req.met ? 'text-emerald-700' : 'text-gray-500') : 'text-gray-500'}>
+                        <span className={passwords.new_password ? (req.met ? 'text-olive-dark' : 'text-gray-500') : 'text-gray-500'}>
                           {req.label}
                         </span>
                       </li>
@@ -238,7 +238,7 @@ export default function ResetPassword() {
                   disabled={loading || passwords.new_password !== passwords.confirm_password}
                   whileHover={{ scale: loading ? 1 : 1.02 }}
                   whileTap={{ scale: loading ? 1 : 0.98 }}
-                  className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3.5 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg shadow-olive/25 hover:shadow-olive/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">
@@ -260,7 +260,7 @@ export default function ResetPassword() {
         {!success && (
           <p className="text-center mt-6 text-gray-600">
             Remember your password?{' '}
-            <Link to="/login" className="text-emerald-600 hover:text-emerald-700 font-semibold">
+            <Link to="/login" className="text-olive hover:text-olive-dark font-semibold">
               Sign in
             </Link>
           </p>

@@ -39,7 +39,7 @@ export default function Mission() {
   return (
     <div className="pt-24">
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]" />
         <div className="relative max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -47,11 +47,11 @@ export default function Mission() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-block px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold mb-4 border border-emerald-200">
+            <span className="inline-block px-4 py-2 bg-olive-5 text-olive-dark rounded-full text-sm font-semibold mb-4 border border-olive-20">
               Our Purpose
             </span>
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Our <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Mission</span>
+              Our <span className="bg-gradient-to-r from-olive to-olive-dark bg-clip-text text-transparent">Mission</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               We're on a mission to democratize digital education and create opportunities for people in Gaza.
@@ -124,7 +124,7 @@ export default function Mission() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-full shadow-lg"
+                className="px-8 py-4 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-full shadow-lg"
               >
                 Get Involved
               </motion.button>

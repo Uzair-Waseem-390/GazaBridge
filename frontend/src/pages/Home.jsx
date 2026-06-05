@@ -7,6 +7,8 @@
 import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValue } from 'framer-motion';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { services } from '../data/services';
+import CTASection from '../components/CTASection';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAGNETIC BUTTON HOOK
@@ -158,6 +160,65 @@ function MarqueeStrip() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION: STATS — horizontal scroll + counter
+// ─────────────────────────────────────────────────────────────────────────────
+function StatsSection() {
+  const stats = [
+    { value: 5000, suffix: '+', label: 'Active Learners', desc: 'from Gaza enrolled today', icon: '🎓' },
+    { value: 850, suffix: '+', label: 'Expert Volunteers', desc: 'from 45 countries', icon: '🙌' },
+    { value: 45, suffix: '', label: 'Countries Reached', desc: 'globally connected', icon: '🌍' },
+    { value: 3200, suffix: '+', label: 'Success Stories', desc: 'lives transformed', icon: '🏆' },
+  ];
+
+  return (
+    <section className="py-24 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex items-center gap-4 mb-16"
+        >
+          <div className="h-px w-12 bg-[#808000]/50" />
+          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#808000]" style={{ fontFamily: "'DM Sans', sans-serif" }}>By The Numbers</span>
+        </motion.div>
+
+        <div className="pb-4 -mx-6 px-6 lg:mx-0 lg:px-0 lg:pb-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 rounded-3xl">
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                className="bg-white px-8 py-10 transition-colors duration-300 hover:bg-[#808000]/5 rounded-2xl"
+              >
+                <div className="text-3xl mb-4">{s.icon}</div>
+                <div
+                  className="text-4xl xl:text-5xl font-bold text-gray-900 mb-1 tabular-nums"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                >
+                  <AnimatedNumber value={s.value} suffix={s.suffix} />
+                </div>
+                <div className="text-sm font-semibold text-gray-800 mb-1" style={{ fontFamily: "'DM Sans', sans-serif" }}>{s.label}</div>
+                <div className="text-xs text-gray-400" style={{ fontFamily: "'DM Sans', sans-serif" }}>{s.desc}</div>
+                <motion.div
+                  className="mt-5 h-0.5 origin-left bg-gradient-to-r from-[#808000] to-[#ff9913]"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 + i * 0.1, duration: 0.8 }}
+                />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 // ─────────────────────────────────────────────────────────────────────────────
 // SECTION: HERO (With Video Background) - مصلح ومغلق بالكامل وبألوان زيتية وكريمية
 // ─────────────────────────────────────────────────────────────────────────────
@@ -634,6 +695,385 @@ function HowItWorksSection() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// SECTION: SERVICES — bento grid
+// ─────────────────────────────────────────────────────────────────────────────
+function ServicesSection() {
+  const featured = services.slice(0, 6);
+  const sizes = ['lg', 'sm', 'sm', 'sm', 'lg', 'sm'];
+
+  return (
+    <section className="py-32 bg-white">
+      <div className="max-w-7xl mx-auto px-6">
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16"
+        >
+          <div>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-8 bg-[#808000]/50" />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#808000]" style={{ fontFamily: "'DM Sans', sans-serif" }}>What We Offer</span>
+            </div>
+            <h2
+              className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05]"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            >
+              Skills That<br />
+              <em className="text-[#808000] not-italic">Pay Bills</em>
+            </h2>
+          </div>
+          <p className="text-gray-500 text-base leading-relaxed max-w-sm lg:text-right" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+            Comprehensive digital training paths that take you from complete beginner to market-ready professional.
+          </p>
+        </motion.div>
+
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {featured.map((service, i) => (
+            <motion.div
+              key={service.id}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: i * 0.07, duration: 0.55 }}
+              className={`group relative rounded-3xl border border-gray-100 bg-white overflow-hidden cursor-pointer
+                ${sizes[i] === 'lg' ? 'md:col-span-2 lg:col-span-1' : ''}`}
+              style={{ minHeight: sizes[i] === 'lg' ? '280px' : '220px' }}
+            >
+              {/* Hover gradient */}
+              <motion.div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{
+                  background: `radial-gradient(ellipse at top left, rgba(128,128,0,0.06) 0%, transparent 60%)`,
+                }}
+              />
+
+              {/* Bottom border reveal */}
+              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#808000] to-[#ff9913] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+
+              <div className="p-7 h-full flex flex-col justify-between">
+                <div>
+                  <motion.div
+                    whileHover={{ rotate: 10, scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl mb-5 group-hover:bg-[#808000]/10 transition-colors"
+                  >
+                    {service.icon}
+                  </motion.div>
+                  <h3
+                    className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#808000] transition-colors"
+                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                  >{service.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>{service.description}</p>
+                </div>
+
+                <div className="flex items-center justify-between mt-5 pt-4 border-t border-gray-50">
+                  <span className="text-xs font-semibold text-[#808000] bg-[#808000]/10 px-3 py-1 rounded-full">{service.stats}</span>
+                  <motion.span
+                    whileHover={{ x: 3 }}
+                    className="text-xs text-gray-400 group-hover:text-[#808000] transition-colors font-medium"
+                  >Explore →</motion.span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mt-12"
+        >
+          <Link to="/services">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-[#808000] transition-colors duration-300"
+              style={{ fontFamily: "'DM Sans', sans-serif" }}
+            >
+              Browse All 20+ Skills
+              <span>→</span>
+            </motion.button>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION: TESTIMONIALS
+// ─────────────────────────────────────────────────────────────────────────────
+function TestimonialsSection() {
+  const testimonials = [
+    {
+      quote: "GazaBridge transformed my life. I went from knowing nothing about coding to landing a remote job in just 8 months. This platform is genuinely life-changing.",
+      name: "Ahmed S.", role: "Web Developer @ Remote Startup", avatar: "AS", color: 'from-[#808000] to-[#a3a322]',
+    },
+    {
+      quote: "The personalized mentorship helped me build a portfolio that got me hired as a UI/UX designer. The free resources are world-class. Forever grateful.",
+      name: "Sara M.", role: "UI/UX Designer @ Agency", avatar: "SM", color: 'from-purple-400 to-pink-500',
+    },
+    {
+      quote: "I never thought I could learn data science for free. The structured curriculum and my mentor's guidance made the impossible feel completely achievable.",
+      name: "Mohammed K.", role: "Data Analyst @ Tech Co", avatar: "MK", color: 'from-blue-400 to-cyan-500',
+    },
+    {
+      quote: "Within 6 months I was freelancing on international projects. GazaBridge didn't just teach me skills — it gave me confidence and a real income.",
+      name: "Layla A.", role: "Freelance Developer", avatar: "LA", color: 'from-amber-400 to-orange-500',
+    },
+  ];
+
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setActive(a => (a + 1) % testimonials.length), 5000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <section className="py-32 bg-gray-900 relative overflow-hidden">
+      <NoiseOverlay />
+
+      {/* Large quote mark */}
+      <div
+        className="absolute top-16 left-12 text-[200px] leading-none text-white/[0.03] font-serif select-none pointer-events-none"
+        style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+      >"</div>
+
+      <div className="max-w-7xl mx-auto px-6">
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16"
+        >
+          <div>
+            <div className="flex items-center gap-3 mb-5">
+              <div className="h-px w-8 bg-[#808000]" />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#a3a322]" style={{ fontFamily: "'DM Sans', sans-serif" }}>Testimonials</span>
+            </div>
+            <h2
+              className="text-5xl lg:text-6xl font-bold text-white leading-[1.05]"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            >
+              Real Stories,<br />
+              <em className="text-[#a3a322] not-italic">Real Impact</em>
+            </h2>
+          </div>
+
+          {/* Pagination dots */}
+          <div className="flex items-center gap-2">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                className={`transition-all duration-300 rounded-full ${i === active ? 'w-8 h-2 bg-[#a3a322]' : 'w-2 h-2 bg-gray-600 hover:bg-gray-400'}`}
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
+              onClick={() => setActive(i)}
+              className={`relative rounded-3xl p-7 border cursor-pointer transition-all duration-400 group
+                ${i === active
+                  ? 'bg-white border-white/20 shadow-2xl shadow-[#808000]/20'
+                  : 'bg-white/[0.04] border-white/[0.06] hover:border-white/10 hover:bg-white/[0.07]'
+                }`}
+            >
+              {/* Stars */}
+              <div className="flex gap-0.5 mb-5">
+                {[...Array(5)].map((_, s) => (
+                  <svg key={s} className={`w-3.5 h-3.5 ${i === active ? 'text-amber-400' : 'text-amber-400/40'} transition-colors`} fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+
+              <p
+                className={`text-sm leading-relaxed mb-6 ${i === active ? 'text-gray-700' : 'text-gray-400'} transition-colors`}
+                style={{ fontFamily: "'DM Sans', sans-serif" }}
+              >"{t.quote}"</p>
+
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0`}>
+                  {t.avatar}
+                </div>
+                <div>
+                  <div className={`text-sm font-semibold ${i === active ? 'text-gray-900' : 'text-gray-300'} transition-colors`} style={{ fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
+                  <div className={`text-[11px] ${i === active ? 'text-[#808000]' : 'text-[#808000]/50'} transition-colors`} style={{ fontFamily: "'DM Sans', sans-serif" }}>{t.role}</div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SECTION: FEATURES
+// ─────────────────────────────────────────────────────────────────────────────
+function FeaturesSection() {
+  const features = [
+    { title: '100% Free, Forever', desc: 'No hidden costs, no premium tiers. Every resource, mentor, and tool is free.', icon: '🎓' },
+    { title: 'Verified Expert Mentors', desc: 'Every mentor passes a rigorous multi-step verification process.', icon: '✅' },
+    { title: 'Global Community', desc: 'Connect with volunteers and learners from over 45 countries.', icon: '🌍' },
+    { title: 'Real Career Impact', desc: '85% of learners report improved job prospects within 6 months.', icon: '📈' },
+    { title: 'Flexible Pace', desc: 'Learn on your schedule — on-demand resources and live sessions, your way.', icon: '⏰' },
+    { title: 'Dedicated Support', desc: 'Our team is available every step of your journey.', icon: '💬' },
+  ];
+
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start end', 'end start'] });
+  const xLeft = useTransform(scrollYProgress, [0, 1], [-60, 60]);
+  const xRight = useTransform(scrollYProgress, [0, 1], [60, -60]);
+
+  return (
+    <section ref={containerRef} className="py-32 bg-[#f8faf8] overflow-hidden">
+      <NoiseOverlay />
+      <div className="max-w-7xl mx-auto px-6">
+
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+
+          {/* ===== اليسار — العنوان + 3 بطاقات ===== */}
+          <motion.div style={{ x: xLeft }}>
+            <div className="space-y-8">
+              <div>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="h-px w-8 bg-[#808000]" />
+                  <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#808000]"
+                    style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                    Why GazaBridge
+                  </span>
+                </div>
+                <h2
+                  className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05]"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                >
+                  Built Different.<br />
+                  <em className="text-[#808000] not-italic">Built For You.</em>
+                </h2>
+              </div>
+
+              {/* البطاقات الثلاث — يسار */}
+              <div className="space-y-3">
+                {features.slice(0, 3).map((f, i) => (
+                  <motion.div
+                    key={f.title}
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    whileHover={{ x: 6 }}
+                    className="flex items-start gap-4 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default group"
+                  >
+                    <div className="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
+                      {f.icon}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900 text-sm mb-1"
+                        style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                        {f.title}
+                      </h4>
+                      <p className="text-gray-500 text-xs leading-relaxed"
+                        style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                        {f.desc}
+                      </p>
+                    </div>
+                    {/* الخط الجانبي الأخضر عند hover */}
+                    <div
+                      className="ml-auto w-1 h-full flex-shrink-0 self-stretch rounded-full bg-gray-100 group-hover:bg-[#808000] transition-colors duration-300"
+                      style={{ minHeight: '40px' }}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ===== اليمين — البطاقة الخضراء 85% + 3 بطاقات ===== */}
+          <motion.div style={{ x: xRight }} className="space-y-8">
+
+            {/* البطاقة الخضراء الكبيرة */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="relative bg-gradient-to-br from-[#808000] to-[#a3a322] rounded-3xl p-8 text-white overflow-hidden"
+            >
+              <NoiseOverlay />
+              {/* Blobs زخرفية */}
+              <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
+              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-2xl" />
+              <div className="relative">
+                <div className="text-5xl mb-4">📈</div>
+                <div
+                  className="text-5xl font-bold mb-2"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                >85%</div>
+                <p className="text-white/80 text-sm leading-relaxed"
+                  style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                  of our graduates report improved career outcomes within 6 months of completing their learning path.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* البطاقات الثلاث — يمين */}
+            <div className="space-y-3">
+              {features.slice(3).map((f, i) => (
+                <motion.div
+                  key={f.title}
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  whileHover={{ x: -6 }}
+                  className="flex items-start gap-4 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default group"
+                >
+                  <div className="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
+                    {f.icon}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 text-sm mb-1"
+                      style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                      {f.title}
+                    </h4>
+                    <p className="text-gray-500 text-xs leading-relaxed"
+                      style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                      {f.desc}
+                    </p>
+                  </div>
+                  <div
+                    className="ml-auto w-1 self-stretch flex-shrink-0 rounded-full bg-gray-100 group-hover:bg-[#808000] transition-colors duration-300"
+                    style={{ minHeight: '40px' }}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // MAIN HOMEPAGE COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Home() {
@@ -642,7 +1082,12 @@ export default function Home() {
       <CursorBlob />
       <Hero />
       <MarqueeStrip />
+      <StatsSection />
       <HowItWorksSection />
+      <ServicesSection />
+      <TestimonialsSection />
+      <FeaturesSection />
+      <CTASection />
     </div>
   );
 }

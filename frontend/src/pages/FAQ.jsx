@@ -176,7 +176,7 @@ export default function FAQ() {
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-[85vh] flex items-center overflow-hidden bg-[#F5F0E6] pt-24"
+        className="relative min-h-[85vh] flex items-center overflow-hidden bg-[#F5F0E6] pt-24 pb-24"
       >
         <NoiseOverlay />
         <MouseGradient />
@@ -283,7 +283,7 @@ export default function FAQ() {
             <motion.div
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.75, duration: 0.8 }}
-              className="relative max-w-md"
+              className="relative max-w-md mb-10"
             >
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -78,7 +78,7 @@ export default function AdminNotifications() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-2xl mx-auto px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -92,13 +92,13 @@ export default function AdminNotifications() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl"
+                className="mb-6 p-4 bg-olive-5 border border-olive-20 rounded-xl"
               >
                 <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <p className="text-sm text-emerald-700">{message}</p>
+                  <p className="text-sm text-olive-dark">{message}</p>
                 </div>
               </motion.div>
             )}
@@ -125,7 +125,7 @@ export default function AdminNotifications() {
                       key={group.value}
                       className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${
                         formData.target_groups.includes(group.value)
-                          ? 'border-emerald-500 bg-emerald-50'
+                          ? 'border-olive bg-olive-5'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
@@ -135,7 +135,7 @@ export default function AdminNotifications() {
                         value={group.value}
                         checked={formData.target_groups.includes(group.value)}
                         onChange={handleChange}
-                        className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-olive focus:ring-olive border-gray-300 rounded"
                       />
                       <span className="ml-3 text-sm font-medium text-gray-900">{group.label}</span>
                     </label>
@@ -154,7 +154,7 @@ export default function AdminNotifications() {
                       key={type.value}
                       className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${
                         formData.type === type.value
-                          ? 'border-emerald-500 bg-emerald-50'
+                          ? 'border-olive bg-olive-5'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
@@ -164,7 +164,7 @@ export default function AdminNotifications() {
                         value={type.value}
                         checked={formData.type === type.value}
                         onChange={handleChange}
-                        className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300"
+                        className="h-4 w-4 text-olive focus:ring-olive border-gray-300"
                       />
                       <span className="ml-3 text-sm font-medium text-gray-900">{type.label}</span>
                     </label>
@@ -183,7 +183,7 @@ export default function AdminNotifications() {
                   value={formData.content}
                   onChange={handleChange}
                   placeholder="Enter notification message..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none resize-none"
                 />
               </div>
 
@@ -192,7 +192,7 @@ export default function AdminNotifications() {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50"
+                className="w-full py-3.5 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg shadow-olive/25 hover:shadow-olive/40 transition-all disabled:opacity-50"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

@@ -90,8 +90,13 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (isMobileMenuOpen) setMobileMenu(false);
-  }, [location.pathname, isMobileMenuOpen]);
+    setMobileMenu(false);
+  }, [location.pathname]);
+
+  // Scroll to top when navigating
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   // Hover pill tracking
   const handleLinkEnter = (e) => {
@@ -335,9 +340,10 @@ export default function Navbar() {
 
           {/* ── Mobile hamburger ── */}
           <motion.button
+            type="button"
             whileTap={{ scale: 0.88 }}
             onClick={() => setMobileMenu(!isMobileMenuOpen)}
-            className="md:hidden relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#808000]/10 transition-colors"
+            className="md:hidden relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#808000]/10 transition-colors cursor-pointer pointer-events-auto"
           >
             <div className="flex flex-col gap-[5px] w-5">
               <motion.span
@@ -371,6 +377,44 @@ export default function Navbar() {
           </motion.button>
         </div>
       </div>
+      {/* Mobile menu panel */}
+      {isMobileMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.25 }}
+          className="md:hidden absolute inset-x-4 top-[78px] bg-white rounded-2xl shadow-xl border border-[#808000]/10 z-50 p-4"
+        >
+          <div className="flex flex-col gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                onClick={() => setMobileMenu(false)}
+                className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors
+                  ${isActive(link.href) ? 'text-[#808000] bg-[#808000]/5' : 'text-gray-700 hover:bg-gray-50'}`}
+              >
+                {link.name}
+              </Link>
+            ))}
+
+            <div className="border-t border-gray-100 mt-2 pt-3 flex flex-col gap-2">
+              {isAuthenticated ? (
+                <>
+                  <Link to="/chat" onClick={() => setMobileMenu(false)} className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">Chat</Link>
+                  <button onClick={() => { logout(); setMobileMenu(false); }} className="px-4 py-2 text-sm text-left text-red-500 hover:bg-red-50 rounded-md">Logout</button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" onClick={() => setMobileMenu(false)} className="block w-full px-4 py-2 text-sm text-center text-gray-700 border border-[#808000] hover:bg-[#808000]/5 rounded-md">Log In</Link>
+                  <Link to="/register" onClick={() => setMobileMenu(false)} className="block w-full px-4 py-2 text-sm text-center text-white bg-[#808000] rounded-md">Get Started</Link>
+                </>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
     </motion.nav>
   );
 }

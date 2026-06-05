@@ -59,8 +59,8 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
             </button>
           )}
           <Link to={isAdmin ? '/admin' : '/dashboard'} className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-lg rotate-12" />
-            <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent hidden sm:block">
+            <div className="w-8 h-8 bg-gradient-to-br from-olive-light to-olive-dark rounded-lg rotate-12" />
+            <span className="text-xl font-bold bg-gradient-to-r from-olive to-olive-dark bg-clip-text text-transparent hidden sm:block">
               GazaBridge
             </span>
           </Link>
@@ -105,7 +105,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               onClick={() => setShowProfileMenu(!showProfileMenu)}
               className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+              <div className="w-8 h-8 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white text-sm font-bold">
                 {getInitials()}
               </div>
               <span className="text-sm font-medium text-gray-700 hidden md:block">{getDisplayName()}</span>
@@ -126,7 +126,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                     <p className="font-semibold text-gray-900 text-sm">{getDisplayName()}</p>
                     <p className="text-xs text-gray-500">{user?.email}</p>
                     {user?.roles?.map((role, index) => (
-                      <span key={index} className="inline-block px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-xs mt-1 mr-1 capitalize">
+                      <span key={index} className="inline-block px-2 py-0.5 bg-olive-10 text-olive-dark rounded-full text-xs mt-1 mr-1 capitalize">
                         {role}
                       </span>
                     ))}

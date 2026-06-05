@@ -27,7 +27,7 @@ export default function DashboardLayout() {
 
   if (isChatPage) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className="min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
         <HeaderBar />
         <Outlet />
       </div>
@@ -35,7 +35,7 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6] flex">
       <AnimatePresence>
         {sidebarOpen && (
           <motion.aside

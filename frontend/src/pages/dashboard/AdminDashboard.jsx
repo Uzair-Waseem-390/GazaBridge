@@ -26,7 +26,7 @@ export default function AdminDashboard() {
 
   const statCards = [
     { label: 'Total Users', value: stats?.total_users || 0, icon: '👥', color: 'from-blue-500 to-cyan-500', path: '/admin/users/volunteers' },
-    { label: 'Volunteers', value: stats?.volunteers || 0, icon: '🙌', color: 'from-emerald-500 to-teal-500', path: '/admin/users/volunteers' },
+    { label: 'Volunteers', value: stats?.volunteers || 0, icon: '🙌', color: 'from-olive to-[#F5F0E6]0', path: '/admin/users/volunteers' },
     { label: 'Seekers', value: stats?.seekers || 0, icon: '🌟', color: 'from-purple-500 to-pink-500', path: '/admin/users/seekers' },
     { label: 'Both Roles', value: stats?.both || 0, icon: '🔄', color: 'from-orange-500 to-red-500', path: '/admin/users/both' },
     { label: 'Managers', value: stats?.managers || 0, icon: '👔', color: 'from-indigo-500 to-blue-500', path: '/admin/users/managers' },

@@ -27,9 +27,9 @@ export default function PasswordStrengthIndicator({ password }) {
       case 3:
         return { label: 'Fair', color: 'bg-yellow-500', width: '60%' };
       case 4:
-        return { label: 'Strong', color: 'bg-emerald-500', width: '80%' };
+        return { label: 'Strong', color: 'bg-olive', width: '80%' };
       case 5:
-        return { label: 'Very Strong', color: 'bg-emerald-600', width: '100%' };
+        return { label: 'Very Strong', color: 'bg-olive', width: '100%' };
       default:
         return { label: '', color: 'bg-gray-200', width: '0%' };
     }
@@ -56,7 +56,7 @@ export default function PasswordStrengthIndicator({ password }) {
           strength <= 1 ? 'text-red-500' :
           strength <= 2 ? 'text-orange-500' :
           strength <= 3 ? 'text-yellow-600' :
-          'text-emerald-600'
+          'text-olive'
         }`}>
           Password strength: {info.label}
         </p>

@@ -71,7 +71,7 @@ export default function Resources() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
         <motion.div
@@ -94,7 +94,7 @@ export default function Resources() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -116,14 +116,14 @@ export default function Resources() {
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   placeholder="Search resources..."
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 />
               </div>
               <motion.button
                 type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
               >
                 Search
               </motion.button>
@@ -153,7 +153,7 @@ export default function Resources() {
                   onClick={() => handleCategoryChange(cat.value)}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     selectedCategory === cat.value
-                      ? 'bg-emerald-500 text-white shadow-lg'
+                      ? 'bg-olive text-white shadow-lg'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
@@ -242,7 +242,7 @@ export default function Resources() {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLoadMore}
                   disabled={loading}
-                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-emerald-300 hover:text-emerald-600 transition-all shadow-sm disabled:opacity-50"
+                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-olive-light hover:text-olive transition-all shadow-sm disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">

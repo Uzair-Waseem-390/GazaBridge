@@ -12,7 +12,7 @@ export default function Unauthorized() {
   ) || user?.is_staff || user?.is_superuser;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -36,7 +36,7 @@ export default function Unauthorized() {
           </button>
           <Link
             to={isAdmin ? '/admin' : '/dashboard'}
-            className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg"
+            className="flex-1 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg"
           >
             Dashboard
           </Link>

@@ -32,7 +32,7 @@ const AVAILABILITY_LABELS = {
 };
 
 const STATUS_COLORS = {
-  active: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+  active: 'bg-olive-10 text-olive-dark border-olive-20',
   inactive: 'bg-gray-100 text-gray-700 border-gray-200',
   closed: 'bg-red-100 text-red-700 border-red-200',
 };
@@ -79,12 +79,12 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
         {/* Name */}
         {type === 'offer' ? (
           <Link to={`/offers/${post.id}`}>
-            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors hover:text-emerald-600">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-olive transition-colors hover:text-olive">
               {name}
             </h3>
           </Link>
         ) : (
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-olive transition-colors">
             {name}
           </h3>
         )}
@@ -104,7 +104,7 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
           {post.description?.length > 150 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-emerald-600 hover:text-emerald-700 text-sm font-medium mt-1 transition-colors"
+              className="text-olive hover:text-olive-dark text-sm font-medium mt-1 transition-colors"
             >
               {isExpanded ? 'Show less' : 'Read more'}
             </button>
@@ -114,7 +114,7 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
         {/* Availability (only for offers) */}
         {type === 'offer' && post.availability && (
           <div className="mb-4 flex items-center gap-2">
-            <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span className="text-sm text-gray-600">
@@ -127,7 +127,7 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
         {type === 'offer' && (
           <Link
             to={`/offers/${post.id}`}
-            className="inline-flex items-center gap-1 text-emerald-600 text-sm font-medium hover:text-emerald-700 transition-colors mt-3 mb-3"
+            className="inline-flex items-center gap-1 text-olive text-sm font-medium hover:text-olive-dark transition-colors mt-3 mb-3"
           >
             View Details
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -138,7 +138,7 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
 
         {/* Author */}
         <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-          <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-8 h-8 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white text-xs font-bold">
             {post.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
           </div>
           <div className="flex-1">

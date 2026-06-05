@@ -24,7 +24,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-emerald-400 to-emerald-600'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-olive-light to-olive-dark'}`} />
         
         <div className="p-6">
           <div className="flex justify-center mb-4">
@@ -33,7 +33,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
               className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                type === 'delete' ? 'bg-red-100' : 'bg-emerald-100'
+                type === 'delete' ? 'bg-red-100' : 'bg-olive-10'
               }`}
             >
               {type === 'delete' ? (
@@ -41,7 +41,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
@@ -67,7 +67,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
                 type === 'delete'
                   ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700'
+                  : 'bg-gradient-to-r from-olive to-olive-dark hover:from-olive-dark hover:to-olive-dark'
               }`}
             >
               Confirm
@@ -187,7 +187,7 @@ export default function AdminCourses() {
   const isAdmin = user?.is_staff || user?.is_superuser;
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center gap-4 mb-6">
@@ -206,7 +206,7 @@ export default function AdminCourses() {
             <select
               value={filters.category}
               onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-              className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+              className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-olive outline-none"
             >
               {CATEGORIES.map(cat => (
                 <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -216,7 +216,7 @@ export default function AdminCourses() {
             <select
               value={filters.skill_level}
               onChange={(e) => setFilters(prev => ({ ...prev, skill_level: e.target.value }))}
-              className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+              className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-olive outline-none"
             >
               {SKILL_LEVELS.map(s => (
                 <option key={s.value} value={s.value}>{s.label}</option>
@@ -226,7 +226,7 @@ export default function AdminCourses() {
             <select
               value={filters.status}
               onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-              className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+              className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-olive outline-none"
             >
               {STATUS_OPTIONS.map(s => (
                 <option key={s.value} value={s.value}>{s.label}</option>
@@ -277,7 +277,7 @@ export default function AdminCourses() {
                       className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                     >
                       <td className="px-6 py-4">
-                        <Link to={`/courses/${course.id}`} className="font-medium text-gray-900 hover:text-emerald-600">
+                        <Link to={`/courses/${course.id}`} className="font-medium text-gray-900 hover:text-olive">
                           {course.title}
                         </Link>
                         <div className="text-sm text-gray-500 truncate max-w-xs">
@@ -301,7 +301,7 @@ export default function AdminCourses() {
                           value={course.status}
                           onChange={(e) => handleStatusChange(course, e.target.value)}
                           className={`px-2 py-1 rounded-lg text-xs font-semibold border outline-none cursor-pointer ${
-                            course.status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                            course.status === 'active' ? 'bg-olive-5 text-olive-dark border-olive-20' :
                             course.status === 'inactive' ? 'bg-gray-50 text-gray-700 border-gray-200' :
                             'bg-red-50 text-red-700 border-red-200'
                           }`}
@@ -466,13 +466,13 @@ function EditCourseAdminModal({ course, onClose, onSubmit }) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
               <input type="text" name="title" value={formData.title} onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none" />
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none" />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
               <select name="category" value={formData.category} onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none">
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none">
                 {CATEGORIES.filter(c => c.value).map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
                 ))}
@@ -482,14 +482,14 @@ function EditCourseAdminModal({ course, onClose, onSubmit }) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
               <textarea name="description" value={formData.description} onChange={handleChange} rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none resize-none" />
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none resize-none" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Skill Level</label>
                 <select name="skill_level" value={formData.skill_level} onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none">
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none">
                   {SKILL_LEVELS.filter(s => s.value).map(s => (
                     <option key={s.value} value={s.value}>{s.label}</option>
                   ))}
@@ -498,7 +498,7 @@ function EditCourseAdminModal({ course, onClose, onSubmit }) {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
                 <input type="text" name="language" value={formData.language} onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none" />
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none" />
               </div>
             </div>
 
@@ -506,24 +506,24 @@ function EditCourseAdminModal({ course, onClose, onSubmit }) {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Sessions/Week</label>
                 <input type="number" name="sessions_per_week" value={formData.sessions_per_week} onChange={handleChange} min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none" />
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Duration (min)</label>
                 <input type="number" name="session_duration" value={formData.session_duration} onChange={handleChange} min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none" />
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Course Days</label>
                 <input type="number" name="course_duration_days" value={formData.course_duration_days} onChange={handleChange} min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none" />
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none" />
               </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
               <select name="status" value={formData.status} onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none">
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none">
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
                 <option value="closed">Closed</option>
@@ -537,7 +537,7 @@ function EditCourseAdminModal({ course, onClose, onSubmit }) {
               </button>
               <motion.button type="submit" disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50">
+                className="flex-1 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg disabled:opacity-50">
                 {loading ? 'Saving...' : 'Update Course'}
               </motion.button>
             </div>

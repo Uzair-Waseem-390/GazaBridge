@@ -116,7 +116,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
               />
             </div>
 
@@ -126,7 +126,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -141,7 +141,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                 value={formData.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none resize-none"
               />
             </div>
 
@@ -152,7 +152,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                   name="skill_level"
                   value={formData.skill_level}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 >
                   {SKILL_LEVELS.map(s => (
                     <option key={s.value} value={s.value}>{s.label}</option>
@@ -165,7 +165,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                   name="language"
                   value={formData.language}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 >
                   {LANGUAGES.map(l => (
                     <option key={l.value} value={l.value}>{l.label}</option>
@@ -183,7 +183,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                   value={formData.sessions_per_week}
                   onChange={handleChange}
                   min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 />
               </div>
               <div>
@@ -194,7 +194,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                   value={formData.session_duration}
                   onChange={handleChange}
                   min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 />
               </div>
               <div>
@@ -205,7 +205,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                   value={formData.course_duration_days}
                   onChange={handleChange}
                   min="1"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                 />
               </div>
             </div>
@@ -216,7 +216,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -237,7 +237,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className="flex-1 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
               >
                 {loading ? 'Saving...' : 'Update Course'}
               </motion.button>

@@ -84,7 +84,7 @@ export default function Profile() {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full"
+            className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-olive-light to-olive-dark rounded-full"
           />
           <p className="text-gray-600">Loading profile...</p>
         </div>
@@ -93,7 +93,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
         <motion.div
@@ -102,7 +102,7 @@ export default function Profile() {
           className="mb-8"
         >
           <div className="flex items-center gap-6 mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+            <div className="w-20 h-20 bg-gradient-to-br from-olive-light to-olive-dark rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
               {profile?.first_name?.[0] || user?.email?.[0] || 'U'}
             </div>
             <div>
@@ -112,7 +112,7 @@ export default function Profile() {
               <p className="text-gray-600">{profile?.email}</p>
               <div className="flex gap-2 mt-2">
                 {profile?.roles?.map(role => (
-                  <span key={role.id} className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">
+                  <span key={role.id} className="px-3 py-1 bg-olive-10 text-olive-dark rounded-full text-xs font-semibold">
                     {role.name}
                   </span>
                 ))}
@@ -129,7 +129,7 @@ export default function Profile() {
               onClick={() => setActiveTab(tab)}
               className={`pb-3 px-4 font-medium text-sm transition-all ${
                 activeTab === tab
-                  ? 'text-emerald-600 border-b-2 border-emerald-600'
+                  ? 'text-olive border-b-2 border-olive'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -143,13 +143,13 @@ export default function Profile() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl"
+            className="mb-6 p-4 bg-olive-5 border border-olive-20 rounded-xl"
           >
             <div className="flex items-center gap-3">
-              <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              <p className="text-sm text-emerald-700">{message}</p>
+              <p className="text-sm text-olive-dark">{message}</p>
             </div>
           </motion.div>
         )}
@@ -186,7 +186,7 @@ export default function Profile() {
                       name="first_name"
                       value={formData.first_name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                     />
                   </div>
                   <div>
@@ -196,7 +196,7 @@ export default function Profile() {
                       name="last_name"
                       value={formData.last_name}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                     />
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default function Profile() {
                     name="country"
                     value={formData.country}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                   />
                 </div>
                 <div>
@@ -217,7 +217,7 @@ export default function Profile() {
                     name="linkedin"
                     value={formData.linkedin}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                   />
                 </div>
                 <div>
@@ -227,7 +227,7 @@ export default function Profile() {
                     name="whatsapp_number"
                     value={formData.whatsapp_number}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                   />
                 </div>
                 <div className="flex gap-4">
@@ -236,7 +236,7 @@ export default function Profile() {
                     disabled={saving}
                     whileHover={{ scale: saving ? 1 : 1.02 }}
                     whileTap={{ scale: saving ? 1 : 0.98 }}
-                    className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                    className="px-8 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </motion.button>
@@ -270,7 +270,7 @@ export default function Profile() {
                   </div>
                   <div>
                     <label className="text-sm text-gray-500">LinkedIn</label>
-                    <a href={profile?.linkedin} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:text-emerald-700 font-medium">
+                    <a href={profile?.linkedin} target="_blank" rel="noopener noreferrer" className="text-olive hover:text-olive-dark font-medium">
                       View Profile →
                     </a>
                   </div>
@@ -281,7 +281,7 @@ export default function Profile() {
                 </div>
                 <button
                   onClick={handleEdit}
-                  className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                  className="px-6 py-2.5 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
                 >
                   Edit Profile
                 </button>
@@ -306,7 +306,7 @@ export default function Profile() {
                   onChange={(e) => setPasswordData(prev => ({ ...prev, new_password: e.target.value }))}
                   required
                   minLength={8}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                   placeholder="At least 8 characters"
                 />
               </div>
@@ -317,7 +317,7 @@ export default function Profile() {
                   value={passwordData.confirm_password}
                   onChange={(e) => setPasswordData(prev => ({ ...prev, confirm_password: e.target.value }))}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none"
                   placeholder="Repeat your new password"
                 />
               </div>
@@ -326,7 +326,7 @@ export default function Profile() {
                 disabled={saving}
                 whileHover={{ scale: saving ? 1 : 1.02 }}
                 whileTap={{ scale: saving ? 1 : 0.98 }}
-                className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className="px-8 py-3 bg-gradient-to-r from-olive to-olive-dark text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
               >
                 {saving ? 'Changing...' : 'Change Password'}
               </motion.button>

@@ -50,7 +50,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
         {/* Decorative gradient bar */}
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-emerald-400 to-emerald-600'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-olive-light to-olive-dark'}`} />
         
         <div className="p-6">
           {/* Icon */}
@@ -60,7 +60,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
               className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                type === 'delete' ? 'bg-red-100' : 'bg-emerald-100'
+                type === 'delete' ? 'bg-red-100' : 'bg-olive-10'
               }`}
             >
               {type === 'delete' ? (
@@ -68,7 +68,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
@@ -96,7 +96,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
                 type === 'delete'
                   ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700'
+                  : 'bg-gradient-to-r from-olive to-olive-dark hover:from-olive-dark hover:to-olive-dark'
               }`}
             >
               Confirm
@@ -136,7 +136,7 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
         className={`relative p-6 rounded-2xl border cursor-pointer transition-all duration-300 group ${
           notification.is_read
             ? 'bg-white border-gray-200 hover:border-gray-300'
-            : 'bg-emerald-50 border-emerald-200 hover:border-emerald-300 shadow-md'
+            : 'bg-olive-5 border-olive-20 hover:border-olive-light shadow-md'
         }`}
       >
         <div className="flex items-start gap-4">
@@ -158,7 +158,7 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
                   </span>
                 )}
                 {!notification.is_read && (
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                  <span className="w-2 h-2 bg-olive rounded-full animate-pulse" />
                 )}
               </div>
               <TimeAgo date={notification.created_at} />
@@ -244,7 +244,7 @@ export default function Notifications() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Header */}
         <motion.div
@@ -268,7 +268,7 @@ export default function Notifications() {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleMarkAllRead}
                 disabled={actionLoading || notifications.every(n => n.is_read)}
-                className="px-4 py-2 text-sm font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium text-olive bg-olive-5 hover:bg-olive-10 rounded-xl transition-colors disabled:opacity-50"
               >
                 Mark All Read
               </motion.button>
@@ -296,7 +296,7 @@ export default function Notifications() {
                 onClick={() => setFilter(f.value)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   filter === f.value
-                    ? 'bg-emerald-500 text-white shadow-lg'
+                    ? 'bg-olive text-white shadow-lg'
                     : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
@@ -355,7 +355,7 @@ export default function Notifications() {
               whileTap={{ scale: 0.95 }}
               onClick={loadMore}
               disabled={loading}
-              className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-emerald-300 hover:text-emerald-600 transition-all shadow-sm disabled:opacity-50"
+              className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-olive-light hover:text-olive transition-all shadow-sm disabled:opacity-50"
             >
               {loading ? (
                 <span className="flex items-center gap-2">

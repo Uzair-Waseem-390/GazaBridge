@@ -23,7 +23,7 @@ export const theme = {
     border: '#E7E5E4',
 
     // نجاح / تأثيرات
-    success: '#10B981',
+    success: '#6B6A2E',
 
     // overlays
     overlay: 'rgba(245,243,234,0.2)',

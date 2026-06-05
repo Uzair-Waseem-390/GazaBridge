@@ -1,5 +1,7 @@
-// frontend/src/pages/HowItWorks.jsx
-// Design system: Instrument Serif + DM Sans — Olive & Cream Theme
+// frontend/src/pages/Services.jsx
+// Exact same design system & hero color as Home.jsx — #f8faf8 light background
+// Deps: framer-motion (already installed)
+// Fonts: Instrument Serif + DM Sans (in index.html)
 
 import {
   motion,
@@ -9,79 +11,48 @@ import {
   useSpring,
   AnimatePresence,
 } from 'framer-motion';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { services } from '../data/services';
 
-// ─── Noise overlay ────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// NOISE OVERLAY — same helper as Home
+// ─────────────────────────────────────────────────────────────────────────────
 function NoiseOverlay() {
   return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.03] mix-blend-overlay" xmlns="http://www.w3.org/2000/svg">
-      <filter id="noise-hiw">
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.035] mix-blend-overlay"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <filter id="noise-srv">
         <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
         <feColorMatrix type="saturate" values="0" />
       </filter>
-      <rect width="100%" height="100%" filter="url(#noise-hiw)" />
+      <rect width="100%" height="100%" filter="url(#noise-srv)" />
     </svg>
   );
 }
 
-// ─── Mouse gradient ───────────────────────────────────────────────────────────
-function MouseGradient() {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  useEffect(() => {
-    const h = (e) => setPos({ x: e.clientX, y: e.clientY });
-    window.addEventListener('mousemove', h);
-    return () => window.removeEventListener('mousemove', h);
-  }, []);
-  return (
-    <div
-      className="absolute inset-0 opacity-25 pointer-events-none"
-      style={{
-        backgroundImage: `radial-gradient(circle at ${pos.x}px ${pos.y}px, rgba(128,128,0,0.08) 0%, transparent 50%)`,
-      }}
-    />
-  );
-}
-
-// ─── Cursor blob ────────────────────────────────────────────────────────
-function CursorBlob() {
-  const blobRef = useRef(null);
-  const pos = useRef({ x: 0, y: 0 });
-  const target = useRef({ x: 0, y: 0 });
-  useEffect(() => {
-    const move = (e) => { target.current = { x: e.clientX, y: e.clientY }; };
-    window.addEventListener('mousemove', move);
-    let frame;
-    const loop = () => {
-      pos.current.x += (target.current.x - pos.current.x) * 0.08;
-      pos.current.y += (target.current.y - pos.current.y) * 0.08;
-      if (blobRef.current)
-        blobRef.current.style.transform = `translate(${pos.current.x - 250}px,${pos.current.y - 250}px)`;
-      frame = requestAnimationFrame(loop);
-    };
-    frame = requestAnimationFrame(loop);
-    return () => { window.removeEventListener('mousemove', move); cancelAnimationFrame(frame); };
-  }, []);
-  return (
-    <div ref={blobRef} className="fixed top-0 left-0 w-[500px] h-[500px] pointer-events-none z-0" style={{ willChange: 'transform' }}>
-      <div className="w-full h-full rounded-full bg-[#808000]/5 blur-[80px]" />
-    </div>
-  );
-}
-
-// ─── Magnetic wrapper ─────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// MAGNETIC BUTTON — same helper as Home
+// ─────────────────────────────────────────────────────────────────────────────
 function Magnetic({ children, strength = 0.45 }) {
-  const x = useMotionValue(0); const y = useMotionValue(0);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 220, damping: 16 });
   const sy = useSpring(y, { stiffness: 220, damping: 16 });
   const ref = useRef(null);
+
   const onMove = useCallback((e) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
     x.set((e.clientX - (r.left + r.width / 2)) * strength);
     y.set((e.clientY - (r.top + r.height / 2)) * strength);
   }, [strength, x, y]);
+
   const onLeave = useCallback(() => { x.set(0); y.set(0); }, [x, y]);
+
   return (
     <motion.div ref={ref} style={{ x: sx, y: sy }} onMouseMove={onMove} onMouseLeave={onLeave}>
       {children}
@@ -89,160 +60,199 @@ function Magnetic({ children, strength = 0.45 }) {
   );
 }
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
-const volunteerSteps = [
-  { number: '01', title: 'Create a Free Account',   description: 'Sign up using Google or email in under 60 seconds. No card, no commitment.',           icon: '👤' },
-  { number: '02', title: 'Complete Your Profile',   description: 'Add your skills, languages, availability, and optionally your LinkedIn and WhatsApp.',  icon: '📝' },
-  { number: '03', title: 'Post an Offer',           description: 'Describe what you can teach or help with — coding, English, CV review, design, etc.',   icon: '📢' },
-  { number: '04', title: 'Browse Needs',            description: 'Find people in Gaza who need your skills and message them directly.',                    icon: '🔍' },
-  { number: '05', title: 'Connect & Teach',         description: 'Connect via platform messages, WhatsApp chat, or invite them to your group.',           icon: '💬' },
-];
+// ─────────────────────────────────────────────────────────────────────────────
+// CURSOR BLOB — same helper as Home
+// ─────────────────────────────────────────────────────────────────────────────
+function CursorBlob() {
+  const blobRef = useRef(null);
+  const pos = useRef({ x: 0, y: 0 });
+  const target = useRef({ x: 0, y: 0 });
 
-const seekerSteps = [
-  { number: '01', title: 'Create a Free Account',   description: 'Sign up using Google or email in under 60 seconds. Completely free.',                   icon: '👤' },
-  { number: '02', title: 'Complete Your Profile',   description: 'Add your location, languages, and contact info (WhatsApp or Telegram).',                icon: '📝' },
-  { number: '03', title: 'Post a Request',          description: 'Describe what help you need — "I want to learn English" or "I need CV help".',          icon: '📢' },
-  { number: '04', title: 'Browse Volunteers',       description: 'Find someone with the skills you need and message them directly.',                       icon: '🔍' },
-  { number: '05', title: 'Learn for Free',          description: 'Everything is completely free — volunteers are here to help at zero cost to you.',      icon: '🎓' },
-];
+  useEffect(() => {
+    const move = (e) => { target.current = { x: e.clientX, y: e.clientY }; };
+    window.addEventListener('mousemove', move);
+    let frame;
+    const loop = () => {
+      pos.current.x += (target.current.x - pos.current.x) * 0.08;
+      pos.current.y += (target.current.y - pos.current.y) * 0.08;
+      if (blobRef.current) {
+        blobRef.current.style.transform = `translate(${pos.current.x - 250}px,${pos.current.y - 250}px)`;
+      }
+      frame = requestAnimationFrame(loop);
+    };
+    frame = requestAnimationFrame(loop);
+    return () => { window.removeEventListener('mousemove', move); cancelAnimationFrame(frame); };
+  }, []);
 
-const volunteerWhy = [
-  'Make a real difference in someone\'s life',
-  'Share your expertise with eager learners',
-  'Build meaningful cross-cultural connections',
-  'Teach flexibly on your own schedule',
-];
-
-const seekerWhy = [
-  '100% free — no hidden costs, ever',
-  'Learn from experienced global professionals',
-  'Flexible learning at your own pace',
-  'Build skills that lead to real, paying jobs',
-];
-
-// ─── Step card ────────────────────────────────────────────────────────────────
-function StepCard({ step, index, accentBar }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -30 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ delay: index * 0.09, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ x: 6 }}
-      className="group relative flex items-start gap-5 bg-white rounded-2xl border border-[#808000]/10 p-5 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+    <div
+      ref={blobRef}
+      className="fixed top-0 left-0 w-[500px] h-[500px] pointer-events-none z-0"
+      style={{ willChange: 'transform' }}
     >
-      <div className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r ${accentBar} origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`} />
-
-      <div className="flex-shrink-0 flex flex-col items-center gap-1 pt-0.5">
-        <motion.div
-          whileHover={{ rotate: 10, scale: 1.1 }}
-          transition={{ duration: 0.25 }}
-          className="w-11 h-11 rounded-2xl bg-[#808000]/5 border border-[#808000]/20 group-hover:border-[#808000]/40 flex items-center justify-center text-xl transition-all duration-300 shadow-sm"
-        >
-          {step.icon}
-        </motion.div>
-        <span className="text-[10px] font-bold text-gray-300 font-mono">{step.number}</span>
-      </div>
-
-      <div className="flex-1 pt-0.5">
-        <h3 className="text-base font-bold text-[#111100] mb-1 group-hover:text-[#808000] transition-colors duration-200">
-          {step.title}
-        </h3>
-        <p className="text-[#555500] text-sm leading-relaxed">{step.description}</p>
-      </div>
-    </motion.div>
-  );
-}
-
-// ─── Why card ─────────────────────────────────────────────────────────────────
-function WhyCard({ emoji, title, points, gradient }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-      animate={{ y: [0, -8, 0] }}
-      className="relative"
-    >
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="bg-white rounded-3xl border border-[#808000]/10 shadow-xl shadow-black/5 p-8"
-      >
-        <div className={`absolute top-0 left-0 w-full h-1 rounded-t-3xl bg-gradient-to-r ${gradient}`} />
-
-        <div className="text-4xl mb-4">{emoji}</div>
-        <h3 className="text-xl font-bold text-[#111100] mb-5" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
-          {title}
-        </h3>
-
-        <ul className="space-y-3">
-          {points.map((p, i) => (
-            <motion.li
-              key={i}
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 + i * 0.08 }}
-              className="flex items-start gap-3 text-sm text-[#555500]"
-            >
-              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#808000]/10 border border-[#808000]/30 flex items-center justify-center text-[#808000] text-[10px] mt-0.5 font-bold">✓</span>
-              {p}
-            </motion.li>
-          ))}
-        </ul>
-      </motion.div>
-    </motion.div>
+      <div className="w-full h-full rounded-full bg-[#808000]/4 blur-[80px]" />
+    </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MAIN
+// CATEGORY CONFIG
 // ─────────────────────────────────────────────────────────────────────────────
-export default function HowItWorks() {
-  const [activeRole, setActiveRole] = useState('volunteer');
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 130]);
+const ALL = 'All';
+const CATEGORIES = [ALL, 'Development', 'Design', 'Marketing', 'Data', 'Security', 'Career'];
+
+const catAccent = {
+  Development: {
+    pill:  'bg-[#f5f0e6] text-[#5a5a00]',
+    dot:   'bg-[#a3a322]',
+    bar:   'from-[#a3a322] to-[#808000]',
+    glow:  'group-hover:shadow-[#808000]/15',
+  },
+  Design: {
+    pill:  'bg-[#f5e6ee] text-[#6b3d55]',
+    dot:   'bg-[#d084a8]',
+    bar:   'from-[#d084a8] to-[#a0597e]',
+    glow:  'group-hover:shadow-[#a0597e]/15',
+  },
+  Marketing: {
+    pill:  'bg-[#f5ebe6] text-[#6b4a3d]',
+    dot:   'bg-[#d9956f]',
+    bar:   'from-[#d9956f] to-[#b87548]',
+    glow:  'group-hover:shadow-[#b87548]/15',
+  },
+  Data: {
+    pill:  'bg-[#e6f5f0] text-[#3d6b63]',
+    dot:   'bg-[#6fb89a]',
+    bar:   'from-[#6fb89a] to-[#5a9478]',
+    glow:  'group-hover:shadow-[#5a9478]/15',
+  },
+  Security: {
+    pill:  'bg-[#f5e6e6] text-[#6b3d3d]',
+    dot:   'bg-[#d96f6f]',
+    bar:   'from-[#d96f6f] to-[#b85454]',
+    glow:  'group-hover:shadow-[#b85454]/15',
+  },
+  Career: {
+    pill:  'bg-[#e6f0f5] text-[#3d5a6b]',
+    dot:   'bg-[#6fb8d9]',
+    bar:   'from-[#6fb8d9] to-[#5a94b8]',
+    glow:  'group-hover:shadow-[#5a94b8]/15',
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ANIMATED NUMBER COUNTER (viewport triggered)
+// ─────────────────────────────────────────────────────────────────────────────
+function AnimatedNumber({ value, suffix = '' }) {
+  const ref = useRef(null);
+  const [count, setCount] = useState(0);
+  const [ran, setRan] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !ran) {
+        setRan(true);
+        const dur = 2000;
+        const start = performance.now();
+        const tick = (now) => {
+          const p = Math.min((now - start) / dur, 1);
+          setCount(Math.floor((1 - Math.pow(1 - p, 4)) * value));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.5 });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [value, ran]);
+
+  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MOUSE GRADIENT HELPER
+// ─────────────────────────────────────────────────────────────────────────────
+function MouseGradient() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const h = (e) => setPos({ x: e.clientX, y: e.clientY });
+    window.addEventListener('mousemove', h);
+    return () => window.removeEventListener('mousemove', h);
+  }, []);
+
+  return (
+    <div
+      className="absolute inset-0 opacity-30 pointer-events-none transition-opacity duration-300"
+      style={{
+        backgroundImage: `radial-gradient(circle at ${pos.x}px ${pos.y}px, rgba(128,128,0,0.08) 0%, transparent 50%)`,
+      }}
+    />
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN PAGE
+// ─────────────────────────────────────────────────────────────────────────────
+export default function Services() {
+  const [activeTab, setActiveTab] = useState(ALL);
+  const heroRef  = useRef(null);
+  const filterRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroY       = useTransform(scrollYProgress, [0, 1], [0, 130]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.55], [1, 0.96]);
+  const heroScale   = useTransform(scrollYProgress, [0, 0.55], [1, 0.96]);
 
-  const isVolunteer = activeRole === 'volunteer';
-  const steps = isVolunteer ? volunteerSteps : seekerSteps;
-  const whyPoints = isVolunteer ? volunteerWhy : seekerWhy;
-
-  const stepsRef = useRef(null);
-  const { scrollYProgress: stepsScroll } = useScroll({ target: stepsRef, offset: ['start end', 'end start'] });
-  const lineH = useTransform(stepsScroll, [0.1, 0.85], ['0%', '100%']);
+  const filtered = useMemo(
+    () => activeTab === ALL ? services : services.filter((s) => s.category === activeTab),
+    [activeTab],
+  );
 
   return (
-    <div className="bg-[#F5F0E6]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="bg-[#f8faf8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <CursorBlob />
 
-      {/* ══════════════════════════════════════════════ HERO ══ */}
+      {/* ═══════════════════════════════════════════════════════ HERO ══ */}
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-screen flex items-center overflow-hidden bg-[#F5F0E6] pt-20 md:pt-24"
+        className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8] pt-20 md:pt-24"
       >
         <NoiseOverlay />
+
+        {/* Olive grid */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(128,128,0,0.06) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(128,128,0,0.06) 1px, transparent 1px)`,
+            backgroundSize: '80px 80px',
+          }}
+        />
+
+        {/* Mouse-follow radial gradient */}
         <MouseGradient />
 
-        <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: `
-            linear-gradient(rgba(128,128,0,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(128,128,0,0.04) 1px, transparent 1px)`,
-          backgroundSize: '80px 80px',
-        }} />
+        {/* Architectural concentric rings */}
+        <motion.div
+          style={{ y: heroY }}
+          className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-[#808000]/20 pointer-events-none"
+        />
+        <motion.div
+          style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]) }}
+          className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border border-[#808000]/10 pointer-events-none"
+        />
+        <motion.div
+          style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]) }}
+          className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#fcedde]/30 pointer-events-none"
+        />
 
-        <motion.div style={{ y: heroY }}
-          className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-[#808000]/15 pointer-events-none" />
-        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]) }}
-          className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border border-[#808000]/8 pointer-events-none" />
-        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]) }}
-          className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#808000]/4 pointer-events-none" />
-
+        {/* Spinning ring badge */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
@@ -255,140 +265,277 @@ export default function HowItWorks() {
             className="relative w-28 h-28 flex items-center justify-center"
           >
             <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
-              <path id="ring-hiw" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
-              <text fontSize="10" fontFamily="DM Sans, sans-serif" fill="#808000" fontWeight="500" letterSpacing="3">
-                <textPath href="#ring-hiw">5 SIMPLE STEPS • FREE FOREVER • </textPath>
+              <path id="srv-ring" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
+              <text fontSize="10" fontFamily="DM Sans, sans-serif" fill="#808000" fontWeight="600" letterSpacing="3">
+                <textPath href="#srv-ring">22 SKILLS • ALL FREE • 22 SKILLS • ALL FREE • </textPath>
               </text>
             </svg>
-            <div className="w-14 h-14 rounded-full bg-[#808000] flex items-center justify-center shadow-lg shadow-[#808000]/20">
+            <div className="w-14 h-14 rounded-full bg-[#808000] flex items-center justify-center shadow-xl shadow-[#808000]/30">
               <span className="text-white text-xl">✦</span>
             </div>
           </motion.div>
         </motion.div>
 
-        <motion.div style={{ y: heroY }} className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 w-full">
-          <div className="max-w-2xl space-y-8">
+        {/* Hero content */}
+        <motion.div
+          style={{ y: heroY }}
+          className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 w-full"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-[#808000]/30 shadow-lg"
-            >
-              <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
-                className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#808000]/40 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#808000]" />
-              </motion.span>
-              <span className="text-sm font-semibold text-[#808000]">Simple 5-Step Process</span>
-            </motion.div>
+            {/* LEFT */}
+            <div className="space-y-8">
 
-            <div className="space-y-1 overflow-hidden">
-              <motion.h1
-                initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-4xl md:text-5xl lg:text-7xl text-[#111100] leading-[0.95] tracking-tight"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 700 }}
+              {/* Eyebrow badge */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-[#808000]/20 shadow-lg"
               >
-                How
-              </motion.h1>
-              <motion.h1
-                initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.38, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-4xl md:text-5xl lg:text-7xl italic leading-[0.95] tracking-tight"
-                style={{
-                  fontFamily: "'Instrument Serif', Georgia, serif",
-                  fontWeight: 700,
-                  background: 'linear-gradient(90deg,#808000,#6b6b00,#555500)',
-                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                }}
+                <motion.span
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="relative flex h-2.5 w-2.5"
+                >
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#808000] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#808000]" />
+                </motion.span>
+                <span className="text-sm font-semibold text-[#808000]">22 Free Skill Tracks</span>
+              </motion.div>
+
+              {/* Headline */}
+              <div className="space-y-1 overflow-hidden">
+                <motion.h1
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  className="leading-[0.95] tracking-tight text-4xl md:text-5xl lg:text-7xl text-gray-900"
+                  style={{
+                    fontFamily: "'Instrument Serif', Georgia, serif",
+                    fontWeight: 700,
+                  }}
+                >
+                  Skills That
+                </motion.h1>
+                <motion.h1
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.42, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  className="leading-[0.95] tracking-tight text-4xl md:text-5xl lg:text-7xl italic"
+                  style={{
+                    fontFamily: "'Instrument Serif', Georgia, serif",
+                    fontWeight: 700,
+                    background: 'linear-gradient(90deg, #808000, #a3a322, #fcb900)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Open Doors
+                </motion.h1>
+                <motion.h1
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.54, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  className="leading-[0.95] tracking-tight text-4xl md:text-5xl lg:text-7xl text-gray-900"
+                  style={{
+                    fontFamily: "'Instrument Serif', Georgia, serif",
+                    fontWeight: 700,
+                  }}
+                >
+                  For Free
+                </motion.h1>
+              </div>
+
+              {/* Description */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.65, duration: 0.8 }}
+                className="text-gray-500 text-lg leading-relaxed max-w-lg"
               >
-                GazaBridge
-              </motion.h1>
-              <motion.h1
-                initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-4xl md:text-5xl lg:text-7xl text-[#111100] leading-[0.95] tracking-tight"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontWeight: 700 }}
+                22 comprehensive digital training paths built for people in Gaza —
+                from complete beginner to market-ready professional, at zero cost.
+              </motion.p>
+
+              {/* CTA row */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.78, duration: 0.8 }}
+                className="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full sm:w-auto"
               >
-                Works
-              </motion.h1>
+                <Magnetic>
+                  <Link to="/register">
+                    <motion.button
+                      whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(128,128,0,0.35)' }}
+                      whileTap={{ scale: 0.95 }}
+                      className="group relative px-8 py-4 text-white font-bold rounded-full shadow-xl shadow-[#808000]/25 overflow-hidden"
+                      style={{ background: 'linear-gradient(135deg, #808000, #a3a322)' }}
+                    >
+                      <span className="relative z-10 flex items-center gap-2 text-sm">
+                        Start Learning Free
+                        <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+                          →
+                        </motion.span>
+                      </span>
+                      <motion.div className="absolute inset-0 bg-gradient-to-r from-[#9d9d00] to-[#b8b843] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </motion.button>
+                  </Link>
+                </Magnetic>
+
+                <Magnetic strength={0.3}>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => filterRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                    className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-full hover:border-[#808000] hover:text-[#808000] transition-all duration-300 text-sm"
+                  >
+                    Browse All Skills ↓
+                  </motion.button>
+                </Magnetic>
+              </motion.div>
+
+              {/* Quick stat row */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.1, duration: 0.8 }}
+                className="flex flex-wrap gap-6 pt-2"
+              >
+                {[
+                  { v: 22, suffix: '+', l: 'Skill tracks' },
+                  { v: 850, suffix: '+', l: 'Expert mentors' },
+                  { v: 45, suffix: '', l: 'Countries' },
+                ].map((s) => (
+                  <div key={s.l} className="flex items-center gap-2">
+                    <span
+                      className="text-2xl font-bold text-gray-900"
+                      style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                    >
+                      <AnimatedNumber value={s.v} suffix={s.suffix} />
+                    </span>
+                    <span className="text-sm text-gray-500">{s.l}</span>
+                  </div>
+                ))}
+              </motion.div>
             </div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.62, duration: 0.8 }}
-              className="text-[#555500] text-lg leading-relaxed max-w-lg"
-            >
-              A free platform connecting skilled volunteers worldwide with talented people
-              in Gaza who need digital skills support — in just five steps.
-            </motion.p>
-
+            {/* RIGHT — category preview card stack */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.75, duration: 0.8 }}
-              className="flex flex-col sm:flex-row items-center sm:items-start gap-4 w-full sm:w-auto"
+              initial={{ opacity: 0, x: 80 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+              className="relative hidden lg:flex items-center justify-center h-[540px]"
             >
-              <Magnetic>
-                <Link to="/register">
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(128,128,0,0.3)' }}
-                    whileTap={{ scale: 0.95 }}
-                    className="group relative px-8 py-4 text-white font-bold rounded-full shadow-xl shadow-[#808000]/25 overflow-hidden text-sm"
-                    style={{ background: 'linear-gradient(135deg,#808000,#6b6b00)' }}
-                  >
-                    <span className="relative z-10 flex items-center gap-2">
-                      Join as Volunteer
-                      <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
-                    </span>
-                    <motion.div className="absolute inset-0 bg-gradient-to-r from-[#555500] to-[#333300] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </motion.button>
-                </Link>
-              </Magnetic>
-              <Magnetic strength={0.3}>
-                <Link to="/register">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 border-2 border-[#808000]/30 text-[#808000] font-bold rounded-full hover:border-[#808000] hover:text-[#808000] transition-all duration-300 text-sm"
-                  >
-                    Start Learning Free
-                  </motion.button>
-                </Link>
-              </Magnetic>
-            </motion.div>
+              {/* Background tilt cards */}
+              <motion.div
+                animate={{ rotate: [-5, -3, -5] }}
+                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute w-72 h-[420px] bg-[#fcedde]/60 rounded-3xl border border-[#808000]/20"
+              />
+              <motion.div
+                animate={{ rotate: [3, 5, 3] }}
+                transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                className="absolute w-72 h-[420px] bg-[#f5f0e6]/60 rounded-3xl border border-[#808000]/10"
+              />
 
-            <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              transition={{ delay: 1.1, duration: 0.8 }}
-              className="flex items-center gap-4 pt-2"
-            >
-              <div className="flex -space-x-2">
-                {['A', 'M', 'S', 'K', 'R'].map((l, i) => (
-                  <motion.div key={l}
-                    initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 1.2 + i * 0.07 }}
-                    className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[11px] font-bold text-white shadow-sm"
-                    style={{ background: `hsl(${50 + i * 10},50%,${30 + i * 4}%)` }}
-                  >{l}</motion.div>
-                ))}
-              </div>
-              <span className="text-sm text-[#555500]">
-                <span className="font-semibold text-[#111100]">5,000+</span> learners connected
-              </span>
+              {/* Main card */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                className="relative z-10 w-72 bg-white rounded-3xl shadow-2xl shadow-[#808000]/10 border border-gray-100 p-7 flex flex-col gap-4"
+              >
+                {/* Card header */}
+                <div className="flex items-center justify-between">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#808000] to-[#a3a322] flex items-center justify-center shadow-lg shadow-[#808000]/30">
+                    <span className="text-white text-lg">📚</span>
+                  </div>
+                  <span className="text-[10px] font-semibold text-[#808000] bg-[#f5f0e6] px-3 py-1 rounded-full tracking-wide uppercase">
+                    22 Tracks
+                  </span>
+                </div>
+
+                {/* Category list */}
+                <div className="space-y-2">
+                  {CATEGORIES.slice(1).map((cat, i) => {
+                    const a = catAccent[cat];
+                    const count = services.filter(s => s.category === cat).length;
+                    return (
+                      <motion.div
+                        key={cat}
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 1.2 + i * 0.1 }}
+                        className="flex items-center justify-between bg-gray-50/80 rounded-xl px-3 py-2"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className={`w-1.5 h-1.5 rounded-full ${a.dot}`} />
+                          <span className="text-xs font-semibold text-gray-700">{cat}</span>
+                        </div>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${a.pill}`}>
+                          {count} tracks
+                        </span>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Bottom chip */}
+                <div className="flex items-center gap-2 bg-[#f5f0e6] rounded-xl px-3 py-2.5 text-xs text-gray-500 mt-1">
+                  <span className="text-[#808000]">✦</span>
+                  <span>All tracks <strong className="text-[#808000]">100% free</strong></span>
+                </div>
+              </motion.div>
+
+              {/* Floating chip top-right */}
+              <motion.div
+                animate={{ y: [0, -8, 0], x: [0, 4, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                className="absolute top-4 right-0 bg-white shadow-xl shadow-black/8 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
+              >
+                <span className="text-base">🌍</span>
+                <div>
+                  <div className="text-xs font-semibold text-gray-800">45 Countries</div>
+                  <div className="text-[10px] text-gray-400">Mentors active</div>
+                </div>
+              </motion.div>
+
+              {/* Floating chip bottom-left */}
+              <motion.div
+                animate={{ y: [0, 10, 0], x: [0, -4, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+                className="absolute bottom-6 left-0 bg-white shadow-xl shadow-black/8 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
+              >
+                <span className="text-base">🏆</span>
+                <div>
+                  <div className="text-xs font-semibold text-gray-800">3,200+ Graduates</div>
+                  <div className="text-[10px] text-gray-400">hired globally</div>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+        {/* Scroll hint */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.2 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        >
           <span className="text-[10px] tracking-[0.2em] uppercase text-gray-400">scroll</span>
-          <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.8, repeat: Infinity }}
-            className="w-5 h-8 border border-gray-300 rounded-full flex items-start justify-center pt-1.5">
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity }}
+            className="w-5 h-8 border border-gray-300 rounded-full flex items-start justify-center pt-1.5"
+          >
             <div className="w-1 h-1.5 bg-gray-400 rounded-full" />
           </motion.div>
         </motion.div>
       </motion.section>
 
-      {/* ══════════════════════════════════════════════ MARQUEE ══ */}
+      {/* ═══════════════════════════════════ MARQUEE STRIP ══ */}
       <div 
         className="relative py-4 overflow-hidden border-y z-10 backdrop-blur-sm"
         style={{ 
@@ -398,218 +545,282 @@ export default function HowItWorks() {
       >
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
-          transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
           className="flex items-center gap-8 whitespace-nowrap"
         >
-          {[...Array(2)].flatMap(() => [
-            'Create Account', '✦', 'Complete Profile', '✦', 'Post an Offer',
-            '✦', 'Browse Needs', '✦', 'Connect & Teach', '✦', 'Learn for Free', '✦',
-          ]).map((item, i) => (
-            <span
-              key={i}
-              className="text-sm font-bold tracking-wide"
-              style={{ 
-                fontFamily: "'DM Sans', sans-serif",
-                color: item === '✦' ? '#808000' : '#111111' 
-              }}
-            >
-              {item}
-            </span>
-          ))}
+          {[...CATEGORIES.slice(1), ...CATEGORIES.slice(1)].map((cat, i) => {
+            const icon = {
+              Development: '💻', Design: '🎨', Marketing: '📣',
+              Data: '📊', Security: '🔐', Career: '🚀',
+            }[cat];
+            const doubled = [icon, cat, icon, cat];
+            return doubled.map((item, j) => (
+              <span
+                key={`${i}-${j}`}
+                className="text-sm font-bold tracking-wide"
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  color: j % 2 === 0 ? '#808000' : '#111111'
+                }}
+              >
+                {item}
+              </span>
+            ));
+          })}
         </motion.div>
       </div>
 
-      {/* ══════════════════════════════════════════════ ROLE TOGGLE ══ */}
-      <section className="py-10 md:py-20 bg-[#F5F0E6]">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
+      {/* ═══════════════════════════════════ STICKY FILTER BAR ══ */}
+      <div
+        ref={filterRef}
+        className="sticky top-[72px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm"
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center gap-1.5 overflow-x-auto py-3 scrollbar-hide">
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.6 }}
-            className="flex flex-col items-center mb-16 gap-6"
-          >
-            <div className="flex items-center gap-3">
-              <div className="h-px w-8 bg-[#808000]" />
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#808000]">The Process</span>
-              <div className="h-px w-8 bg-[#808000]" />
-            </div>
+            {CATEGORIES.map((cat) => {
+              const isActive = activeTab === cat;
+              const accent = cat !== ALL ? catAccent[cat] : null;
+              const count = cat === ALL ? services.length : services.filter(s => s.category === cat).length;
 
-            <h2 className="text-5xl lg:text-6xl font-bold text-[#111100] leading-[1.05] text-center" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
-              Pick Your Path
-            </h2>
-
-            <div className="flex items-center bg-white rounded-full p-1.5 gap-1">
-              {[
-                { id: 'volunteer', label: '🙌 I want to volunteer', },
-                { id: 'seeker',    label: '🎓 I want to learn', },
-              ].map((opt) => (
+              return (
                 <motion.button
-                  key={opt.id}
-                  onClick={() => setActiveRole(opt.id)}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                  className={`relative px-6 py-3 rounded-full text-sm font-bold transition-all duration-300
-                    ${activeRole === opt.id ? 'bg-[#808000] text-white shadow-md' : 'text-[#555500] hover:text-[#808000]'}`}
+                  key={cat}
+                  onClick={() => setActiveTab(cat)}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.95 }}
+                  layout
+                  className={`relative whitespace-nowrap flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 flex-shrink-0
+                    ${isActive
+                      ? 'bg-gray-900 text-white shadow-sm'
+                      : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-transparent hover:border-gray-100'
+                    }`}
                 >
-                  {opt.label}
+                  {accent && (
+                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${accent.dot} ${isActive ? 'opacity-60' : ''}`} />
+                  )}
+                  {cat}
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold
+                    ${isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                    {count}
+                  </span>
                 </motion.button>
-              ))}
-            </div>
-          </motion.div>
+              );
+            })}
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeRole}
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -24 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-12 items-start"
-            >
-              <div ref={stepsRef} className="relative">
-                <div className="absolute left-[26px] top-6 bottom-6 w-px bg-gray-100">
-                  <motion.div style={{ height: lineH }} className="w-full bg-gradient-to-b from-[#808000] to-[#6b6b00] origin-top" />
-                </div>
-
-                <div className="space-y-4 pl-2">
-                  {steps.map((step, i) => (
-                    <StepCard
-                      key={step.number + activeRole}
-                      step={step}
-                      index={i}
-                      accentBar={isVolunteer ? 'from-[#808000] to-[#6b6b00]' : 'from-[#6b6b00] to-[#555500]'}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="lg:sticky lg:top-32">
-                <WhyCard
-                  emoji={isVolunteer ? '🌟' : '🎓'}
-                  title={isVolunteer ? 'Why Volunteer?' : 'Why Learn With Us?'}
-                  points={whyPoints}
-                  gradient={isVolunteer ? 'from-[#808000] to-[#6b6b00]' : 'from-[#6b6b00] to-[#555500]'}
-                />
-
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                  className="mt-6 space-y-3"
+            <div className="ml-auto pl-4 flex-shrink-0 border-l border-gray-100 flex items-center gap-2">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={activeTab}
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-[11px] text-gray-400 whitespace-nowrap"
                 >
-                  <Link to="/register">
-                    <motion.button
-                      whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                      className="w-full py-4 rounded-2xl font-bold text-white text-sm shadow-lg shadow-[#808000]/20 transition-all"
-                      style={{ background: 'linear-gradient(135deg,#808000,#6b6b00)' }}
-                    >
-                      {isVolunteer ? 'Join as Volunteer →' : 'Start Learning Free →'}
-                    </motion.button>
-                  </Link>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                    onClick={() => setActiveRole(isVolunteer ? 'seeker' : 'volunteer')}
-                    className="w-full py-3 rounded-2xl font-semibold text-[#555500] text-sm border border-[#808000]/20 hover:border-[#808000]/40 hover:text-[#808000] transition-all"
-                  >
-                    {isVolunteer ? 'Or learn instead →' : 'Or volunteer instead →'}
-                  </motion.button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════ STATS BAND ══ */}
-      <section className="py-10 md:py-16 bg-[#F5F0E6] overflow-hidden">
-        <NoiseOverlay />
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#808000]/10 rounded-3xl overflow-hidden border border-[#808000]/10">
-            {[
-              { v: '5,000+', l: 'Active Learners',    icon: '🎓' },
-              { v: '850+',   l: 'Expert Volunteers',  icon: '🙌' },
-              { v: '45',     l: 'Countries Reached',  icon: '🌍' },
-              { v: '3,200+', l: 'Success Stories',    icon: '🏆' },
-            ].map((s, i) => (
-              <motion.div
-                key={s.l}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="bg-white px-8 py-8 group hover:bg-[#808000]/5 transition-colors duration-300"
-              >
-                <div className="text-2xl mb-3">{s.icon}</div>
-                <div className="text-4xl font-bold text-[#111100] mb-1" style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>{s.v}</div>
-                <div className="text-xs text-[#555500] font-medium">{s.l}</div>
-                <motion.div
-                  className="mt-4 h-0.5 bg-gradient-to-r from-[#808000] to-[#6b6b00] origin-left"
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 + i * 0.1, duration: 0.8 }}
-                />
-              </motion.div>
-            ))}
+                  <span className="font-semibold text-gray-700">{filtered.length}</span> tracks
+                </motion.span>
+              </AnimatePresence>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* ═══════════════════════════════════ SERVICES GRID ══ */}
+      <section className="py-10 md:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+
+          {/* Section label */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab + '-label'}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center gap-4 mb-12"
+            >
+              <div className="h-px w-8 bg-[#808000]" />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#808000]">
+                {activeTab === ALL ? 'All Programmes' : activeTab}
+              </span>
+              <div className="h-px flex-1 bg-gray-100" />
+              <span className="text-xs text-gray-400">{filtered.length} available</span>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Grid with layout animation */}
+          <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((service, index) => {
+                const accent = catAccent[service.category] || catAccent['Career'];
+                return (
+                  <motion.div
+                    key={service.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.92, y: 30 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                    transition={{
+                      duration: 0.38,
+                      delay: index * 0.035,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    className={`group relative rounded-3xl border border-gray-100 bg-white overflow-hidden cursor-pointer
+                      hover:shadow-xl hover:shadow-black/5 transition-all duration-300 ${accent.glow}`}
+                  >
+                    {/* Hover flood */}
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                      style={{ background: 'radial-gradient(ellipse at top left,rgba(128,128,0,0.04) 0%,transparent 65%)' }}
+                    />
+                    {/* Bottom bar reveal */}
+                    <div className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r ${accent.bar} origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`} />
+
+                    <div className="p-7 flex flex-col min-h-[270px]">
+                      {/* Top row */}
+                      <div className="flex items-start justify-between mb-5">
+                        <motion.div
+                          whileHover={{ rotate: 10, scale: 1.12 }}
+                          transition={{ duration: 0.25 }}
+                          className="w-12 h-12 rounded-2xl bg-gray-50 group-hover:bg-white flex items-center justify-center text-2xl border border-gray-100 group-hover:border-gray-200 shadow-sm transition-all"
+                        >
+                          {service.icon}
+                        </motion.div>
+                        <span className={`text-[10px] font-bold px-3 py-1 rounded-full ${accent.pill} tracking-wide`}>
+                          {service.category}
+                        </span>
+                      </div>
+
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#808000] transition-colors duration-200">
+                        {service.title}
+                      </h3>
+
+                      <p className="text-gray-500 text-sm leading-relaxed flex-1">
+                        {service.description}
+                      </p>
+
+                      {/* Detail — smooth height reveal */}
+                      <motion.p
+                        initial={false}
+                        className="text-gray-400 text-xs leading-relaxed overflow-hidden"
+                        style={{ maxHeight: 0 }}
+                        whileHover={{ maxHeight: 40 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {service.details}
+                      </motion.p>
+
+                      {/* Footer */}
+                      <div className="mt-5 pt-4 border-t border-gray-50 flex items-center justify-between">
+                        <span className={`text-[11px] font-semibold px-3 py-1 rounded-full ${accent.pill}`}>
+                          {service.stats}
+                        </span>
+                        <motion.span
+                          whileHover={{ x: 3 }}
+                          className="text-xs font-semibold text-gray-400 group-hover:text-[#808000] transition-colors flex items-center gap-1"
+                        >
+                          Enroll Free
+                          <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>
+                            →
+                          </motion.span>
+                        </motion.span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </motion.div>
+        </div>
       </section>
 
-      {/* ══════════════════════════════════════════════ FINAL CTA ══ */}
+      {/* ═══════════════════════════════════ BOTTOM CTA ══ */}
       <section className="relative py-16 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E6] via-[#E8E0D0] to-[#D4C9B5]" />
+
+        {/* Animated waves */}
         <div className="absolute inset-0 overflow-hidden">
-          <motion.div animate={{ x: [0, -50, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] bg-[#808000]/5 rounded-full blur-3xl" />
-          <motion.div animate={{ x: [0, 50, 0] }} transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-            className="absolute -bottom-1/2 -right-1/4 w-[150%] h-[200%] bg-[#808000]/5 rounded-full blur-3xl" />
+          <motion.div
+            animate={{ x: [0, -50, 0] }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+            className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] bg-white/5 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{ x: [0, 50, 0] }}
+            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+            className="absolute -bottom-1/2 -right-1/4 w-[150%] h-[200%] bg-white/5 rounded-full blur-3xl"
+          />
         </div>
         <NoiseOverlay />
 
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-6"
           >
             <motion.span
-              initial={{ opacity: 0, scale: 0.85 }} whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.85 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#808000]/10 rounded-full border border-[#808000]/20"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full border border-[#808000]/30"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#808000] animate-pulse" />
-              <span className="text-xs font-semibold text-[#808000] tracking-wide uppercase">Ready in 60 seconds</span>
+              <span className="text-xs font-semibold text-[#111100] tracking-wide uppercase">
+                Start Today — Zero Cost
+              </span>
             </motion.span>
 
             <motion.h2
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: 0.2 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
               className="text-4xl md:text-6xl lg:text-7xl font-bold text-[#111100] leading-tight"
               style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
             >
-              Ready to Start<br />
-              Your Journey?
+              Not sure where<br />
+              <span className="relative">
+                to start?
+                <motion.svg
+                  className="absolute -bottom-2 left-0 w-full h-5"
+                  initial={{ pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.8, duration: 1 }}
+                >
+                  <path d="M0 12 Q 60 0 120 10 Q 180 20 240 10 Q 300 0 360 12" fill="none" stroke="rgba(128,128,0,0.4)" strokeWidth="4" strokeLinecap="round" />
+                </motion.svg>
+              </span>
             </motion.h2>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: 0.35 }}
-              className="text-[#555500] text-xl max-w-2xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.35 }}
+              className="text-[#555500] text-lg max-w-xl mx-auto leading-relaxed"
             >
-              Join thousands of learners and volunteers making a real difference.
-              Start today — completely free, forever.
+              Take our free 2-minute skill assessment and get a personalised learning
+              path built for your exact goals and experience level.
             </motion.p>
 
-                        <motion.div
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: 0.5 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
               className="flex flex-col sm:flex-row justify-center items-center gap-4 pt-2 w-full"
             >
               <Magnetic>
                 <Link to="/register">
                   <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(128,128,0,0.25)' }}
+                    whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(0,0,0,0.1)' }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-10 py-5 bg-[#808000] text-white font-bold rounded-full shadow-xl text-base hover:bg-[#6b6b00] transition-colors duration-300 flex items-center gap-2"
+                    className="px-10 py-5 bg-[#808000] text-white font-bold rounded-full shadow-2xl text-base hover:shadow-3xl transition-all duration-300 flex items-center gap-2"
                   >
                     Get Started Free
                     <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
@@ -619,7 +830,7 @@ export default function HowItWorks() {
               <Magnetic strength={0.3}>
                 <Link to="/register">
                   <motion.button
-                    whileHover={{ scale: 1.05, borderColor: '#808000', color: '#808000' }}
+                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(128,128,0,0.15)' }}
                     whileTap={{ scale: 0.95 }}
                     className="px-10 py-5 border-2 border-[#808000]/40 text-[#808000] font-bold rounded-full text-base transition-all duration-300"
                   >
@@ -629,17 +840,20 @@ export default function HowItWorks() {
               </Magnetic>
             </motion.div>
 
+            {/* Feature pills */}
             <motion.div
-              initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-              viewport={{ once: true }} transition={{ delay: 0.8 }}
-              className="flex flex-wrap justify-center gap-8 pt-4 text-[#555500]"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.8 }}
+              className="flex flex-wrap justify-center gap-6 pt-4 text-[#555500]"
             >
               {[
                 { icon: '🎓', label: 'Free Forever' },
                 { icon: '💬', label: 'Live Support' },
                 { icon: '🚀', label: 'Job-Ready Skills' },
-                { icon: '🌍', label: 'Global Community' },
-              ].map(item => (
+                { icon: '🌍', label: 'Global Mentors' },
+              ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
                   <span className="text-xl">{item.icon}</span>
                   <span className="text-sm font-medium">{item.label}</span>

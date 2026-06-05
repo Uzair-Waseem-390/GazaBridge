@@ -189,7 +189,7 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md ${
             chat?.type === 'dm'
-              ? 'bg-gradient-to-br from-emerald-400 to-teal-500'
+              ? 'bg-gradient-to-br from-olive-light to-olive'
               : 'bg-gradient-to-br from-purple-400 to-pink-500'
           }`}>
             {avatarLetter}
@@ -198,7 +198,7 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
             <h2 className="font-semibold text-gray-900 leading-tight">{chatName}</h2>
             <div className="flex items-center gap-1.5">
               <span className={`inline-block w-2 h-2 rounded-full ${
-                wsStatus === 'open' ? 'bg-emerald-400' : wsStatus === 'connecting' ? 'bg-amber-400 animate-pulse' : 'bg-red-400'
+                wsStatus === 'open' ? 'bg-olive-light' : wsStatus === 'connecting' ? 'bg-amber-400 animate-pulse' : 'bg-red-400'
               }`} />
               <span className="text-xs text-gray-400">
                 {wsStatus === 'open' ? 'Connected' : wsStatus === 'connecting' ? 'Connecting…' : 'Disconnected'}
@@ -243,12 +243,12 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
       <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-1 bg-gradient-to-b from-slate-50/50 to-white" id="messages-area">
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <div className="animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full" />
+            <div className="animate-spin w-8 h-8 border-4 border-olive border-t-transparent rounded-full" />
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3">
             <div className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl ${
-              chat?.type === 'dm' ? 'bg-emerald-50' : 'bg-purple-50'
+              chat?.type === 'dm' ? 'bg-olive-5' : 'bg-purple-50'
             }`}>
               {chat?.type === 'dm' ? '💬' : '👥'}
             </div>
@@ -286,7 +286,7 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
 
                     <div className={`px-4 py-2.5 rounded-2xl text-sm whitespace-pre-wrap break-words leading-relaxed shadow-sm ${
                       isMe
-                        ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-br-sm'
+                        ? 'bg-gradient-to-br from-olive to-olive-dark text-white rounded-br-sm'
                         : 'bg-white border border-gray-200 text-gray-900 rounded-bl-sm'
                     }`}>
                       {msg.content}
@@ -324,7 +324,7 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
             }}
             placeholder={wsStatus === 'open' ? 'Type a message…' : 'Connecting…'}
             disabled={wsStatus !== 'open'}
-            className="flex-1 px-4 py-3 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none bg-gray-50 placeholder:text-gray-400 disabled:opacity-60"
+            className="flex-1 px-4 py-3 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-olive focus:border-olive transition-all outline-none bg-gray-50 placeholder:text-gray-400 disabled:opacity-60"
           />
           <motion.button
             id="chat-send-btn"
@@ -332,7 +332,7 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             disabled={!input.trim() || wsStatus !== 'open'}
-            className="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-2xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-gradient-to-br from-olive to-olive-dark text-white rounded-2xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5 rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

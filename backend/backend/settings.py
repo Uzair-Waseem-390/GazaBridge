@@ -13,6 +13,7 @@ load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+backend_production_url = os.getenv('BACKEND_PRODUCTION_URL')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 

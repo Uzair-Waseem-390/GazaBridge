@@ -2,6 +2,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 import os
+import urllib.parse
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
 # daphne backend.asgi:application
 # daphne backend.asgi:application
@@ -12,10 +14,9 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -93,8 +94,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('ENGINE'),
-        'NAME': os.getenv("NAME"),    
-        'USER': os.getenv("USER"),   
+        'NAME': os.getenv("DB_NAME"),    
+        'USER': os.getenv("DB_USER"),   
         'PASSWORD': os.getenv("PASSWORD"),    
         'HOST': os.getenv("HOST"),      
         'PORT': os.getenv("PORT")       
@@ -202,10 +203,12 @@ SIMPLE_JWT = {
 # DB 1 — Default / general use for django caches 
 # DB 2 — Rate limiting  ← only this one is used by GlobalRateLimitMiddleware
  
+_redis_parsed = urllib.parse.urlparse(REDIS_URL)
 RATE_LIMIT_REDIS = {
-    "HOST": "localhost",
-    "PORT": 6379,
-    "DB": 2,
+    "HOST": _redis_parsed.hostname or "localhost",
+    "PORT": _redis_parsed.port or 6379,
+    "PASSWORD": _redis_parsed.password or None,
+    "DB": 0,
     # How long (seconds) to wait when connecting to Redis.
     # Keep this low so a Redis outage doesn't stall your requests.
     "SOCKET_CONNECT_TIMEOUT": 1,
@@ -259,7 +262,7 @@ RATE_LIMIT_TRUSTED_PROXIES = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://localhost:6379/1',
+        'LOCATION': f'{REDIS_URL}/0',
         'TIMEOUT': 300,
         'OPTIONS': {
             'db': 1,
@@ -276,9 +279,18 @@ CACHES = {
 # =============================================================================
 # CELERY — DB 0 for broker & results
 # =============================================================================
+
+# import ssl
+# # Add SSL configuration for Celery
+# CELERY_BROKER_USE_SSL = {
+#     'ssl_cert_reqs': ssl.CERT_REQUIRED  # or ssl.CERT_NONE for testing
+# }
+# CELERY_REDIS_BACKEND_USE_SSL = {
+#     'ssl_cert_reqs': ssl.CERT_REQUIRED  # or ssl.CERT_NONE for testing
+# }
  
-CELERY_BROKER_URL         = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND     = "redis://localhost:6379/0"
+CELERY_BROKER_URL         = f"{REDIS_URL}/0"
+CELERY_RESULT_BACKEND     = f"{REDIS_URL}/0"
 CELERY_WORKER_POOL        = "solo"
 CELERY_ACCEPT_CONTENT     = ["application/json"]
 CELERY_RESULT_SERIALIZER  = "json"
@@ -326,9 +338,13 @@ FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:5173")
 # =============================================================================
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",   # Vite default port
+    "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://gazabridgex.netlify.app",
 ]
+_frontend_url = os.getenv("FRONTEND_URL")
+if _frontend_url:
+    CORS_ALLOWED_ORIGINS.append(_frontend_url)
 
 # Allow the Authorization header so JWT tokens can be sent
 CORS_ALLOW_HEADERS = [
@@ -362,7 +378,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": ["redis://localhost:6379/3"],
+            "hosts": [f"{REDIS_URL}/0"],
             "capacity": 1500,
             "expiry": 10,
         },

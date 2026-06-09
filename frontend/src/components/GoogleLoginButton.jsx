@@ -7,9 +7,8 @@ import { useNavigate } from 'react-router-dom';
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const GOOGLE_REDIRECT_URI = `${window.location.origin}/auth/google/callback`;
 
-export default function GoogleLoginButton({ className = '' }) {
+export default function GoogleLoginButton({ className = '', mode = 'login' }) {
   const [loading, setLoading] = useState(false);
-  const { googleLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
@@ -29,11 +28,14 @@ export default function GoogleLoginButton({ className = '' }) {
     googleAuthUrl.searchParams.append('access_type', 'offline');
     googleAuthUrl.searchParams.append('prompt', 'consent');
 
-    // Store redirect URI in sessionStorage for callback
+    // Store redirect URI and mode in sessionStorage for callback
     sessionStorage.setItem('google_redirect_uri', GOOGLE_REDIRECT_URI);
+    sessionStorage.setItem('google_auth_mode', mode);
 
     window.location.href = googleAuthUrl.toString();
   };
+
+  const buttonText = mode === 'link' ? 'Link Google Account' : 'Continue with Google';
 
   return (
     <motion.button
@@ -56,7 +58,7 @@ export default function GoogleLoginButton({ className = '' }) {
           <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
         </svg>
       )}
-      {loading ? 'Connecting...' : 'Continue with Google'}
+      {loading ? 'Connecting...' : buttonText}
     </motion.button>
   );
 }

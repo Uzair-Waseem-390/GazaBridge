@@ -15,6 +15,8 @@ export const authAPI = {
   
   googleAuth: (code, redirectUri) => 
     api.post('/auth/google/', { code, redirect_uri: redirectUri }),
+  googleLink: (code, redirectUri) => 
+    api.post('/auth/google/link/', { code, redirect_uri: redirectUri }),
   
   googleRegister: (data) => 
     api.post('/auth/google/register/', data),

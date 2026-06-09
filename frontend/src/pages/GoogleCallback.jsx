@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 export default function GoogleCallback() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { googleLogin } = useAuth();
+  const { googleLogin, googleLink } = useAuth();
   const [error, setError] = useState('');
   const [processing, setProcessing] = useState(true);
   const hasRun = useRef(false);
@@ -35,24 +35,35 @@ export default function GoogleCallback() {
 
       const redirectUri = sessionStorage.getItem('google_redirect_uri') || 
                           `${window.location.origin}/auth/google/callback`;
+      const authMode = sessionStorage.getItem('google_auth_mode') || 'login';
 
-      const result = await googleLogin(code, redirectUri);
-
-      if (result.success) {
-        if (result.isNewUser) {
-          navigate('/google-register', {
-            state: {
-              registrationToken: result.registrationToken,
-              user: result.user,
-            },
-            replace: true,
-          });
+      if (authMode === 'link') {
+        const result = await googleLink(code, redirectUri);
+        if (result.success) {
+          navigate('/profile', { replace: true });
         } else {
-          navigate('/', { replace: true });
+          setError(result.error || 'Failed to link account.');
+          setProcessing(false);
         }
       } else {
-        setError(result.error);
-        setProcessing(false);
+        const result = await googleLogin(code, redirectUri);
+
+        if (result.success) {
+          if (result.isNewUser) {
+            navigate('/google-register', {
+              state: {
+                registrationToken: result.registrationToken,
+                user: result.user,
+              },
+              replace: true,
+            });
+          } else {
+            navigate('/', { replace: true });
+          }
+        } else {
+          setError(result.error);
+          setProcessing(false);
+        }
       }
     };
 

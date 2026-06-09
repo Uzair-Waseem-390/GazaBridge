@@ -1,7 +1,7 @@
 // frontend/src/pages/Chat.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
+
 import { chatAPI } from '../api/chat';
 import ChatWindow from '../components/chat/ChatWindow';
 import ConversationList from '../components/chat/ConversationList';
@@ -21,7 +21,8 @@ import StartConversationModal from '../components/chat/StartConversationModal';
  * REST calls (conversation list, message history) are made here and in ChatWindow.
  */
 export default function Chat() {
-  const { user } = useAuth();
+  // const { user } = useAuth();
+
 
   const [conversations, setConversations] = useState([]);
   const [groups, setGroups]               = useState([]);
@@ -55,8 +56,15 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    loadChats();
-  }, [loadChats]);
+    // Avoid direct setState cascades: call once on mount
+    // run after paint to avoid react "cascading render" warnings
+    const id = setTimeout(() => {
+      loadChats();
+    }, 0);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   // ── Chat selection helpers ──────────────────────────────────────────────────
 
@@ -125,20 +133,20 @@ export default function Chat() {
   );
 
   // ── Render ─────────────────────────────────────────────────────────────────
-  return (
-    <div className="flex h-[calc(100vh-4rem)] bg-gray-50 overflow-hidden" id="chat-page">
+return (
+<div className="flex h-[calc(100vh-4rem)] bg-[#F5F0E8]/90 overflow-hidden" id="chat-page">
       {/* ── Sidebar ───────────────────────────────────────────────────────── */}
       <aside
         className={`
-          flex flex-col bg-white border-r border-gray-100 shadow-sm transition-all duration-300
+          flex flex-col bg-[#F5F0E8]/70 backdrop-blur-xl border-r border-[#D9D0BD]/60 shadow-sm transition-all duration-300
           ${sidebarOpen ? 'w-80 min-w-[20rem]' : 'w-0 overflow-hidden min-w-0'}
           md:w-80 md:min-w-[20rem] md:overflow-visible
         `}
       >
         {/* Sidebar Header */}
-        <div className="px-4 pt-5 pb-3 border-b border-gray-100">
+          <div className="px-4 pt-5 pb-3 border-b border-[#D9D0BD]/60">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold text-gray-900">Messages</h1>
+            <h1 className="text-xl font-bold text-[#2F3525]">Messages</h1>
             <div className="flex gap-1">
               <button
                 id="new-dm-btn"

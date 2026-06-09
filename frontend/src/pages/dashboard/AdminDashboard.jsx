@@ -38,7 +38,7 @@ export default function AdminDashboard() {
     <div className="max-w-7xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         {/* Welcome */}
-        <div className="bg-white rounded-3xl shadow-lg p-8 mb-8 border border-gray-100">
+        <div className="bg-white/60 backdrop-blur-sm rounded-3xl shadow-lg p-8 mb-8 border border-gray-100">
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
           <p className="text-gray-600 mt-2">Welcome back, {user?.first_name || 'Admin'}! Here's an overview of the platform.</p>
         </div>

@@ -149,6 +149,22 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const googleLink = async (code, redirectUri) => {
+    try {
+      const response = await authAPI.googleLink(code, redirectUri);
+      
+      // Update local user data
+      const updatedUser = { ...user, is_google_linked: true };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      const message = error.response?.data?.detail || 'Failed to link Google account. Please try again.';
+      return { success: false, error: message };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -157,6 +173,7 @@ export function AuthProvider({ children }) {
     logout,
     googleLogin,
     googleRegister,
+    googleLink,
     clearAuth,
   };
 

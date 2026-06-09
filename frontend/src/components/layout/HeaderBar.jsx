@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 
-export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
+export default function HeaderBar({ variant = 'public', onToggleSidebar, sidebarOpen: _sidebarOpen }) {
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
@@ -43,26 +43,33 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                   user?.is_staff || 
                   user?.is_superuser;
 
+  const dashboardHeaderClass =
+    'bg-white/50 backdrop-blur-md border-b border-[#D9D0BD]/70 sticky top-0 z-20';
+
+  const publicHeaderClass =
+    'bg-[#F5F0E8]/85 backdrop-blur-xl border-b border-[#D9D0BD]/70 sticky top-0 z-20';
+
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-20">
-      <div className="flex items-center justify-between px-6 py-3">
+    <header className={variant === 'dashboard' ? dashboardHeaderClass : publicHeaderClass}>
+      <div className="flex items-center justify-between px-6 py-4">
         {/* Left: Toggle & Logo */}
         <div className="flex items-center gap-4">
           {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-olive-10 rounded-lg transition-colors"
             >
-              <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 text-olive-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           )}
-          <Link to={isAdmin ? '/admin' : '/dashboard'} className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-olive-light to-olive-dark rounded-lg rotate-12" />
-            <span className="text-xl font-bold bg-gradient-to-r from-olive to-olive-dark bg-clip-text text-transparent hidden sm:block">
-              GazaBridge
-            </span>
+          <Link to={isAdmin ? '/admin' : '/dashboard'} className="flex items-center gap-2 flex-shrink-0">
+            <img
+              src="/assets/public/gazabrige.jpg"
+              alt="GazaBridge Logo"
+              className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl object-contain flex-shrink-0 drop-shadow-[0_2px_10px_rgba(0,0,0,0.2)]"
+            />
           </Link>
         </div>
 
@@ -73,13 +80,13 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/notifications')}
-            className="relative p-2 hover:bg-gray-100 rounded-xl transition-colors"
+            className="relative p-2 hover:bg-olive-10 rounded-xl transition-colors"
           >
-            <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6 text-olive-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-[#8A9A5B] text-white text-xs font-bold rounded-full flex items-center justify-center">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
@@ -90,9 +97,9 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/chat')}
-            className="relative p-2 hover:bg-gray-100 rounded-xl transition-colors"
+            className="relative p-2 hover:bg-olive-10 rounded-xl transition-colors"
           >
-            <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6 text-olive-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </motion.button>
@@ -103,13 +110,13 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              className="flex items-center gap-2 p-2 hover:bg-olive-10 rounded-xl transition-colors"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-olive-light to-olive rounded-full flex items-center justify-center text-white text-sm font-bold">
+              <div className="w-8 h-8 bg-gradient-to-br from-[#8A9A5B] to-[#6B7C4E] rounded-full flex items-center justify-center text-white text-sm font-bold">
                 {getInitials()}
               </div>
-              <span className="text-sm font-medium text-gray-700 hidden md:block">{getDisplayName()}</span>
-              <svg className="w-4 h-4 text-gray-400 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <span className="text-sm font-medium text-[#3F3A32] hidden md:block">{getDisplayName()}</span>
+              <svg className="w-4 h-4 text-[#6B7C4E] hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </motion.button>
@@ -120,11 +127,11 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50"
+                  className="absolute right-0 mt-2 w-56 bg-[#FAF8F2]/95 backdrop-blur-xl rounded-2xl shadow-xl border border-[#D9D0BD]/70 py-2 z-50"
                 >
-                  <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="font-semibold text-gray-900 text-sm">{getDisplayName()}</p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
+                  <div className="px-4 py-3 border-b border-[#D9D0BD]/70">
+                    <p className="font-semibold text-[#2F3525] text-sm">{getDisplayName()}</p>
+                    <p className="text-xs text-[#6F675C]">{user?.email}</p>
                     {user?.roles?.map((role, index) => (
                       <span key={index} className="inline-block px-2 py-0.5 bg-olive-10 text-olive-dark rounded-full text-xs mt-1 mr-1 capitalize">
                         {role}
@@ -134,7 +141,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                   <Link
                     to="/profile"
                     onClick={() => setShowProfileMenu(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#3F3A32] hover:bg-olive-10 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -143,7 +150,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                   </Link>
                   <button
                     onClick={() => { setShowProfileMenu(false); handleLogout(); }}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left"
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#7A4B3A] hover:bg-[#EDE8DC]/80 transition-colors w-full text-left"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

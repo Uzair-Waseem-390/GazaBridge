@@ -1,9 +1,8 @@
 // frontend/src/components/layout/DashboardLayout.jsx - FIXED
 import { useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
-import { useNotifications } from '../../context/NotificationContext';
 import Sidebar from './Sidebar';
 import AdminSidebar from './AdminSidebar';
 import HeaderBar from './HeaderBar';
@@ -27,15 +26,15 @@ export default function DashboardLayout() {
 
   if (isChatPage) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6]">
-        <HeaderBar />
+      <div className="min-h-screen bg-[#EDE8DC]/40">
+        <HeaderBar variant="dashboard" />
         <Outlet />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F3EA] via-white to-[#F5F0E6] flex">
+    <div className="min-h-screen bg-[#EDE8DC]/40 flex text-[#3F3A32]">
       <AnimatePresence>
         {sidebarOpen && (
           <motion.aside
@@ -43,7 +42,7 @@ export default function DashboardLayout() {
             animate={{ x: 0 }}
             exit={{ x: -280 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="w-64 lg:w-72 bg-white border-r border-gray-200 flex-shrink-0 h-screen sticky top-0 overflow-y-auto z-30"
+            className="w-64 lg:w-72 bg-white/50 backdrop-blur-md border-r border-[#D9D0BD]/70 flex-shrink-0 h-screen sticky top-0 overflow-y-auto z-30"
           >
             {isAdmin ? <AdminSidebar /> : <Sidebar />}
           </motion.aside>
@@ -51,7 +50,11 @@ export default function DashboardLayout() {
       </AnimatePresence>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <HeaderBar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} sidebarOpen={sidebarOpen} />
+        <HeaderBar
+          variant="dashboard"
+          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+          sidebarOpen={sidebarOpen}
+        />
         <main className="flex-1 p-6">
           <Outlet />
         </main>

@@ -89,10 +89,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    setMobileMenu(false);
-  }, [location.pathname]);
-
   // Scroll to top when navigating
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -157,7 +153,7 @@ export default function Navbar() {
               <img
                 src="/assets/public/gazabrige.jpg"
                 alt="GazaBridge Logo"
-                className="h-16 md:h-20 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]"
+                className="h-20 md:h-24 w-auto object-contain max-w-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.15)]"
               />
             </motion.div>
           </Link>

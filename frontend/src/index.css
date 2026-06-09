@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-olive: #6B6A2E;
-  --color-olive-light: #8B8A47;
-  --color-olive-dark: #4D4C1F;
-  --color-olive-5: rgba(107, 106, 46, 0.05);
-  --color-olive-10: rgba(107, 106, 46, 0.10);
-  --color-olive-15: rgba(107, 106, 46, 0.15);
-  --color-olive-20: rgba(107, 106, 46, 0.20);
+  --color-olive: #6B7C4E;
+  --color-olive-light: #8A9A5B;
+  --color-olive-dark: #3F4A2F;
+  --color-olive-5: rgba(107, 124, 78, 0.05);
+  --color-olive-10: rgba(107, 124, 78, 0.10);
+  --color-olive-15: rgba(107, 124, 78, 0.15);
+  --color-olive-20: rgba(107, 124, 78, 0.20);
 
   --color-orange: #FF9913;
   --color-orange-light: #FFB352;

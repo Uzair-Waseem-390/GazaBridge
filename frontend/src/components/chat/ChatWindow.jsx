@@ -27,7 +27,7 @@ import StartConversationModal from './StartConversationModal';
  *
  * Auth: JWT sent as query param ?token=<access_token>  (see ws_auth.py)
  */
-export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
+export default function ChatWindow({ chat, onNewConversation, onUpdate, onConversationCreated }) {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -74,6 +74,11 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
       if (data.id && prev.some((m) => m.id === data.id)) return prev;
       return [...prev, data];
     });
+    // If this is a brand-new DM (chat.id was null), the first WS message means
+    // the conversation now exists in DB — tell the parent to reload the sidebar.
+    if (data.id && chat?.type === 'dm' && !chat?.id) {
+      onConversationCreated?.();
+    }
     // Auto-mark incoming message as read (user is actively in this chat)
     const senderId = data.sender_id ?? data.sender;
     if (data.id && senderId !== user?.id) {
@@ -84,7 +89,7 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate }) {
         chatAPI.markMessageRead(data.id).catch(() => {});
       }
     }
-  }, [user?.id, chat?.type]);
+  }, [user?.id, chat?.type, chat?.id, onConversationCreated]);
 
   const { sendMessage } = useWebSocket(wsPath, {
     enabled: !!chat,

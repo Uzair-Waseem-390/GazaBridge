@@ -14,7 +14,7 @@ Caching policy:
 from typing import Optional, List, Dict, Any
 
 from django.core.cache import cache
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 from django.utils import timezone
 
 from users.models import EmailVerificationToken, Role, User
@@ -103,6 +103,7 @@ def get_users_with_filters(
     role: Optional[str] = None,
     country: Optional[str] = None,
     is_active: Optional[bool] = None,
+    search: Optional[str] = None,
     page: int = 1,
     page_size: int = 20,
 ) -> Dict[str, Any]:
@@ -110,11 +111,13 @@ def get_users_with_filters(
     Get users with filters and pagination.
     Results are cached briefly (5 min) — this is an admin/list view.
     """
+    # print(f"[DEBUG] get_users_with_filters called: search={search!r}, role={role!r}, is_active={is_active!r}, page={page}, page_size={page_size}")
     cached_result = get_cached_list(
         "users_list", 
         role=role or 'all', 
         country=country or 'all', 
         active=str(is_active) if is_active is not None else 'all', 
+        search=search or 'none',
         page=page, 
         page_size=page_size
     )
@@ -129,7 +132,13 @@ def get_users_with_filters(
         queryset = queryset.filter(country__iexact=country)
     if is_active is not None:
         queryset = queryset.filter(is_active=is_active)
-    if not role:
+    if search:
+        queryset = queryset.filter(
+            Q(email__icontains=search) |
+            Q(first_name__icontains=search) |
+            Q(last_name__icontains=search)
+        )
+    if not role and not search:
         queryset = queryset.filter(is_superuser=False)
 
     start = (page - 1) * page_size
@@ -137,6 +146,8 @@ def get_users_with_filters(
 
     total_count = queryset.count()
     users = list(queryset[start:end])
+    # print(f"[DEBUG] DB query result: total_count={total_count}, users_found={len(users)}")
+    # print(f"[DEBUG] SQL: {queryset.query}")
 
     result = {
         "users": users,
@@ -152,9 +163,10 @@ def get_users_with_filters(
         role=role or 'all', 
         country=country or 'all', 
         active=str(is_active) if is_active is not None else 'all', 
+        search=search or 'none',
         page=page, 
         page_size=page_size
-    )
+    ) if users else None  # Don't cache empty results to avoid stale empty responses
     return result
 
 

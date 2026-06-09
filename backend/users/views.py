@@ -323,10 +323,10 @@ class ChangePasswordView(generics.UpdateAPIView):
 class UserListView(generics.ListAPIView):
     """
     GET /users/ - List users with filtering.
-    Access: Admin, Manager, Superuser
+    Access: Any Authenticated User (used for chat search)
     """
     
-    permission_classes = [IsAuthenticated, IsAdminOrSuperuser]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
     
     def get_queryset(self):
@@ -339,6 +339,7 @@ class UserListView(generics.ListAPIView):
             role=params.get('role'),
             country=params.get('country'),
             is_active=params.get('is_active'),
+            search=params.get('search'),
             page=params.get('page', 1),
             page_size=params.get('page_size', 20)
         )

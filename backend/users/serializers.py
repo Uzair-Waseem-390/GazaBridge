@@ -199,6 +199,8 @@ class UserListQuerySerializer(serializers.Serializer):
     """Serializer for query parameters in user list."""
     role = serializers.ChoiceField(choices=["volunteer", "seeker", "manager"], required=False)
     country = serializers.CharField(max_length=100, required=False)
-    is_active = serializers.BooleanField(required=False)
+    # BooleanField defaults to False when absent — use allow_null so None means "no filter"
+    is_active = serializers.BooleanField(required=False, allow_null=True, default=None)
+    search = serializers.CharField(required=False, allow_blank=True)
     page = serializers.IntegerField(min_value=1, default=1)
     page_size = serializers.IntegerField(min_value=1, max_value=100, default=20)

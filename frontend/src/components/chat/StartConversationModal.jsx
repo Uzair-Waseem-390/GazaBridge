@@ -23,7 +23,8 @@ export default function StartConversationModal({ onClose, onStarted }) {
     setResults([]);
     try {
       const res = await usersAPI.getUsers({ search: query.trim(), page_size: 10 });
-      const data = res.data?.results || res.data || [];
+      // Use 'in' check — res.data?.users could be an empty array [] which is falsy in JS
+      const data = 'users' in (res.data || {}) ? res.data.users : (res.data?.results ?? res.data ?? []);
       setResults(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('User search error:', err);

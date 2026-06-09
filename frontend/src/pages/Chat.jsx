@@ -92,8 +92,12 @@ export default function Chat() {
   const handleNewConversation = (chatObj) => {
     setActiveChat(chatObj);
     setSidebarOpen(false);
-    // Reload list so the new conversation appears
-    setTimeout(loadChats, 1500);
+    // If the conversation already has an id (existing conv), reload immediately.
+    // If id=null (brand-new), ChatWindow will call onConversationCreated once
+    // the first message confirms the conv exists in DB.
+    if (chatObj.id) {
+      loadChats();
+    }
   };
 
   /** Called after group is created in CreateGroupModal */
@@ -248,6 +252,7 @@ export default function Chat() {
               <ChatWindow
                 chat={activeChat}
                 onNewConversation={handleNewConversation}
+                onConversationCreated={loadChats}
                 onUpdate={() => {
                   loadChats();
                   setActiveChat(null);

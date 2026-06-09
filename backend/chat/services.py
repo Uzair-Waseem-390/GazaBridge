@@ -15,8 +15,8 @@ from chat.models import (
 )
 from chat.selectors import (
     get_or_create_conversation, get_group_by_id,
-    get_user_conversations, get_user_groups,
-    set_cached_conversations, set_cached_groups,
+    get_user_groups,
+    set_cached_groups,
     invalidate_user_chat_caches, is_blocked,
 )
 
@@ -48,14 +48,15 @@ def save_message(
             Conversation.objects.filter(pk=conversation_id).update(updated_at=message.created_at)
         if group_id:
             Group.objects.filter(pk=group_id).update(updated_at=message.created_at)
-    
-    # Write-through cache: update conversation list caches for affected users
+
+    # Invalidate both participants' caches so the next GET rebuilds from DB.
+    # A write-through re-read here risks re-caching a stale snapshot if the
+    # cache was already populated before this message (e.g. brand-new conversation).
     if conversation_id:
         conv = Conversation.objects.get(pk=conversation_id)
-        for user_id in [conv.user1_id, conv.user2_id]:
-            conversations = get_user_conversations(user_id)
-            set_cached_conversations(user_id, conversations)
-    
+        invalidate_user_chat_caches(conv.user1_id)
+        invalidate_user_chat_caches(conv.user2_id)
+
     return message
 
 

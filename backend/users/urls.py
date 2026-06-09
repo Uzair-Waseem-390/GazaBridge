@@ -21,8 +21,8 @@ urlpatterns = [
     path("<int:pk>/", UserDetailView.as_view(), name="user-detail"),
     path("change-password/<int:pk>/", ChangePasswordView.as_view(), name="change-password"),
     
-    # User listing (admin/manager only)
-    # path("", UserListView.as_view(), name="user-list"),
+    # User listing (Search for chat / Admin lists)
+    path("", UserListView.as_view(), name="user-list"),
     
     # Role management (admin only)
     path("promote-to-manager/", PromoteToManagerView.as_view(), name="promote-to-manager"),

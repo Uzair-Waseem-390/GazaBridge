@@ -19,6 +19,12 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
+# Auto-add the Render production hostname so the admin panel and API work on deployment
+if backend_production_url:
+    _prod_host = urllib.parse.urlparse(backend_production_url).hostname
+    if _prod_host and _prod_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_prod_host)
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

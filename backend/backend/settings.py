@@ -3,13 +3,14 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 import urllib.parse
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
-# daphne backend.asgi:application
+
 # daphne backend.asgi:application
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.env.production')
+
+REDIS_URL = os.getenv("REDIS_URL")
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -17,7 +18,7 @@ backend_production_url = os.getenv('BACKEND_PRODUCTION_URL')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 # Auto-add the Render production hostname so the admin panel and API work on deployment
 if backend_production_url:
@@ -137,9 +138,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-
-STATIC_URL = 'static/'
 
 
 

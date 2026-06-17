@@ -206,3 +206,11 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react
+
+.env.production
+*.env.production
+.env.production*
+.env.local
+*.env.local
+*.env.dev
+*.env.dev

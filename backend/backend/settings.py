@@ -142,22 +142,29 @@ USE_TZ = True
 
 
 REST_FRAMEWORK = {
-    # Default to 403 for unauthenticated requests on protected endpoints.
-    # RegisterView overrides this with AllowAny explicitly.
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # Authentication
+    "DEFAULT_AUTHENTICATION_CLASSES": (
         "auth_app.backends.BlacklistAwareJWTAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": [
+
+    # Protect everything by default
+    "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
-    ],
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    # "DEFAULT_RENDERER_CLASSES": [
-    #     "rest_framework.renderers.JSONRenderer",
-    # ],
-    # "DEFAULT_PARSER_CLASSES": [
-    #     "rest_framework.parsers.JSONParser",
-    # ],
+    ),
+
+    # OpenAPI docs
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+
+    # Built-in DRF throttling
+    "DEFAULT_THROTTLE_CLASSES": (
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ),
+
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "20/min",
+        "user": "100/min",
+    },
 }
 
 

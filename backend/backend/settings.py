@@ -343,10 +343,7 @@ CORS_ALLOW_HEADERS = [
 
 GOOGLE_CLIENT_ID     = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-# No hardcoded default — the frontend always sends its own redirect_uri in the
-# request body, so this setting is no longer used by the backend directly.
-# It is kept here only as documentation / fallback reference.
-GOOGLE_REDIRECT_URI  = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:5173/auth/google/callback")
+GOOGLE_REDIRECT_URI  = os.getenv("GOOGLE_REDIRECT_URI")
 
 
 

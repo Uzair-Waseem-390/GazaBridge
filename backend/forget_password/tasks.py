@@ -80,7 +80,7 @@ def send_password_reset_email(self, user_id: int) -> None:
         }
 
     reset_url = (
-        f"{settings.BACKEND_BASE_URL.rstrip('/')}"
+        f"{settings.FRONTEND_BASE_URL.rstrip('/')}"
         f"/forget-password/confirm/{payload['token']}/"
     )
 

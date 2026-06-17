@@ -52,7 +52,7 @@ def send_verification_email(self, user_id: int) -> None:
         }
     
     verification_url = (
-        f"{settings.BACKEND_BASE_URL.rstrip('/')}"
+        f"{settings.FRONTEND_BASE_URL.rstrip('/')}"
         f"/users/verify-email/{payload['token']}/"
     )
     

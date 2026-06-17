@@ -176,8 +176,7 @@ from datetime import timedelta
  
 SIMPLE_JWT = {
     # Token lifetimes
-    # "ACCESS_TOKEN_LIFETIME":  timedelta(minutes=15),
-    "ACCESS_TOKEN_LIFETIME":  timedelta(days=3),
+    "ACCESS_TOKEN_LIFETIME":  timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
  
     # We handle rotation manually in RefreshView — disable SimpleJWT's built-in
@@ -199,16 +198,6 @@ SIMPLE_JWT = {
     # Token classes
     "AUTH_TOKEN_CLASSES":      ("rest_framework_simplejwt.tokens.AccessToken",),
 }
- 
-
-
-# REFRESH_TOKEN_COOKIE_NAME = 'refresh_token'
-# REFRESH_TOKEN_COOKIE_SAMESITE = 'Lax'
-# REFRESH_TOKEN_COOKIE_SECURE = True   # HTTPS only — set False in local dev
-# REFRESH_TOKEN_COOKIE_HTTPONLY = True  # JS cannot read this cookie
-
-
-
 
 
 # DB 0 — Celery broker & results
@@ -244,32 +233,13 @@ RATE_LIMIT = {
     },
 }
  
-# =============================================================================
-# TRUSTED PROXIES
-# =============================================================================
-# IPs listed here are treated as reverse proxies.
-# When the direct connection comes from one of these IPs, the middleware will
-# read the real client IP from the X-Forwarded-For header instead of
-# REMOTE_ADDR, preventing IP spoofing by untrusted clients.
-#
+
 # Add your load balancer / Nginx / Gunicorn proxy IPs here.
 # Leave as an empty set if you are running without a proxy (e.g. local dev).
  
 RATE_LIMIT_TRUSTED_PROXIES = {
     "127.0.0.1",   # example: internal load balancer    
 }
-
-
-# =============================================================================
-# CACHES — DB 1 for Django cache (separate from rate limiting)
-# =============================================================================
- 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/1",
-#     }
-# }
 
 CACHES = {
     'default': {
@@ -292,18 +262,21 @@ CACHES = {
 # CELERY — DB 0 for broker & results
 # =============================================================================
 
-# import ssl
-# # Add SSL configuration for Celery
-# CELERY_BROKER_USE_SSL = {
-#     'ssl_cert_reqs': ssl.CERT_REQUIRED  # or ssl.CERT_NONE for testing
-# }
-# CELERY_REDIS_BACKEND_USE_SSL = {
-#     'ssl_cert_reqs': ssl.CERT_REQUIRED  # or ssl.CERT_NONE for testing
-# }
+import ssl
+import platform
+# Add SSL configuration for Celery
+CELERY_BROKER_USE_SSL = {
+    'ssl_cert_reqs': ssl.CERT_REQUIRED  # or ssl.CERT_NONE for testing
+}
+CELERY_REDIS_BACKEND_USE_SSL = {
+    'ssl_cert_reqs': ssl.CERT_REQUIRED  # or ssl.CERT_NONE for testing
+}
  
 CELERY_BROKER_URL         = f"{REDIS_URL}/0"
 CELERY_RESULT_BACKEND     = f"{REDIS_URL}/0"
-CELERY_WORKER_POOL        = "solo"
+# CELERY_WORKER_POOL        = "solo"
+if platform.system() == "Windows":
+    CELERY_WORKER_POOL = "solo"
 CELERY_ACCEPT_CONTENT     = ["application/json"]
 CELERY_RESULT_SERIALIZER  = "json"
 CELERY_TASK_SERIALIZER    = "json"

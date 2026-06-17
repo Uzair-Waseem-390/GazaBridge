@@ -14,17 +14,10 @@ REDIS_URL = os.getenv("REDIS_URL")
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-backend_production_url = os.getenv('BACKEND_PRODUCTION_URL')
-
 DEBUG = os.getenv("DEBUG").lower() == "true"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
-# Auto-add the Render production hostname so the admin panel and API work on deployment
-if backend_production_url:
-    _prod_host = urllib.parse.urlparse(backend_production_url).hostname
-    if _prod_host and _prod_host not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(_prod_host)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -300,20 +293,9 @@ EMAIL_USE_TLS       = True
 EMAIL_HOST_USER     = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-
-# =============================================================================
-# BACKEND BASE URL
-# Used by the email task to build the verification link.
-# Override per environment via .env — no trailing slash needed.
-# =============================================================================
  
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://localhost:8000")
 
-# =============================================================================
-# FRONTEND BASE URL
-# Used to build links in emails (verify email, password reset) that the user
-# clicks in their browser — these must point to the React app, not the API.
-# =============================================================================
 
 FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:5173")
 

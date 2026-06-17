@@ -323,13 +323,10 @@ FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:5173")
 # =============================================================================
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://gazabridgex.netlify.app",
+    origin.strip()
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS").split(",")
+    if origin.strip()
 ]
-_frontend_url = os.getenv("FRONTEND_URL")
-if _frontend_url:
-    CORS_ALLOWED_ORIGINS.append(_frontend_url)
 
 # Allow the Authorization header so JWT tokens can be sent
 CORS_ALLOW_HEADERS = [

@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 backend_production_url = os.getenv('BACKEND_PRODUCTION_URL')
 
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = os.getenv("DEBUG").lower() == "true"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 

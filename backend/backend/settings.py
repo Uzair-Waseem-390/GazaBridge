@@ -8,7 +8,7 @@ import urllib.parse
 # daphne backend.asgi:application
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env.production')
+load_dotenv(BASE_DIR / '.env')
 
 REDIS_URL = os.getenv("REDIS_URL")
 

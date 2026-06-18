@@ -8,15 +8,19 @@ import urllib.parse
 # daphne backend.asgi:application
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.env.production')
 
 REDIS_URL = os.getenv("REDIS_URL")
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+
 DEBUG = os.getenv("DEBUG").lower() == "true"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+
 
 
 INSTALLED_APPS = [

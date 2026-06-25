@@ -23,42 +23,13 @@ def get_user_stats() -> Dict[str, int]:
 
     Superusers excluded from all counts.
     """
-    base_qs = User.objects.filter(is_superuser=False)
-
-    volunteers = 0
-    seekers = 0
-    both = 0
-    managers = 0
-    admins = 0
-    inactive = 0
-
-    for user in base_qs.prefetch_related("roles"):
-        # Inactive first — only in inactive
-        if not user.is_active:
-            inactive += 1
-            continue
-
-        # Admin (is_staff) — only in admin
-        if user.is_staff:
-            admins += 1
-            continue
-
-        # Manager role — only in manager
-        if user.is_manager:
-            managers += 1
-            continue
-
-        # Volunteer/Seeker/Both
-        is_volunteer = user.is_volunteer
-        is_seeker = user.is_seeker
-
-        if is_volunteer and is_seeker:
-            both += 1
-        elif is_volunteer:
-            volunteers += 1
-        elif is_seeker:
-            seekers += 1
-
+    volunteers = get_volunteers().count()
+    seekers = get_seekers().count()
+    both = get_both().count()
+    managers = get_managers().count()
+    admins = get_admins().count()
+    inactive = get_inactive_users().count()
+    
     total = volunteers + seekers + both + managers + admins + inactive
 
     return {
